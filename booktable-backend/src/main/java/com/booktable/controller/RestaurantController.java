@@ -27,8 +27,8 @@ public class RestaurantController {
     }
 
     @PostMapping("/api/restaurant")
-    public String addRestaurant(@RequestBody RestaurantModel restaurantModel) {
-        restaurantService.saveRestaurant(restaurantModel);
-        return "";
+    public RestaurantModel addRestaurant(@RequestBody RestaurantModel restaurantModel) {
+         return restaurantService.saveRestaurant(restaurantModel);
+
     }
 }

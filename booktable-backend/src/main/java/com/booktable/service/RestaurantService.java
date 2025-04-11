@@ -13,7 +13,7 @@ public class RestaurantService {
     private RestaurantModel resurantModel;
 
 
-    public void saveRestaurant(RestaurantModel restaurant) {
-        restaurantRepository.save(restaurant);
+    public RestaurantModel saveRestaurant(RestaurantModel restaurant) {
+        return restaurantRepository.save(restaurant);
     }
 }
