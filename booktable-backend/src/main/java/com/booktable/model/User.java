@@ -3,6 +3,7 @@ package com.booktable.model;
 import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+import com.booktable.model.Role;
 
 import java.util.Set;
 
@@ -18,6 +19,6 @@ public class User {
     private String email;
     private String password;
 
-    private Set<String> roles; // Example: ["CUSTOMER"], ["ADMIN"]
+    private Set<Role> roles; // Example: ["CUSTOMER"], ["ADMIN"]
     private AuthProvider provider; // LOCAL, GOOGLE
 }
