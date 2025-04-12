@@ -39,13 +39,13 @@ public class MailjetEmailService {
                             .put(new JSONObject()
                                     .put(Emailv31.Message.FROM, new JSONObject()
                                             .put("Email", senderEmail)
-                                            .put("Name", "OpenTable App"))
+                                            .put("Name", "BookTable App"))
                                     .put(Emailv31.Message.TO, new JSONArray()
                                             .put(new JSONObject()
                                                     .put("Email", recipient)))
                                     .put(Emailv31.Message.SUBJECT, subject)
                                     .put(Emailv31.Message.TEXTPART, messageBody)
-                                    .put(Emailv31.Message.CUSTOMID, "OpenTable Email")));
+                                    .put(Emailv31.Message.CUSTOMID, "BookTable Email")));
 
             // Send the request
             response = client.post(request);
