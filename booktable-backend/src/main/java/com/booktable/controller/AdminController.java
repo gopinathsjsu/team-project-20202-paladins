@@ -5,11 +5,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/public")
-public class HelloController {
+@RequestMapping("/api/admin")
+public class AdminController {
 
-    @GetMapping("/hello")
-    public String sayHello() {
-        return "Hello from BookTable!";
+    @GetMapping("/dashboard")
+    public String viewAdminDashboard() {
+        return "Welcome to the Admin Dashboard";
     }
 }
