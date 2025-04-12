@@ -31,9 +31,16 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**",
-                                         "/api/public/**",
-                                         "/oauth2/**",
-                                         "/login/oauth2/**").permitAll() // public routes
+                                        "/api/public/**",
+                                        "/oauth2/**",
+                                        "/login/",
+                                        // Swagger paths
+                                        "/v3/api-docs/**",
+                                        "/swagger-ui/**",
+                                        "/swagger-ui.html",
+                                        "/swagger-resources/**",
+                                        "/webjars/**"
+                        ).permitAll() // public routes
                         .requestMatchers("/api/admin/**").hasAuthority("ADMIN")
                         .requestMatchers("/api/manager/**").hasAuthority("RESTAURANT_MANAGER")
                         .anyRequest().authenticated() // everything else must be authenticated
