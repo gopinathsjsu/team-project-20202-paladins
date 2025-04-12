@@ -1,0 +1,73 @@
+### LIST
+GET http://127.0.0.1:8080/api/restaurant
+
+### LIST (Paginated)
+GET http://127.0.0.1:8080/api/restaurant?page=2&size=3
+
+
+### GET
+GET http://127.0.0.1:8080/api/restaurant/67f9b8ce4c583975339c8025
+
+
+### GET (Search)
+GET http://127.0.0.1:8080 /api/restaurant/search?city=BoC&state=NY&zip=95006
+
+
+### POST
+POST http://127.0.0.1:8080/api/restaurant
+Content-Type: application/json
+
+{
+  "name": "Momo Palace",
+  "description": "A cozy restaurant serving best in town momo view of the hills.",
+  "addressStreet": "123 Summit Ave",
+  "addressCity": "Boulder Creek",
+  "addressState": "CA",
+  "addressZip": "95006",
+  "phone": "+1-408-555-9876",
+  "email": "info@momopalace.com",
+  "imageUrl": "https://example.com/images/restaurant.jpg",
+  "managerId": "a2b7c6d1-3e9f-42ab-a0f1-9f87654321de",
+  "coordinatesLatitude": 37.123456,
+  "coordinatesLongitude": -122.234567,
+  "cuisines": [
+    "Nepali",
+    "Tibetan"
+  ]
+}
+
+### PUT
+PUT http://127.0.0.1:8080/api/restaurant/67f9b8ce4c583975339c8025
+Content-Type: application/json
+
+{
+  "name": "Momo Palace1",
+  "description": "A cozy restaurant serving best in town momo view of the hills.",
+  "addressStreet": "123 Summit Ave",
+  "addressCity": "Boulder Creek",
+  "addressState": "CA",
+  "addressZip": "95006",
+  "phone": "+1-408-555-9876",
+  "email": "info@momopalace.com",
+  "imageUrl": "https://example.com/images/restaurant.jpg",
+  "managerId": "a2b7c6d1-3e9f-42ab-a0f1-9f87654321de",
+  "coordinatesLatitude": 37.123456,
+  "coordinatesLongitude": -122.234567,
+  "cuisines": [
+    "Nepali",
+    "Tibetan"
+  ]
+}
+
+### PATCH
+PATCH http://127.0.0.1:8080/api/restaurant/67f9b9124c583975339c8026
+Content-Type: application/json
+
+{
+  "name": "Momo Palace3"
+}
+
+### DELETE
+DELETE http://127.0.0.1:8080/api/restaurant/67f9b9124c583975339c8026
+
+###
