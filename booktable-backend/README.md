@@ -108,7 +108,7 @@ spring.security.oauth2.client.registration.google.client-secret=GOOGLE_CLIENT_SE
 Use **Postman** or your browser to test endpoints like:
 
 ```
-http://localhost:8080/api/hello
+http://localhost:8080/api/public/hello
 ```
 
 ---
