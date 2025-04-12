@@ -68,9 +68,9 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>com.amazonaws</groupId>
-			<artifactId>aws-java-sdk-sns</artifactId>
-			<version>1.12.512</version>
+			<groupId>com.mailjet</groupId>
+			<artifactId>mailjet-client</artifactId>
+			<version>5.2.6</version>
 		</dependency>
 
 		<dependency>
