@@ -1,6 +1,7 @@
 package com.booktable.controller;
 
 import com.booktable.dto.RegisterRequest;
+import com.booktable.dto.LoginRequest;
 import com.booktable.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -16,5 +17,10 @@ public class AuthController {
     @PostMapping("/signup")
     public ResponseEntity<String> register(@RequestBody RegisterRequest request) {
         return authService.registerUser(request);
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody LoginRequest request) {
+        return authService.login(request);
     }
 }
