@@ -46,16 +46,42 @@ Use this to verify the backend is running correctly.
 
 ## 🛠️ Getting Started Locally
 
-### 1. Clone the Repository
+### Option A: Run with Docker Compose (Recommended)
+
+1. Navigate to the deployment folder:
+
+```bash
+cd ../Deployment
+```
+
+2. Start all services:
+
+```bash
+docker-compose up --build
+```
+
+3. Access services:
+- Spring Boot backend: [http://localhost:8080](http://localhost:8080)
+- Mongo Express (GUI): [http://localhost:8081](http://localhost:8081)
+
+MongoDB is automatically started in a container with user `root` and password `example`.
+
+> 💡 You can view your database through Mongo Express.
+
+---
+
+### Option B: Run Manually (Non-Docker)
+
+1. Clone the Repository
 
 ```bash
 git clone https://github.com/gopinathsjsu/team-project-20202-paladins.git
 cd team-project-20202-paladins/booktable-backend
 ```
 
-### 2. Configure MongoDB
+2. Configure MongoDB
 
-Ensure MongoDB is running at:
+Ensure MongoDB is running locally at:
 
 ```
 mongodb://localhost:27017/booktable
@@ -65,12 +91,11 @@ Create a `.env` file or edit `application.properties`:
 
 ```properties
 spring.data.mongodb.uri=mongodb://localhost:27017/booktable
-
 spring.security.oauth2.client.registration.google.client-id=GOOGLE_CLIENT_ID
 spring.security.oauth2.client.registration.google.client-secret=GOOGLE_CLIENT_SECRET
 ```
 
-### 3. Run the App
+3. Run the App
 
 ```bash
 ./mvnw spring-boot:run
