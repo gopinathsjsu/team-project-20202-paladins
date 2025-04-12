@@ -23,7 +23,8 @@ public class User implements UserDetails {
     private String email;
     private String password;
 
-    private Set<Role> roles;
+    private Set<Role> roles; // Example: ["CUSTOMER"], ["ADMIN"]
+    private AuthProvider provider; // LOCAL, GOOGLE
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
