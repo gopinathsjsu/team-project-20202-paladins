@@ -1,5 +1,6 @@
 import React from 'react';
-import { Container, Typography, Box, TextField, Button } from '@mui/material';
+import { Container, Typography, Box, TextField, Button, Link } from '@mui/material';
+import { Link as RouterLink } from 'react-router-dom';
 
 const Login = () => {
   return (
@@ -44,6 +45,14 @@ const Login = () => {
           >
             Sign In
           </Button>
+          <Box sx={{ textAlign: 'center' }}>
+            <Typography variant="body2" color="text.secondary">
+              Don't have an account?{' '}
+              <Link component={RouterLink} to="/register" color="primary">
+                Sign Up
+              </Link>
+            </Typography>
+          </Box>
         </Box>
       </Box>
     </Container>
