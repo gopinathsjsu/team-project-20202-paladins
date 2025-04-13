@@ -4,10 +4,9 @@
 - [Project Overview](#project-overview)
 - [Prerequisites](#prerequisites)
 - [Getting Started](#getting-started)
-- [Available Scripts](#available-scripts)
 - [Project Structure](#project-structure)
 - [Dependencies](#dependencies)
-- [Contributing](#contributing)
+- [Features](#features)
 
 ## 📌 Project Overview
 This is the frontend of the **Restaurant Table Reservation System**, built using **React** and styled with **Material UI**. It allows customers to search and book restaurants, restaurant managers to manage listings, and admins to oversee the platform.
@@ -38,35 +37,22 @@ npm start
 ```
 The application will start in development mode and open in your default browser at [http://localhost:3000](http://localhost:3000).
 
-## 📌 Available Scripts
-
-In the project directory, you can run:
-
-### `npm start`
-Runs the app in development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
-
-### `npm test`
-Launches the test runner in interactive watch mode.
-
-### `npm run build`
-Builds the app for production to the `build` folder.
-
-### `npm run eject`
-**Note: this is a one-way operation. Once you eject, you can't go back!**
-Ejects from Create React App to get full control over the configuration.
-
 ## 📌 Project Structure
 ```
 frontend/
-├── public/          # Static files
-├── src/             # Source files
-│   ├── components/  # Reusable components
-│   ├── pages/       # Page components
-│   ├── App.js       # Main application component
-│   └── index.js     # Application entry point
-├── package.json     # Project dependencies and scripts
-└── README.md        # Project documentation
+├── public/             # Static files
+├── src/                # Source files
+│   ├── components/     # Reusable components
+│   ├── pages/          # Page components
+│   ├── services/       # API services
+│   ├── styles/         # Theme and styling
+│   ├── utils/          # Utility functions
+│   ├── constants/      # Application constants
+│   ├── App.js          # Main application component
+│   ├── index.js        # Application entry point
+│   └── index.css       # Global styles
+├── package.json        # Project dependencies and scripts
+└── README.md           # Project documentation
 ```
 
 ## 📌 Dependencies
@@ -74,13 +60,20 @@ The project uses several key dependencies:
 - React
 - Material UI (@mui/material)
 - React Router (react-router-dom)
-- Redux Toolkit (@reduxjs/toolkit)
 - Axios for API calls
 
-## 📌 Contributing
-1. Create a new branch for your feature
-2. Make your changes
-3. Submit a pull request
+## 📌 Features
+- Responsive layout with Material UI
+- Restaurant listing and search
+- Detailed restaurant view
+- Booking system
+- User authentication
+- Custom theme configuration
 
-## 📌 Support
-If you encounter any issues or have questions, please open an issue in the repository. 
+## 📌 Team Guidelines
+- Follow the established project structure
+- Use meaningful commit messages
+- Keep components modular and reusable
+- Maintain consistent code style
+- Document any complex logic
+- Coordinate with team members before making major changes
