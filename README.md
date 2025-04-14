@@ -4,10 +4,10 @@
 
 Team: The Paladins
 
-Ganesh Thampi
-Vatsal Gandhi
-Nishan Paudel
-Ashish Bhusal
+- Ganesh Thampi
+- Vatsal Gandhi
+- Nishan Paudel
+- Ashish Bhusal
 
 
 # 🍽️ BookTable - Restaurant Table Reservation System
