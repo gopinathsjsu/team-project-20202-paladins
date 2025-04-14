@@ -1,0 +1,39 @@
+name: Build and Test Frontend
+
+on:
+  push:
+    paths:
+      - 'frontend/**'
+      - '.github/workflows/frontend.yml'
+    branches:
+      - master
+  pull_request:
+    paths:
+      - 'frontend/**'
+
+jobs:
+  build-frontend:
+    name: Build React Frontend
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: frontend
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run tests
+        run: npm test --if-present
+
+      - name: Build React app
+        run: npm run build
