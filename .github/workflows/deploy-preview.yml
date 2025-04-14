@@ -7,7 +7,10 @@ on:
     paths:
       - 'frontend/**'
       - '.github/workflows/deploy-preview.yml'
+
   pull_request:
+    branches:
+      - preview
     paths:
       - 'frontend/**'
       - '.github/workflows/deploy-preview.yml'
@@ -50,9 +53,11 @@ jobs:
             --acl public-read \
             --cache-control "max-age=31536000,public"
 
-      - name: Invalidate CloudFront cache
-        if: ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID != '' }}
+      - name: Invalidate CloudFront cache (optional)
+        if: env.CLOUDFRONT_DISTRIBUTION_ID != ''
+        env:
+          CLOUDFRONT_DISTRIBUTION_ID: ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }}
         run: |
           aws cloudfront create-invalidation \
-            --distribution-id ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }} \
+            --distribution-id $CLOUDFRONT_DISTRIBUTION_ID \
             --paths "/*"
