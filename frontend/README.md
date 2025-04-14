@@ -37,6 +37,34 @@ npm start
 ```
 The application will start in development mode and open in your default browser at [http://localhost:3000](http://localhost:3000).
 
+
+## Running with Docker
+
+### ⚙️ 1. Run Frontend Without Backend
+
+You can run just the frontend container, even if the backend is not needed:
+
+```bash
+docker-compose up --no-deps frontend
+```
+
+- Skips starting backend services
+- Useful for UI-only development or when mocking APIs
+
+---
+
+### 🚀 2. Run Everything Together (Full Stack)
+
+To start the entire system (frontend + backend + DB + mongo-express):
+
+```bash
+docker-compose up --build
+```
+
+- Full end-to-end stack
+- React frontend served via Nginx
+- Spring Boot backend with MongoDB and visual admin UI (Mongo Express)
+
 ## 📌 Project Structure
 ```
 frontend/
