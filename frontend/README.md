@@ -7,6 +7,7 @@
 - [Project Structure](#project-structure)
 - [Dependencies](#dependencies)
 - [Features](#features)
+- [Deployment](#Deployment)
 
 ## 📌 Project Overview
 This is the frontend of the **Restaurant Table Reservation System**, built using **React** and styled with **Material UI**. It allows customers to search and book restaurants, restaurant managers to manage listings, and admins to oversee the platform.
@@ -97,6 +98,17 @@ The project uses several key dependencies:
 - Booking system
 - User authentication
 - Custom theme configuration
+
+## Deployment
+
+### 🌐 Accessing the Preview Website
+
+Changes pushed to the `preview` branch are automatically deployed to S3 via GitHub Actions.
+
+To view the deployed frontend:
+1. Visit the S3 static website URL: http://booktable-preview-frontend-dev.s3-website-us-east-1.amazonaws.com/
+
+2. This site reflects the most recent deployment from the `preview` branch and is ideal for internal testing or pre-production reviews.
 
 ## 📌 Team Guidelines
 - Follow the established project structure

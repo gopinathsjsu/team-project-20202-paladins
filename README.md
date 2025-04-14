@@ -31,6 +31,7 @@ Team: The Paladins
   - [🔄 CI/CD Workflow](#-cicd-workflow)
   - [🚀 Deployment](#-deployment)
     - [🏁 Production Deployment](#-production-deployment)
+    - [🌐 Accessing the Preview Website](#-accessing-the-preview-website)
   - [🤝 Contributing](#-contributing)
 
 ---
@@ -145,6 +146,16 @@ The full-stack application is containerized and deployed to **AWS EC2** using Do
 - Full control over hosting
 - Secure and scalable infrastructure
 - Integration with AWS ecosystem (e.g., CloudWatch, ACM, Amazon S3)
+
+
+### 🌐 Accessing the Preview Website
+
+Changes pushed to the `preview` branch are automatically deployed to S3 via GitHub Actions.
+
+To view the deployed frontend:
+1. Visit the S3 static website URL: http://booktable-preview-frontend-dev.s3-website-us-east-1.amazonaws.com/
+
+2. This site reflects the most recent deployment from the `preview` branch and is ideal for internal testing or pre-production reviews.
 
 ---
 
