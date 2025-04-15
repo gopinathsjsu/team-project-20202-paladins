@@ -1,0 +1,47 @@
+package com.booktable.repository;
+
+import com.booktable.model.Restaurant;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.aggregation.*;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.stereotype.Repository;
+
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.List;
+
+import static org.springframework.data.mongodb.core.aggregation.Aggregation.*;
+
+@Repository
+public class CustomRestaurantRepositoryImpl implements CustomRestaurantRepository {
+
+    @Autowired
+    private MongoTemplate mongoTemplate;
+
+    @Override
+    public List<Restaurant> searchRestaurants(String city, String state, String zip, int numberOfPeople, LocalDate date, LocalTime startTime, LocalTime endTime) {
+        MatchOperation matchCityStateZip = match(Criteria.where("addressCity").regex(city, "i")
+                .and("addressState").regex(state, "i")
+                .and("addressZip").regex(zip, "i"));
+
+        LookupOperation lookupTables = lookup("table", "_id", "restaurantId", "tables");
+
+        LookupOperation lookupReservations = lookup("reservation", "tables._id", "tableId", "reservations");
+
+        MatchOperation matchCapacityAndAvailability = match(Criteria.where("tables").elemMatch(Criteria.where("isActive").is(true))
+                .and("reservations").not().elemMatch(Criteria.where("date").is(date)
+                        .and("time").gte(startTime).lte(endTime)));
+
+
+
+        Aggregation aggregation = newAggregation(
+                matchCityStateZip,
+                lookupTables,
+                lookupReservations,
+                matchCapacityAndAvailability
+        );
+
+        return mongoTemplate.aggregate(aggregation, "restaurant", Restaurant.class).getMappedResults();
+    }
+}

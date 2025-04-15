@@ -1,4 +1,6 @@
 package com.booktable.model;
+
+
 import com.booktable.utils.ObjectIdJsonSerializer;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.AllArgsConstructor;
@@ -11,6 +13,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
@@ -19,36 +22,31 @@ import java.util.UUID;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Document(collection = "restaurant") // Corrected spelling
-public class Restaurant {
+@Document(collection = "reservations")
+public class Reservation {
     @Id
     @JsonSerialize(using = ObjectIdJsonSerializer.class)
     private ObjectId id;
+    @JsonSerialize(using = ObjectIdJsonSerializer.class)
+    private ObjectId customerId;
+    @JsonSerialize(using = ObjectIdJsonSerializer.class)
+    private ObjectId restaurantId;
+    @JsonSerialize(using = ObjectIdJsonSerializer.class)
+    private ObjectId tableId;
 
-    private String name;
-    private String description;
 
-    private String addressStreet;
-    private String addressCity;
-    private String addressState;
-    private String addressZip;
+    private String date;
 
-    private String phone;
-    private String email;
-    private String imageUrl;
+    @NonNull
+    private LocalTime startSlotTime;
+    @NonNull
+    private LocalTime endSlotTime;
 
-    private UUID managerId;
+    private int partySize;
+    private String status;
 
-    private BigDecimal coordinatesLatitude;
-    private BigDecimal coordinatesLongitude;
-
-    private List<String> cuisines;
+    private BigDecimal totalAmount;
 
     @CreatedDate
     private LocalDateTime createdAt;
-
-    @NonNull
-    private LocalTime openingHour;
-    @NonNull
-    private LocalTime closingHour;
 }

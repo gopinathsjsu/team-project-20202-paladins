@@ -1,0 +1,17 @@
+### Book
+POST http://127.0.0.1:8080/api/book
+Content-Type: application/json
+
+{
+  "customerId": "67fdb6489fc4ac62aeb9eb5e",
+  "restaurantId": "67fdcbd1b8d1fb10b3c9fc5a",
+  "tableId": "67fdcbd2b8d1fb10b3c9fc5b",
+  "startSlotTime": "15:00:00",
+  "endSlotTime": "16:00:00",
+  "date": "2019-03-27"
+}
+
+###
+
+
+
