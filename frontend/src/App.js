@@ -17,7 +17,13 @@ import Booking from "./pages/Booking";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import OAuth2Success from "./pages/OAuth2Success";
+import Logout from "./pages/Logout";
+import AdminDashboard from "./pages/admin/AdminDashboard";
+import ManagerDashboard from "./pages/manager/ManagerDashboard";
 import NotFound from "./pages/NotFound";
+
+// Routes
+import ProtectedRoute from "./components/auth/ProtectedRoute";
 
 function App() {
   return (
@@ -33,7 +39,14 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/oauth2/success" element={<OAuth2Success />} />
+            <Route path="/logout" element={<Logout />} />
             <Route path="*" element={<NotFound />} />
+            <Route element={<ProtectedRoute allowedRoles={['ADMIN']} />}>
+              <Route path="/admin/dashboard" element={<AdminDashboard />} />
+            </Route>
+            <Route element={<ProtectedRoute allowedRoles={['RESTAURANT_MANAGER']} />}>
+              <Route path="/manager/dasshboard" element={<ManagerDashboard />} />
+            </Route>
           </Routes>
         </Layout>
       </Router>
