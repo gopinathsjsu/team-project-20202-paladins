@@ -1,5 +1,6 @@
 package com.booktable.security;
 
+import com.booktable.config.SecurityConstants;
 import com.booktable.model.User;
 import com.booktable.repository.UserRepository;
 import jakarta.servlet.FilterChain;
@@ -12,6 +13,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.util.AntPathMatcher;
 
 import java.io.IOException;
 
@@ -28,6 +30,17 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
+
+        // We do not need to check JWT for public routes
+        String path = request.getRequestURI();
+        AntPathMatcher matcher = new AntPathMatcher();
+        boolean isPublic = SecurityConstants.PUBLIC_URLS.stream()
+                .anyMatch(p -> matcher.match(p, path));
+
+        if (isPublic) {
+            filterChain.doFilter(request, response);
+            return;
+        }
 
         String authHeader = request.getHeader("Authorization");
 
