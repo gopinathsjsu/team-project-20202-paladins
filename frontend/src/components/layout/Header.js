@@ -8,12 +8,20 @@ import {
   TextField,
   Autocomplete,
   InputAdornment,
+  Avatar,
 } from '@mui/material';
 import { Link as RouterLink } from 'react-router-dom';
 import SearchIcon from '@mui/icons-material/Search';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
 import PeopleIcon from '@mui/icons-material/People';
+
+// Redux imports
+import { useSelector, useDispatch } from 'react-redux';
+import { logout } from '../../redux/slices/authSlice';
+import { useNavigate } from 'react-router-dom';
+
+import StyledTooltip from '../common/StyledTooltip';
 
 const Header = () => {
   const [searchParams, setSearchParams] = useState({
@@ -33,6 +41,10 @@ const Header = () => {
     { name: 'San Francisco, CA', featured: true },
     { name: 'Chicago, IL', featured: true },
   ], []);
+
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { token, email, role } = useSelector((state) => state.auth);
 
   const handleLocationInputChange = async (event, newValue, reason) => {
     setLocationInput(newValue);
@@ -275,20 +287,56 @@ const Header = () => {
             )}
           />
 
+        {!token ? (
           <Button 
             variant="contained" 
-            sx={{ 
-              bgcolor: '#2DD4BF',
-              '&:hover': {
-                bgcolor: '#14B8A6'
-              }
-            }}
+            sx={{ bgcolor: '#2DD4BF', '&:hover': { bgcolor: '#14B8A6' } }}
             component={RouterLink}
             to="/login"
           >
             <PersonOutlineIcon sx={{ mr: 1 }} />
             Sign In
           </Button>
+        ) : (
+          <>
+            <StyledTooltip title={email}>
+              <Avatar sx={{ bgcolor: '#2DD4BF' }}>
+                {email?.charAt(0).toUpperCase()}
+              </Avatar>
+            </StyledTooltip>
+
+            {(role === 'ADMIN' || role === 'RESTAURANT_MANAGER') && (
+              <Button
+                variant="text"
+                component={RouterLink}
+                to={role === 'ADMIN' ? '/admin/dashboard' : '/manager/dashboard'}
+                sx={{ color: '#2DD4BF', textTransform: 'none' }}
+              >
+                Dashboard
+              </Button>
+            )}
+
+            <Button 
+              variant="outlined" 
+              sx={{ 
+                borderColor: '#2DD4BF', 
+                color: '#2DD4BF', 
+                '&:hover': {
+                  bgcolor: '#14B8A6',
+                  color: '#fff',
+                  borderColor: '#14B8A6'
+                }
+              }}
+              onClick={() => {
+                dispatch(logout());
+                navigate('/login');
+              }}
+            >
+              Logout
+            </Button>
+          </>
+        )}
+
         </Stack>
       </Toolbar>
     </AppBar>
