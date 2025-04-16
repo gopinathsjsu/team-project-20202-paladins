@@ -31,7 +31,7 @@ services:
     depends_on:
       - mongodb
     environment:
-      SPRING_DATA_MONGODB_URI: mongodb://root:example@mongodb:27017
+      SPRING_DATA_MONGODB_URI: mongodb://root:example@locahost:27017
 
   frontend:
     build:

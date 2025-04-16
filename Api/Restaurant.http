@@ -2,7 +2,7 @@
 GET http://127.0.0.1:8080/api/restaurant
 
 ### LIST (Paginated)
-GET http://127.0.0.1:8080/api/restaurant?page=2&size=3
+GET http://127.0.0.1:8080/api/restaurant?page=2&size=38
 
 
 ### GET
@@ -10,7 +10,7 @@ GET http://127.0.0.1:8080/api/restaurant/67f9b8ce4c583975339c8025
 
 
 ### GET (Search)
-GET http://127.0.0.1:8080 /api/restaurant/search?city=BoC&state=NY&zip=95006
+GET http://127.0.0.1:8080 /api/restaurant/search?startTime=09:00:00&endTime=16:00:00
 
 
 ### POST
@@ -18,22 +18,30 @@ POST http://127.0.0.1:8080/api/restaurant
 Content-Type: application/json
 
 {
-  "name": "Momo Palace",
-  "description": "A cozy restaurant serving best in town momo view of the hills.",
-  "addressStreet": "123 Summit Ave",
-  "addressCity": "Boulder Creek",
-  "addressState": "CA",
-  "addressZip": "95006",
-  "phone": "+1-408-555-9876",
-  "email": "info@momopalace.com",
-  "imageUrl": "https://example.com/images/restaurant.jpg",
-  "managerId": "a2b7c6d1-3e9f-42ab-a0f1-9f87654321de",
-  "coordinatesLatitude": 37.123456,
-  "coordinatesLongitude": -122.234567,
-  "cuisines": [
-    "Nepali",
-    "Tibetan"
-  ]
+  "restaurant": {
+    "name": "Mo:mo:",
+    "description": "A cozy restaurant serving best in town momo view of the hills.",
+    "addressStreet": "123 Summit Ave",
+    "addressCity": "Boulder Creek",
+    "addressState": "CA",
+    "addressZip": "95006",
+    "phone": "+1-408-555-9876",
+    "email": "info@momopalace.com",
+    "imageUrl": "https://example.com/images/restaurant.jpg",
+    "managerId": "a2b7c6d1-3e9f-42ab-a0f1-9f87654321de",
+    "coordinatesLatitude": 37.123456,
+    "coordinatesLongitude": -122.234567,
+    "cuisines": [
+      "Nepali",
+      "Tibetan"
+    ],
+    "openingHour": "09:00:00",
+    "closingHour": "16:00:00"
+  },
+  "table": {
+    "capacity": 4,
+    "count": 4
+  }
 }
 
 ### PUT
