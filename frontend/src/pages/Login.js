@@ -10,7 +10,10 @@ import {
   TextField,
   Button,
   Alert,
+  Divider
 } from '@mui/material';
+
+import GoogleLoginButton from '../components/auth/GoogleLoginButton';
 
 const Login = () => {
   const dispatch = useDispatch();
@@ -94,6 +97,8 @@ const Login = () => {
             Sign In
           </Button>
         </Box>
+        <Divider sx={{ width: '100%', my: 2 }}>OR</Divider>
+        <GoogleLoginButton />
       </Box>
     </Container>
   );
