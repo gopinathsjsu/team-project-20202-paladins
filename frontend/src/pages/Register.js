@@ -13,9 +13,6 @@ import API from '../api/API';
 import GoogleLoginButton from '../components/auth/GoogleLoginButton';
 
 
-const backendUrl = process.env.REACT_APP_API_BASE_URL;
-
-
 const Register = () => {
   const navigate = useNavigate();
 
@@ -48,10 +45,6 @@ const Register = () => {
     } catch (err) {
       setError(err.response?.data?.message || 'Registration failed');
     }
-  };
-
-  const handleGoogleSignup = () => {
-    window.location.href = `${backendUrl}/oauth2/authorization/google`;
   };
 
   return (
