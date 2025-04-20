@@ -1,7 +1,5 @@
 import React from 'react';
-import { Stack, TextField, Autocomplete, InputAdornment, Button } from '@mui/material';
-import SearchIcon from '@mui/icons-material/Search';
-import PeopleIcon from '@mui/icons-material/People';
+import { Stack, TextField } from '@mui/material';
 
 const SearchParams = ({ searchParams, onSearchParamsChange, onSearch }) => {
   return (
@@ -61,64 +59,6 @@ const SearchParams = ({ searchParams, onSearchParamsChange, onSearch }) => {
         }}
         InputLabelProps={{ shrink: true }}
       />
-
-      {/* Party Size */}
-      <Autocomplete
-        value={searchParams.partySize.toString()}
-        onChange={(_, newValue) => {
-          onSearchParamsChange({ 
-            ...searchParams, 
-            partySize: parseInt(newValue || '1')
-          });
-        }}
-        options={[...Array(10)].map((_, i) => (i + 1).toString())}
-        getOptionLabel={(option) => `${option} ${parseInt(option) === 1 ? 'Person' : 'People'}`}
-        sx={{ 
-          minWidth: 120,
-          '& .MuiOutlinedInput-root': {
-            color: 'white',
-            '& .MuiOutlinedInput-notchedOutline': { border: 'none' },
-            bgcolor: 'transparent',
-            py: 0
-          },
-          '& .MuiAutocomplete-input': {
-            color: 'white',
-          },
-          '& .MuiAutocomplete-popupIndicator': {
-            color: 'white'
-          },
-          '& .MuiAutocomplete-clearIndicator': {
-            color: 'white'
-          }
-        }}
-        renderInput={(params) => (
-          <TextField
-            {...params}
-            placeholder="Party size"
-            InputProps={{
-              ...params.InputProps,
-              startAdornment: (
-                <InputAdornment position="start">
-                  <PeopleIcon sx={{ color: 'white' }} />
-                </InputAdornment>
-              )
-            }}
-          />
-        )}
-      />
-
-      {/* Search Button */}
-      <Button
-        variant="contained"
-        onClick={onSearch}
-        sx={{
-          bgcolor: '#2DD4BF',
-          '&:hover': { bgcolor: '#14B8A6' },
-          minWidth: 'fit-content'
-        }}
-      >
-        <SearchIcon />
-      </Button>
     </Stack>
   );
 };

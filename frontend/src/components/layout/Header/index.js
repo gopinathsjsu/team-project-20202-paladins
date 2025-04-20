@@ -5,13 +5,15 @@ import {
   Typography,
   Button,
   Stack,
+  TextField,
 } from '@mui/material';
-import { Link as RouterLink } from 'react-router-dom';
+import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
 import LocationSearch from './LocationSearch';
 import SearchParams from './SearchParams';
 
 const Header = () => {
+  const navigate = useNavigate();
   const [searchParams, setSearchParams] = useState({
     location: '',
     date: new Date().toISOString().split('T')[0],
@@ -28,8 +30,16 @@ const Header = () => {
   ], []);
 
   const handleSearch = () => {
-    console.log('Searching with params:', searchParams);
-    // TODO: Implement search functionality
+    // Convert search parameters to URL query parameters
+    const queryParams = new URLSearchParams({
+      location: searchParams.location,
+      date: searchParams.date,
+      time: searchParams.time,
+      partySize: searchParams.partySize.toString()
+    });
+
+    // Navigate to the search results page with the query parameters
+    navigate(`/search?${queryParams.toString()}`);
   };
 
   return (
