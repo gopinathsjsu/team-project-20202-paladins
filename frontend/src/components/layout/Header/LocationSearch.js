@@ -46,6 +46,7 @@ const LocationSearch = ({ value, onChange, featuredCities }) => {
   return (
     <Autocomplete
       freeSolo
+      disableClearable
       value={value}
       inputValue={locationInput}
       onInputChange={handleLocationInputChange}

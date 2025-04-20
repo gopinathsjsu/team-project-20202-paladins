@@ -36,6 +36,12 @@ public class User implements UserDetails {
         return email; // Used as the principal identity
     }
 
+    // Explicitly override getPassword() to satisfy UserDetails
+    @Override
+    public String getPassword() {
+        return password;
+    }
+
     @Override
     public boolean isAccountNonExpired() {
         return true; // You can later add logic to expire accounts

@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import {
   AppBar,
   Toolbar,
@@ -8,23 +8,33 @@ import {
   TextField,
   Autocomplete,
   InputAdornment,
+  Popper,
+  Paper,
+  List,
+  ListItem,
+  ListItemText,
+  Box,
 } from '@mui/material';
-import { Link as RouterLink } from 'react-router-dom';
-import SearchIcon from '@mui/icons-material/Search';
+import { Link as RouterLink, useNavigate, useLocation } from 'react-router-dom';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
-import PeopleIcon from '@mui/icons-material/People';
+import SearchIcon from '@mui/icons-material/Search';
 
 const Header = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
   const [searchParams, setSearchParams] = useState({
-    location: '',
-    date: new Date().toISOString().split('T')[0],
-    time: '19:00',
-    partySize: 2
+    q: '', // For search filtering
+    location: '', // For location filtering
+    date: new Date().toISOString().split('T')[0], // Today's date in YYYY-MM-DD format
+    time: '19:00', // Default to 7:00 PM
   });
 
   const [locationInput, setLocationInput] = useState('');
   const [cities, setCities] = useState([]);
+  const [restaurants, setRestaurants] = useState([]);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [isSearching, setIsSearching] = useState(false);
 
   // Define featured cities
   const featuredCities = useMemo(() => [
@@ -33,6 +43,26 @@ const Header = () => {
     { name: 'San Francisco, CA', featured: true },
     { name: 'Chicago, IL', featured: true },
   ], []);
+
+  // Mock restaurant data for frontend filtering
+  const mockRestaurants = [
+    { id: 1, name: 'Gourmet Kitchen', cuisine: 'Italian' },
+    { id: 2, name: 'Sushi Master', cuisine: 'Japanese' },
+    { id: 3, name: 'Spice Route', cuisine: 'Indian' },
+    { id: 4, name: 'La Petite Bistro', cuisine: 'French' },
+    { id: 5, name: 'Taco Fiesta', cuisine: 'Mexican' },
+    { id: 6, name: 'The Steakhouse', cuisine: 'American' }
+  ];
+
+  // Filter restaurants based on search query
+  const filteredRestaurants = useMemo(() => {
+    const query = searchParams.q.toLowerCase();
+    if (!query) return [];
+    return mockRestaurants.filter(restaurant => 
+      restaurant.name.toLowerCase().includes(query) ||
+      restaurant.cuisine.toLowerCase().includes(query)
+    );
+  }, [searchParams.q]);
 
   const handleLocationInputChange = async (event, newValue, reason) => {
     setLocationInput(newValue);
@@ -69,15 +99,69 @@ const Header = () => {
     }
   };
 
+  // Handle search input change
+  const handleSearchInputChange = (e) => {
+    const value = e.target.value;
+    setSearchParams(prev => ({ ...prev, q: value }));
+    setIsSearching(!!value);
+    setAnchorEl(e.currentTarget);
+  };
+
+  // Handle restaurant selection
+  const handleRestaurantSelect = (restaurant) => {
+    setSearchParams(prev => ({ ...prev, q: restaurant.name }));
+    setIsSearching(false);
+    // Navigate with all search parameters
+    const queryParams = new URLSearchParams({
+      location: searchParams.location,
+      q: restaurant.name
+    });
+    navigate(`/search?${queryParams.toString()}`);
+  };
+
   const handleSearch = () => {
-    console.log('Searching with params:', searchParams);
-    // TODO: Implement search functionality
+    const queryParams = new URLSearchParams();
+    if (searchParams.q) queryParams.append('q', searchParams.q);
+    if (searchParams.location) queryParams.append('location', searchParams.location);
+
+    // Update URL without navigation
+    window.history.pushState({}, '', `${location.pathname}?${queryParams.toString()}`);
+    
+    // Trigger a custom event to notify components about the search
+    const event = new CustomEvent('searchUpdated', { 
+      detail: { 
+        searchParams: {
+          q: searchParams.q,
+          location: searchParams.location
+        }
+      }
+    });
+    window.dispatchEvent(event);
   };
 
   // Combine featured cities with API results
   const allCities = useMemo(() => {
     return [...featuredCities, ...cities];
   }, [featuredCities, cities]);
+
+  const handleLogoClick = () => {
+    // Clear search parameters
+    setSearchParams(prev => ({ ...prev, q: '', location: '' }));
+    
+    // Navigate to root path without any query parameters
+    navigate('/');
+    
+    // Trigger search update to show all restaurants
+    const event = new CustomEvent('searchUpdated', { 
+      detail: { 
+        searchParams: {
+          q: '',
+          location: ''
+        }
+      }
+    });
+    window.dispatchEvent(event);
+  };
 
   return (
     <AppBar position="static" sx={{ bgcolor: '#0A1427' }}>
@@ -87,6 +171,7 @@ const Header = () => {
           variant="h6"
           component={RouterLink}
           to="/"
+          onClick={handleLogoClick}
           sx={{ 
             textDecoration: 'none', 
             color: 'inherit',
@@ -114,7 +199,7 @@ const Header = () => {
           <TextField
             type="date"
             value={searchParams.date}
-            onChange={(e) => setSearchParams({ ...searchParams, date: e.target.value })}
+            onChange={(e) => setSearchParams(prev => ({ ...prev, date: e.target.value }))}
             sx={{
               width: 150,
               '& .MuiInputBase-root': {
@@ -137,7 +222,7 @@ const Header = () => {
           <TextField
             type="time"
             value={searchParams.time}
-            onChange={(e) => setSearchParams({ ...searchParams, time: e.target.value })}
+            onChange={(e) => setSearchParams(prev => ({ ...prev, time: e.target.value }))}
             sx={{
               width: 120,
               '& .MuiInputBase-root': {
@@ -156,63 +241,99 @@ const Header = () => {
             InputLabelProps={{ shrink: true }}
           />
 
-          {/* Party Size */}
-          <Autocomplete
-            value={searchParams.partySize.toString()}
-            onChange={(_, newValue) => {
-              setSearchParams({ 
-                ...searchParams, 
-                partySize: parseInt(newValue || '1')
-              });
-            }}
-            options={[...Array(10)].map((_, i) => (i + 1).toString())}
-            getOptionLabel={(option) => `${option} ${parseInt(option) === 1 ? 'Person' : 'People'}`}
-            sx={{ 
-              minWidth: 120,
-              '& .MuiOutlinedInput-root': {
-                color: 'white',
-                '& .MuiOutlinedInput-notchedOutline': { border: 'none' },
-                bgcolor: 'transparent',
-                py: 0
-              },
-              '& .MuiAutocomplete-input': {
-                color: 'white',
-              },
-              '& .MuiAutocomplete-popupIndicator': {
-                color: 'white'
-              },
-              '& .MuiAutocomplete-clearIndicator': {
-                color: 'white'
-              }
-            }}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                placeholder="Party size"
-                InputProps={{
-                  ...params.InputProps,
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <PeopleIcon sx={{ color: 'white' }} />
-                    </InputAdornment>
-                  )
-                }}
-              />
-            )}
-          />
+          {/* Restaurant Search Input with Dropdown */}
+          <Box sx={{ position: 'relative', flex: 1 }}>
+            <TextField
+              placeholder="Search restaurants..."
+              value={searchParams.q}
+              onChange={handleSearchInputChange}
+              sx={{
+                width: '100%',
+                '& .MuiInputBase-root': {
+                  color: 'white',
+                  '& .MuiOutlinedInput-notchedOutline': { border: 'none' },
+                  bgcolor: 'transparent'
+                },
+                '& .MuiInputBase-input': { 
+                  py: 1,
+                  color: 'white',
+                  '&::placeholder': {
+                    color: 'rgba(255,255,255,0.7)',
+                    opacity: 1
+                  }
+                }
+              }}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <Button
+                      onClick={handleSearch}
+                      sx={{
+                        minWidth: '40px',
+                        width: '40px',
+                        height: '40px',
+                        bgcolor: '#2DD4BF',
+                        '&:hover': {
+                          bgcolor: '#14B8A6'
+                        },
+                        borderRadius: '4px',
+                        p: 0
+                      }}
+                    >
+                      <SearchIcon sx={{ color: 'white' }} />
+                    </Button>
+                  </InputAdornment>
+                )
+              }}
+            />
 
-          {/* Search Button */}
-          <Button
-            variant="contained"
-            onClick={handleSearch}
-            sx={{
-              bgcolor: '#2DD4BF',
-              '&:hover': { bgcolor: '#14B8A6' },
-              minWidth: 'fit-content'
-            }}
-          >
-            <SearchIcon />
-          </Button>
+            {/* Dropdown for search results */}
+            {isSearching && filteredRestaurants.length > 0 && (
+              <Paper
+                sx={{
+                  position: 'absolute',
+                  top: '100%',
+                  left: 0,
+                  right: 0,
+                  mt: 1,
+                  bgcolor: '#1a2635',
+                  borderRadius: 1,
+                  boxShadow: 3,
+                  zIndex: 1000
+                }}
+              >
+                <List>
+                  {filteredRestaurants.map((restaurant) => (
+                    <ListItem
+                      key={restaurant.id}
+                      button
+                      onClick={() => {
+                        setSearchParams(prev => ({ ...prev, q: restaurant.name }));
+                        setIsSearching(false);
+                      }}
+                      sx={{
+                        '&:hover': {
+                          bgcolor: 'rgba(45, 212, 191, 0.1)'
+                        }
+                      }}
+                    >
+                      <ListItemText
+                        primary={restaurant.name}
+                        secondary={
+                          <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.7)' }}>
+                            {restaurant.cuisine}
+                          </Typography>
+                        }
+                        primaryTypographyProps={{
+                          sx: { color: 'white' }
+                        }}
+                      />
+                    </ListItem>
+                  ))}
+                </List>
+              </Paper>
+            )}
+          </Box>
         </Stack>
 
         {/* Right section - Location and Sign In */}
@@ -220,6 +341,7 @@ const Header = () => {
           {/* Location */}
           <Autocomplete
             freeSolo
+            disableClearable
             value={searchParams.location}
             inputValue={locationInput}
             onInputChange={handleLocationInputChange}
