@@ -31,7 +31,18 @@ services:
     depends_on:
       - mongodb
     environment:
-      SPRING_DATA_MONGODB_URI: mongodb://root:example@mongodb:27017
+      SPRING_DATA_MONGODB_URI: mongodb://root:example@locahost:27017
+
+  frontend:
+    build:
+      context: ../frontend
+      dockerfile: Dockerfile.prod
+    container_name: booktable-frontend
+    ports:
+      - "3000:80"  # Serve static frontend on port 3000 locally
+    depends_on:
+      - backend
+    # no environment needed unless API_URL etc.
 
 volumes:
   mongodb_data:

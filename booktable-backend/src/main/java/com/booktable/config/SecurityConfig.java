@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -28,6 +29,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
+                .cors(Customizer.withDefaults())    // Enable CORS handling
                 .csrf(AbstractHttpConfigurer::disable) // CSRF is off for stateless APIs
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
                 .exceptionHandling(ex -> ex
@@ -38,17 +40,7 @@ public class SecurityConfig {
                         })
                 )
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/**",
-                                        "/api/public/**",
-                                        "/oauth2/**",
-                                        "/login/",
-                                        // Swagger paths
-                                        "/v3/api-docs/**",
-                                        "/swagger-ui/**",
-                                        "/swagger-ui.html",
-                                        "/swagger-resources/**",
-                                        "/webjars/**"
-                        ).permitAll() // public routes
+                        .requestMatchers(SecurityConstants.PUBLIC_URLS.toArray(new String[0])).permitAll() // public routes
                         .requestMatchers("/api/admin/**").hasAuthority("ADMIN")
                         .requestMatchers("/api/manager/**").hasAuthority("RESTAURANT_MANAGER")
                         .anyRequest().authenticated() // everything else must be authenticated

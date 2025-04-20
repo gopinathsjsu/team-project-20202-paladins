@@ -6,11 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class RestaurantService {
@@ -21,15 +20,20 @@ public class RestaurantService {
         this.restaurantRepository = restaurantRepository;
     }
 
-    public Restaurant getRestaurantById(String id) {
-        return restaurantRepository.findById(id).orElseThrow(() -> new RuntimeException("Restaurant not found"));
+    public Restaurant getRestaurantById(Object id) {
+        return restaurantRepository.findById(String.valueOf(id)).orElseThrow(() -> new RuntimeException("Restaurant not found"));
     }
 
-    public List<Restaurant> searchRestaurants(String city, String state, String zip) {
+    public List<Restaurant> searchRestaurants(String city, String state, String zip, String noOfPeople,
+                                              LocalTime startTime, LocalTime endTime) {
         return restaurantRepository.searchRestaurants(
                 city != null ? city : "",
                 state != null ? state : "",
-                zip != null ? zip : ""
+                zip != null ? zip : "",
+                noOfPeople != null ? Integer.parseInt(noOfPeople) : 0,
+                LocalDate.now(),
+                startTime,
+                endTime
         );
     }
 
