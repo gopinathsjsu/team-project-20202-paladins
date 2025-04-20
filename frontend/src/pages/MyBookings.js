@@ -3,7 +3,7 @@ import { Container, Typography, Box, Paper, List, ListItem, ListItemText, Divide
 import { useAuth } from '../contexts/AuthContext';
 
 const MyBookings = () => {
-  const { user } = useAuth();
+  const { isAuthenticated } = useAuth();
 
   // Mock data for bookings
   const bookings = [
@@ -24,6 +24,18 @@ const MyBookings = () => {
       status: 'Pending'
     }
   ];
+
+  if (!isAuthenticated) {
+    return (
+      <Container maxWidth="md">
+        <Box sx={{ mt: 4, mb: 4 }}>
+          <Typography variant="h4" component="h1" gutterBottom>
+            Please log in to view your bookings
+          </Typography>
+        </Box>
+      </Container>
+    );
+  }
 
   return (
     <Container maxWidth="md">
