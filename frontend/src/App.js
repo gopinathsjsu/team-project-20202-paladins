@@ -1,42 +1,31 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { ThemeProvider } from '@mui/material/styles';
-import CssBaseline from '@mui/material/CssBaseline';
-
-// Theme
-import theme from './styles/theme';
-
-// Layout Components
-import Layout from './components/layout/Layout';
-
-// Pages
-import Home from "./pages/Home";
-import RestaurantList from "./pages/RestaurantList";
-import RestaurantDetail from "./pages/RestaurantDetail";
-import Booking from "./pages/Booking";
-import Login from "./pages/Login";
-import Register from "./pages/Register";
-import OAuthSuccess from "./pages/OAuthSuccess";
-import NotFound from "./pages/NotFound";
+import { ThemeProvider, CssBaseline } from '@mui/material';
+import theme from './theme';
+import { AuthProvider } from './contexts/AuthContext';
+import Header from './components/layout/Header';
+import Home from './pages/Home';
+import Login from './pages/Login';
+import OAuthSuccess from './pages/OAuthSuccess';
+import Profile from './pages/Profile';
+import MyBookings from './pages/MyBookings';
 
 function App() {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <Router>
-        <Layout>
+      <AuthProvider>
+        <Router>
+          <Header />
           <Routes>
             <Route path="/" element={<Home />} />
-            <Route path="/restaurants" element={<RestaurantList />} />
-            <Route path="/restaurants/:id" element={<RestaurantDetail />} />
-            <Route path="/booking/:restaurantId" element={<Booking />} />
             <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/oauth2/success" element={<OAuthSuccess />} />
-            <Route path="*" element={<NotFound />} />
+            <Route path="/oauth-success" element={<OAuthSuccess />} />
+            <Route path="/profile" element={<Profile />} />
+            <Route path="/my-bookings" element={<MyBookings />} />
           </Routes>
-        </Layout>
-      </Router>
+        </Router>
+      </AuthProvider>
     </ThemeProvider>
   );
 }

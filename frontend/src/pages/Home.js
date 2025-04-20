@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { 
   Box, 
   Typography, 
@@ -18,8 +18,7 @@ import {
   DialogContentText,
   Select,
   MenuItem,
-  FormControl,
-  InputLabel,
+  FormControl
 } from '@mui/material';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
@@ -31,200 +30,44 @@ import { getS3ImageUrl } from '../utils/s3Utils';
 
 const Home = () => {
   const location = useLocation();
-  const [searchParams, setSearchParams] = useState({
-    q: '',
-    location: ''
-  });
   const [filteredRestaurants, setFilteredRestaurants] = useState([]);
   const [selectedTimeSlot, setSelectedTimeSlot] = useState(null);
   const [selectedRestaurant, setSelectedRestaurant] = useState(null);
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedPartySize, setSelectedPartySize] = useState(2);
 
-  // Mock data for restaurants with availability and operating hours
-  const availableRestaurants = [
+  const availableRestaurants = useMemo(() => [
     {
       id: 1,
       name: 'Gourmet Kitchen',
-      cuisine: 'Italian',
+      cuisine: 'International',
       rating: 4.5,
-      reviewCount: 328,
-      image: 'https://booktable-artefacts.s3.amazonaws.com/restaurants/7d44c147-7a3a-496d-a0e0-aeafbaebc02e-groume.jpg',
-      costRating: '$$$',
-      bookingsToday: 12,
-      availableTimes: ['6:30 PM', '7:00 PM', '7:30 PM', '8:00 PM'],
-      operatingHours: {
-        monday: { open: '11:00', close: '22:00' },
-        tuesday: { open: '11:00', close: '22:00' },
-        wednesday: { open: '11:00', close: '22:00' },
-        thursday: { open: '11:00', close: '22:00' },
-        friday: { open: '11:00', close: '23:00' },
-        saturday: { open: '10:00', close: '23:00' },
-        sunday: { open: '10:00', close: '22:00' }
-      },
-      address: '123 Main St, San Jose, CA 95112',
-      googleMapsUrl: 'https://goo.gl/maps/example1',
-      reviews: [
-        { author: 'John D.', rating: 5, text: 'Amazing food and service!' },
-        { author: 'Sarah M.', rating: 4, text: 'Great atmosphere and delicious pasta.' }
-      ]
+      priceRange: '$$$',
+      image: getS3ImageUrl('restaurants/gourmet-kitchen.jpg'),
+      location: 'Downtown',
+      description: 'Experience world-class cuisine in an elegant setting.'
     },
     {
       id: 2,
       name: 'Sushi Master',
       cuisine: 'Japanese',
       rating: 4.8,
-      reviewCount: 542,
+      priceRange: '$$$$',
       image: getS3ImageUrl('restaurants/sushi-master.jpg'),
-      costRating: '$$$$',
-      bookingsToday: 28,
-      availableTimes: ['6:00 PM', '7:30 PM', '8:30 PM'],
-      operatingHours: {
-        monday: { open: '11:30', close: '22:30' },
-        tuesday: { open: '11:30', close: '22:30' },
-        wednesday: { open: '11:30', close: '22:30' },
-        thursday: { open: '11:30', close: '22:30' },
-        friday: { open: '11:30', close: '23:30' },
-        saturday: { open: '11:00', close: '23:30' },
-        sunday: { open: '11:00', close: '22:30' }
-      },
-      address: '456 Market St, San Jose, CA 95113',
-      googleMapsUrl: 'https://goo.gl/maps/example2',
-      reviews: [
-        { author: 'Mike T.', rating: 5, text: 'Best sushi in town! Fresh and authentic.' },
-        { author: 'Lisa K.', rating: 4, text: 'Beautiful presentation and great service.' }
-      ]
+      location: 'Waterfront',
+      description: 'Authentic Japanese sushi crafted by master chefs.'
     },
     {
       id: 3,
       name: 'Spice Route',
       cuisine: 'Indian',
       rating: 4.3,
-      reviewCount: 245,
+      priceRange: '$$',
       image: getS3ImageUrl('restaurants/spice-route.jpg'),
-      costRating: '$$',
-      bookingsToday: 15,
-      availableTimes: ['6:30 PM', '7:00 PM', '8:00 PM'],
-      operatingHours: {
-        monday: { open: '11:00', close: '22:00' },
-        tuesday: { open: '11:00', close: '22:00' },
-        wednesday: { open: '11:00', close: '22:00' },
-        thursday: { open: '11:00', close: '22:00' },
-        friday: { open: '11:00', close: '23:00' },
-        saturday: { open: '10:00', close: '23:00' },
-        sunday: { open: '10:00', close: '22:00' }
-      },
-      address: '789 Santa Clara St, San Jose, CA 95110',
-      googleMapsUrl: 'https://goo.gl/maps/example3',
-      reviews: [
-        { author: 'David R.', rating: 5, text: 'Authentic flavors and generous portions.' },
-        { author: 'Emma S.', rating: 4, text: 'Great vegetarian options and friendly staff.' }
-      ]
-    },
-    {
-      id: 4,
-      name: 'La Petite Bistro',
-      cuisine: 'French',
-      rating: 4.7,
-      reviewCount: 412,
-      image: getS3ImageUrl('restaurants/la-petite-bistro.jpg'),
-      costRating: '$$$$',
-      bookingsToday: 18,
-      availableTimes: ['6:00 PM', '7:00 PM', '8:00 PM', '9:00 PM'],
-      operatingHours: {
-        monday: { open: '11:00', close: '22:00' },
-        tuesday: { open: '11:00', close: '22:00' },
-        wednesday: { open: '11:00', close: '22:00' },
-        thursday: { open: '11:00', close: '22:00' },
-        friday: { open: '11:00', close: '23:00' },
-        saturday: { open: '10:00', close: '23:00' },
-        sunday: { open: '10:00', close: '22:00' }
-      },
-      address: '321 Almaden Blvd, San Jose, CA 95110',
-      googleMapsUrl: 'https://goo.gl/maps/example4',
-      reviews: [
-        { author: 'James W.', rating: 5, text: 'Exquisite French cuisine and perfect wine pairings.' },
-        { author: 'Sophie L.', rating: 4, text: 'Romantic atmosphere and attentive service.' }
-      ]
-    },
-    {
-      id: 5,
-      name: 'Taco Fiesta',
-      cuisine: 'Mexican',
-      rating: 4.4,
-      reviewCount: 289,
-      image: getS3ImageUrl('restaurants/taco-fiesta.jpg'),
-      costRating: '$$',
-      bookingsToday: 22,
-      availableTimes: ['5:30 PM', '6:30 PM', '7:30 PM', '8:30 PM'],
-      operatingHours: {
-        monday: { open: '11:00', close: '22:00' },
-        tuesday: { open: '11:00', close: '22:00' },
-        wednesday: { open: '11:00', close: '22:00' },
-        thursday: { open: '11:00', close: '22:00' },
-        friday: { open: '11:00', close: '23:00' },
-        saturday: { open: '10:00', close: '23:00' },
-        sunday: { open: '10:00', close: '22:00' }
-      },
-      address: '654 San Carlos St, San Jose, CA 95128',
-      googleMapsUrl: 'https://goo.gl/maps/example5',
-      reviews: [
-        { author: 'Carlos M.', rating: 5, text: 'Authentic Mexican flavors and great margaritas!' },
-        { author: 'Maria G.', rating: 4, text: 'Lively atmosphere and delicious street tacos.' }
-      ]
-    },
-    {
-      id: 6,
-      name: 'The Steakhouse',
-      cuisine: 'American',
-      rating: 4.6,
-      reviewCount: 376,
-      image: getS3ImageUrl('restaurants/the-steakhouse.jpg'),
-      costRating: '$$$$',
-      bookingsToday: 25,
-      availableTimes: ['6:00 PM', '7:00 PM', '8:00 PM', '9:00 PM'],
-      operatingHours: {
-        monday: { open: '11:00', close: '22:00' },
-        tuesday: { open: '11:00', close: '22:00' },
-        wednesday: { open: '11:00', close: '22:00' },
-        thursday: { open: '11:00', close: '22:00' },
-        friday: { open: '11:00', close: '23:00' },
-        saturday: { open: '10:00', close: '23:00' },
-        sunday: { open: '10:00', close: '22:00' }
-      },
-      address: '987 Stevens Creek Blvd, San Jose, CA 95129',
-      googleMapsUrl: 'https://goo.gl/maps/example6',
-      reviews: [
-        { author: 'Robert H.', rating: 5, text: 'Perfectly cooked steaks and extensive wine list.' },
-        { author: 'Jennifer K.', rating: 4, text: 'Elegant dining experience with excellent service.' }
-      ]
+      location: 'Midtown',
+      description: 'A journey through the rich flavors of Indian cuisine.'
     }
-  ];
-
-  // Helper function to check if a restaurant is open at a given time
-  const isRestaurantOpen = (restaurant, date, time) => {
-    if (!date || !time) return true; // If no date/time specified, show all restaurants
-
-    // Parse the date string (YYYY-MM-DD format)
-    const [year, month, day] = date.split('-').map(Number);
-    const dateObj = new Date(year, month - 1, day); // month is 0-based in JS Date
-
-    // Get day of week (0 = Sunday, 1 = Monday, etc.)
-    const dayOfWeek = dateObj.getDay();
-    const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-    const dayName = days[dayOfWeek];
-
-    // Get operating hours for the day
-    const operatingHours = restaurant.operatingHours[dayName];
-    if (!operatingHours) return false; // Restaurant is closed on this day
-
-    // Parse time (HH:MM format)
-    const [hours, minutes] = time.split(':').map(Number);
-    const timeInMinutes = hours * 60 + minutes;
-
-    // Check if current time is within operating hours
-    return timeInMinutes >= operatingHours.open && timeInMinutes <= operatingHours.close;
-  };
+  ], []); // Empty dependency array since this is static data
 
   useEffect(() => {
     // Parse URL query parameters
@@ -233,7 +76,6 @@ const Home = () => {
       q: params.get('q') || '',
       location: params.get('location') || ''
     };
-    setSearchParams(newSearchParams);
 
     // If we're at the root path with no query, show all restaurants
     if (location.pathname === '/' && !newSearchParams.q && !newSearchParams.location) {
@@ -260,7 +102,7 @@ const Home = () => {
     }
 
     setFilteredRestaurants(filtered);
-  }, [location.search, location.pathname]);
+  }, [location.search, location.pathname, availableRestaurants]);
 
   // Listen for search updates from the header
   useEffect(() => {
@@ -296,12 +138,12 @@ const Home = () => {
 
     window.addEventListener('searchUpdated', handleSearchUpdate);
     return () => window.removeEventListener('searchUpdated', handleSearchUpdate);
-  }, [location.pathname]);
+  }, [location.pathname, availableRestaurants]);
 
   // Initialize with all restaurants
   useEffect(() => {
     setFilteredRestaurants(availableRestaurants);
-  }, []);
+  }, [availableRestaurants]);
 
   const handleTimeSlotClick = (restaurantId, time) => {
     const restaurant = availableRestaurants.find(r => r.id === restaurantId);
@@ -428,7 +270,7 @@ const Home = () => {
                           }}
                         />
                         <Typography variant="body2" color="text.secondary" sx={{ fontWeight: 500 }}>
-                          {restaurant.costRating}
+                          {restaurant.priceRange}
                         </Typography>
                       </Stack>
                     </Box>
@@ -603,7 +445,7 @@ const Home = () => {
                           }}
                         />
                         <Typography variant="body2" color="text.secondary" sx={{ fontWeight: 500 }}>
-                          {restaurant.costRating}
+                          {restaurant.priceRange}
                         </Typography>
                       </Stack>
                     </Box>
@@ -717,7 +559,7 @@ const Home = () => {
                     }}
                   />
                   <Typography variant="body2" color="text.secondary">
-                    {selectedRestaurant.costRating}
+                    {selectedRestaurant.priceRange}
                   </Typography>
                 </Stack>
                 <Stack spacing={2}>
