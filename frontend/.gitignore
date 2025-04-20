@@ -25,3 +25,8 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# Remove VS Code
+.vscode/
+# Remove JetBrains IDEs 
+.idea/
