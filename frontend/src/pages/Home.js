@@ -18,8 +18,7 @@ import {
   DialogContentText,
   Select,
   MenuItem,
-  FormControl,
-  InputLabel,
+  FormControl
 } from '@mui/material';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
@@ -31,10 +30,6 @@ import { getS3ImageUrl } from '../utils/s3Utils';
 
 const Home = () => {
   const location = useLocation();
-  const [searchParams, setSearchParams] = useState({
-    q: '',
-    location: ''
-  });
   const [filteredRestaurants, setFilteredRestaurants] = useState([]);
   const [selectedTimeSlot, setSelectedTimeSlot] = useState(null);
   const [selectedRestaurant, setSelectedRestaurant] = useState(null);
@@ -201,31 +196,6 @@ const Home = () => {
     }
   ];
 
-  // Helper function to check if a restaurant is open at a given time
-  const isRestaurantOpen = (restaurant, date, time) => {
-    if (!date || !time) return true; // If no date/time specified, show all restaurants
-
-    // Parse the date string (YYYY-MM-DD format)
-    const [year, month, day] = date.split('-').map(Number);
-    const dateObj = new Date(year, month - 1, day); // month is 0-based in JS Date
-
-    // Get day of week (0 = Sunday, 1 = Monday, etc.)
-    const dayOfWeek = dateObj.getDay();
-    const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-    const dayName = days[dayOfWeek];
-
-    // Get operating hours for the day
-    const operatingHours = restaurant.operatingHours[dayName];
-    if (!operatingHours) return false; // Restaurant is closed on this day
-
-    // Parse time (HH:MM format)
-    const [hours, minutes] = time.split(':').map(Number);
-    const timeInMinutes = hours * 60 + minutes;
-
-    // Check if current time is within operating hours
-    return timeInMinutes >= operatingHours.open && timeInMinutes <= operatingHours.close;
-  };
-
   useEffect(() => {
     // Parse URL query parameters
     const params = new URLSearchParams(location.search);
@@ -233,7 +203,6 @@ const Home = () => {
       q: params.get('q') || '',
       location: params.get('location') || ''
     };
-    setSearchParams(newSearchParams);
 
     // If we're at the root path with no query, show all restaurants
     if (location.pathname === '/' && !newSearchParams.q && !newSearchParams.location) {
@@ -260,7 +229,7 @@ const Home = () => {
     }
 
     setFilteredRestaurants(filtered);
-  }, [location.search, location.pathname]);
+  }, [location.search, location.pathname, availableRestaurants]);
 
   // Listen for search updates from the header
   useEffect(() => {
@@ -296,12 +265,12 @@ const Home = () => {
 
     window.addEventListener('searchUpdated', handleSearchUpdate);
     return () => window.removeEventListener('searchUpdated', handleSearchUpdate);
-  }, [location.pathname]);
+  }, [location.pathname, availableRestaurants]);
 
   // Initialize with all restaurants
   useEffect(() => {
     setFilteredRestaurants(availableRestaurants);
-  }, []);
+  }, [availableRestaurants]);
 
   const handleTimeSlotClick = (restaurantId, time) => {
     const restaurant = availableRestaurants.find(r => r.id === restaurantId);
