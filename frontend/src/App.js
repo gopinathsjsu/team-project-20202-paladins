@@ -16,6 +16,7 @@ import RestaurantDetail from "./pages/RestaurantDetail";
 import Booking from "./pages/Booking";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import OAuthSuccess from "./pages/OAuthSuccess";
 import NotFound from "./pages/NotFound";
 
 function App() {
@@ -31,6 +32,7 @@ function App() {
             <Route path="/booking/:restaurantId" element={<Booking />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
+            <Route path="/oauth2/success" element={<OAuthSuccess />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </Layout>

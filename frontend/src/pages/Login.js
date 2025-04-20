@@ -1,7 +1,13 @@
 import React from 'react';
-import { Container, Typography, Box, TextField, Button } from '@mui/material';
+import { Container, Typography, Box, TextField, Button, Divider } from '@mui/material';
+import GoogleIcon from '@mui/icons-material/Google';
+import { Link as RouterLink } from 'react-router-dom';
 
 const Login = () => {
+  const handleGoogleLogin = () => {
+    window.location.href = 'http://localhost:8080/oauth2/authorization/google';
+  };
+
   return (
     <Container maxWidth="sm">
       <Box
@@ -15,7 +21,21 @@ const Login = () => {
         <Typography component="h1" variant="h5">
           Sign in
         </Typography>
-        <Box component="form" noValidate sx={{ mt: 1 }}>
+        
+        {/* Google Login Button */}
+        <Button
+          fullWidth
+          variant="outlined"
+          startIcon={<GoogleIcon />}
+          onClick={handleGoogleLogin}
+          sx={{ mt: 3, mb: 2 }}
+        >
+          Sign in with Google
+        </Button>
+
+        <Divider sx={{ width: '100%', my: 2 }}>OR</Divider>
+
+        <Box component="form" noValidate sx={{ mt: 1, width: '100%' }}>
           <TextField
             margin="normal"
             required
@@ -44,6 +64,19 @@ const Login = () => {
           >
             Sign In
           </Button>
+        </Box>
+
+        <Box sx={{ mt: 2 }}>
+          <Typography variant="body2" color="text.secondary">
+            Don't have an account?{' '}
+            <Button
+              component={RouterLink}
+              to="/register"
+              sx={{ textTransform: 'none' }}
+            >
+              Sign up
+            </Button>
+          </Typography>
         </Box>
       </Box>
     </Container>
