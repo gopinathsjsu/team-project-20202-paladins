@@ -3,17 +3,17 @@ name: Deploy Frontend to S3 (Preview)
 on:
   push:
     branches:
-      - preview
+      - master
     paths:
       - 'frontend/**'
-      - '.github/workflows/deploy-preview.yml'
+      - '.github/workflows/deploy-frontend.yml'
 
   pull_request:
     branches:
-      - preview
+      - master
     paths:
       - 'frontend/**'
-      - '.github/workflows/deploy-preview.yml'
+      - '.github/workflows/deploy-frontend.yml'
 
 jobs:
   deploy-frontend-preview:
