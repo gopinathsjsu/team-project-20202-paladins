@@ -44,8 +44,6 @@ public class ReservationController {
             throw new IllegalArgumentException("Duplicate reservation: This reservation already exists.");
         }
 
-
-
         // Fetch related entities
         Table table = tableService.getTableById(reservation.getTableId());
         if (table == null) {
@@ -73,9 +71,6 @@ public class ReservationController {
         bookingDto.setRestaurantName(restaurant.getName());
 
         return bookingDto;
-
-
-
     }
 }
 

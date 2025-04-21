@@ -7,7 +7,7 @@ import com.booktable.model.Restaurant;
 import com.booktable.model.Table;
 import com.booktable.service.RestaurantService;
 import com.booktable.service.TableService;
-import org.bson.types.ObjectId;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -79,6 +79,7 @@ public class RestaurantController {
     }
 
     // Create a new restaurant
+    @PreAuthorize("hasAuthority('RESTAURANT_MANAGER')")
     @PostMapping
     public Restaurant addRestaurant(@RequestBody RestaurantTableInput restaurantTable) {
         Restaurant res = restaurantService.saveRestaurant(restaurantTable.getRestaurant());
@@ -97,18 +98,21 @@ public class RestaurantController {
     }
 
     // Update an existing restaurant (full update)
+    @PreAuthorize("hasAuthority('RESTAURANT_MANAGER')")
     @PutMapping("/{id}")
     public Restaurant updateRestaurant(@PathVariable String id, @RequestBody Restaurant restaurant) {
         return restaurantService.updateRestaurant(id, restaurant);
     }
 
     // Partially update an existing restaurant
+    @PreAuthorize("hasAuthority('RESTAURANT_MANAGER')")
     @PatchMapping("/{id}")
     public Restaurant patchRestaurant(@PathVariable String id, @RequestBody Restaurant restaurant) {
         return restaurantService.patchRestaurant(id, restaurant);
     }
 
     // Delete a restaurant by ID
+    @PreAuthorize("hasAuthority('ADMIN')")
     @DeleteMapping("/{id}")
     public void deleteRestaurant(@PathVariable String id) {
         restaurantService.deleteRestaurant(id);
