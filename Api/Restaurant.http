@@ -10,7 +10,7 @@ GET http://127.0.0.1:8080/api/restaurant/67f9b8ce4c583975339c8025
 
 
 ### GET (Search)
-GET http://127.0.0.1:8080 /api/restaurant/search?startTime=09:00:00&endTime=16:00:00
+GET http://127.0.0.1:8080/api/restaurant/search?startTime=09:00:00&endTime=16:00:00
 
 
 ### POST
