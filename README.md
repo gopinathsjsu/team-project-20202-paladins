@@ -150,12 +150,12 @@ The full-stack application is containerized and deployed to **AWS EC2** using Do
 
 ### 🌐 Accessing the Preview Website
 
-Changes pushed to the `preview` branch are automatically deployed to S3 via GitHub Actions.
+Changes pushed to the `master` branch are automatically deployed to S3 via GitHub Actions.
 
 To view the deployed frontend:
 1. Visit the S3 static website URL: http://booktable-preview-frontend-dev.s3-website-us-east-1.amazonaws.com/
 
-2. This site reflects the most recent deployment from the `preview` branch and is ideal for internal testing or pre-production reviews.
+2. This site reflects the most recent deployment from the `master` branch and is ideal for internal testing or pre-production reviews.
 
 ---
 
