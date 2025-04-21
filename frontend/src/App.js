@@ -1,6 +1,6 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { ThemeProvider } from '@mui/material/styles';
+import {BrowserRouter as Router, Route, Routes} from 'react-router-dom';
+import {ThemeProvider} from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 
 // Theme
@@ -26,32 +26,32 @@ import NotFound from "./pages/NotFound";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
 
 function App() {
-  return (
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <Router>
-        <Layout>
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/restaurants" element={<RestaurantList />} />
-            <Route path="/restaurants/:id" element={<RestaurantDetail />} />
-            <Route path="/booking/:restaurantId" element={<Booking />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/oauth2/success" element={<OAuth2Success />} />
-            <Route path="/logout" element={<Logout />} />
-            <Route path="*" element={<NotFound />} />
-            <Route element={<ProtectedRoute allowedRoles={['ADMIN']} />}>
-              <Route path="/admin/dashboard" element={<AdminDashboard />} />
-            </Route>
-            <Route element={<ProtectedRoute allowedRoles={['RESTAURANT_MANAGER']} />}>
-              <Route path="/manager/dasshboard" element={<ManagerDashboard />} />
-            </Route>
-          </Routes>
-        </Layout>
-      </Router>
-    </ThemeProvider>
-  );
+    return (
+        <ThemeProvider theme={theme}>
+            <CssBaseline/>
+            <Router>
+                <Layout>
+                    <Routes>
+                        <Route path="/" element={<Home/>}/>
+                        <Route path="/restaurants" element={<RestaurantList/>}/>
+                        <Route path="/restaurants/:id" element={<RestaurantDetail/>}/>
+                        <Route path="/booking/:restaurantId" element={<Booking/>}/>
+                        <Route path="/login" element={<Login/>}/>
+                        <Route path="/register" element={<Register/>}/>
+                        <Route path="/oauth2/success" element={<OAuth2Success/>}/>
+                        <Route path="/logout" element={<Logout/>}/>
+                        <Route path="*" element={<NotFound/>}/>
+                        <Route element={<ProtectedRoute allowedRoles={['ADMIN']}/>}>
+                            <Route path="/admin/dashboard" element={<AdminDashboard/>}/>
+                        </Route>
+                        <Route element={<ProtectedRoute allowedRoles={['RESTAURANT_MANAGER']}/>}>
+                            <Route path="/manager/dasshboard" element={<ManagerDashboard/>}/>
+                        </Route>
+                    </Routes>
+                </Layout>
+            </Router>
+        </ThemeProvider>
+    );
 }
 
 export default App;
