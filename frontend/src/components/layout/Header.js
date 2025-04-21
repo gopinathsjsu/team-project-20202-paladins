@@ -10,6 +10,7 @@ import {
   InputAdornment,
   Avatar,
 } from '@mui/material';
+import dayjs from 'dayjs';
 import { Link as RouterLink } from 'react-router-dom';
 import SearchIcon from '@mui/icons-material/Search';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
@@ -22,11 +23,15 @@ import { logout } from '../../redux/slices/authSlice';
 import { useNavigate } from 'react-router-dom';
 
 import StyledTooltip from '../common/StyledTooltip';
+import RestaurantIcon from '@mui/icons-material/Restaurant';
+import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
+import AccessTimeIcon from '@mui/icons-material/AccessTime';
 
 const Header = () => {
   const [searchParams, setSearchParams] = useState({
+    restaurant: '',
     location: '',
-    date: new Date().toISOString().split('T')[0],
+    date: dayjs().format('YYYY-MM-DD'),
     time: '19:00',
     partySize: 2
   });
@@ -72,7 +77,7 @@ const Header = () => {
           setCities(data.map(city => ({ 
             name: `${city.city}, ${city.state}`, 
             featured: false,
-            raw: city // Keep the raw data for reference if needed
+            raw: city
           })));
         }
       } catch (error) {
@@ -90,6 +95,82 @@ const Header = () => {
   const allCities = useMemo(() => {
     return [...featuredCities, ...cities];
   }, [featuredCities, cities]);
+
+  const commonInputStyles = {
+    '& .MuiInputBase-root': {
+      height: '48px',
+      color: 'white',
+      '& .MuiOutlinedInput-notchedOutline': {
+        borderColor: 'rgba(255,255,255,0.3)',
+        borderWidth: '1px',
+      },
+      '&:hover .MuiOutlinedInput-notchedOutline': {
+        borderColor: 'rgba(255,255,255,0.5)',
+      },
+      '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+        borderColor: '#2DD4BF',
+      },
+      bgcolor: 'rgba(255,255,255,0.08)',
+      borderRadius: '8px',
+    },
+    '& .MuiInputBase-input': {
+      padding: '12px 14px',
+      color: 'white',
+      '&::placeholder': {
+        color: 'rgba(255,255,255,0.7)',
+        opacity: 1,
+      },
+    },
+    '& .MuiAutocomplete-input': {
+      padding: '7.5px 14px !important',
+    },
+    '& .MuiInputAdornment-root': {
+      marginLeft: '8px',
+      '& .MuiSvgIcon-root': {
+        color: 'rgba(255,255,255,0.7)',
+        fontSize: '20px',
+      },
+    },
+    '& .MuiAutocomplete-endAdornment': {
+      right: '8px',
+      '& .MuiSvgIcon-root': {
+        color: 'rgba(255,255,255,0.7)',
+        fontSize: '20px',
+      },
+    },
+    '& .MuiAutocomplete-popper': {
+      '& .MuiPaper-root': {
+        backgroundColor: '#1A2537',
+        color: 'white',
+        borderRadius: '8px',
+        marginTop: '4px',
+        boxShadow: '0 4px 20px rgba(0,0,0,0.3)',
+      },
+      '& .MuiAutocomplete-listbox': {
+        padding: '8px 0',
+        '& .MuiAutocomplete-option': {
+          padding: '8px 16px',
+          '&[aria-selected="true"]': {
+            backgroundColor: 'rgba(45, 212, 191, 0.15)',
+          },
+          '&.Mui-focused': {
+            backgroundColor: 'rgba(45, 212, 191, 0.1)',
+          },
+          '&:hover': {
+            backgroundColor: 'rgba(255, 255, 255, 0.1)',
+          },
+        },
+        '& .MuiAutocomplete-groupLabel': {
+          color: '#2DD4BF',
+          fontSize: '0.75rem',
+          fontWeight: 600,
+          textTransform: 'uppercase',
+          letterSpacing: '0.1em',
+          backgroundColor: '#1A2537',
+        },
+      },
+    },
+  };
 
   return (
     <AppBar position="static" sx={{ bgcolor: '#0A1427' }}>
@@ -113,36 +194,54 @@ const Header = () => {
         {/* Middle section - Search Parameters */}
         <Stack 
           direction="row" 
-          spacing={1} 
+          spacing={2}
           sx={{ 
             flex: 1,
             mx: 3,
-            bgcolor: 'rgba(255,255,255,0.1)',
-            borderRadius: '4px',
-            p: 1
+            alignItems: 'center',
+            justifyContent: 'center',
           }}
         >
+          {/* Restaurant Search */}
+          <TextField
+            placeholder="Search restaurants"
+            value={searchParams.restaurant}
+            onChange={(e) => setSearchParams({ ...searchParams, restaurant: e.target.value })}
+            sx={{
+              ...commonInputStyles,
+              width: '300px',
+            }}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <RestaurantIcon />
+                </InputAdornment>
+              ),
+            }}
+          />
+
           {/* Date Input */}
           <TextField
             type="date"
             value={searchParams.date}
             onChange={(e) => setSearchParams({ ...searchParams, date: e.target.value })}
             sx={{
-              width: 150,
-              '& .MuiInputBase-root': {
+              ...commonInputStyles,
+              width: '200px',
+              '& .MuiInputBase-input': {
                 color: 'white',
-                '& .MuiOutlinedInput-notchedOutline': { border: 'none' },
-                bgcolor: 'transparent'
-              },
-              '& .MuiInputBase-input': { 
-                py: 1,
-                color: 'white',
+                cursor: 'pointer',
+                textAlign: 'center',
                 '&::-webkit-calendar-picker-indicator': {
-                  filter: 'invert(1)'
-                }
-              }
+                  filter: 'invert(1)',
+                  opacity: 0.7,
+                  cursor: 'pointer',
+                },
+              },
             }}
-            InputLabelProps={{ shrink: true }}
+            inputProps={{
+              style: { textAlign: 'center' }
+            }}
           />
 
           {/* Time Input */}
@@ -151,25 +250,26 @@ const Header = () => {
             value={searchParams.time}
             onChange={(e) => setSearchParams({ ...searchParams, time: e.target.value })}
             sx={{
-              width: 120,
-              '& .MuiInputBase-root': {
+              ...commonInputStyles,
+              width: '180px',
+              '& .MuiInputBase-input': {
                 color: 'white',
-                '& .MuiOutlinedInput-notchedOutline': { border: 'none' },
-                bgcolor: 'transparent'
-              },
-              '& .MuiInputBase-input': { 
-                py: 1,
-                color: 'white',
+                cursor: 'pointer',
                 '&::-webkit-calendar-picker-indicator': {
-                  filter: 'invert(1)'
-                }
-              }
+                  filter: 'invert(1)',
+                  opacity: 0.7,
+                  cursor: 'pointer',
+                },
+              },
             }}
-            InputLabelProps={{ shrink: true }}
+            inputProps={{
+              style: { textAlign: 'center' }
+            }}
           />
 
           {/* Party Size */}
           <Autocomplete
+            disableClearable={true}
             value={searchParams.partySize.toString()}
             onChange={(_, newValue) => {
               setSearchParams({ 
@@ -180,22 +280,8 @@ const Header = () => {
             options={[...Array(10)].map((_, i) => (i + 1).toString())}
             getOptionLabel={(option) => `${option} ${parseInt(option) === 1 ? 'Person' : 'People'}`}
             sx={{ 
-              minWidth: 120,
-              '& .MuiOutlinedInput-root': {
-                color: 'white',
-                '& .MuiOutlinedInput-notchedOutline': { border: 'none' },
-                bgcolor: 'transparent',
-                py: 0
-              },
-              '& .MuiAutocomplete-input': {
-                color: 'white',
-              },
-              '& .MuiAutocomplete-popupIndicator': {
-                color: 'white'
-              },
-              '& .MuiAutocomplete-clearIndicator': {
-                color: 'white'
-              }
+              width: '190px',
+              ...commonInputStyles,
             }}
             renderInput={(params) => (
               <TextField
@@ -205,9 +291,9 @@ const Header = () => {
                   ...params.InputProps,
                   startAdornment: (
                     <InputAdornment position="start">
-                      <PeopleIcon sx={{ color: 'white' }} />
+                      <PeopleIcon />
                     </InputAdornment>
-                  )
+                  ),
                 }}
               />
             )}
@@ -220,7 +306,9 @@ const Header = () => {
             sx={{
               bgcolor: '#2DD4BF',
               '&:hover': { bgcolor: '#14B8A6' },
-              minWidth: 'fit-content'
+              height: '48px',
+              minWidth: '48px',
+              borderRadius: '8px',
             }}
           >
             <SearchIcon />
@@ -228,9 +316,10 @@ const Header = () => {
         </Stack>
 
         {/* Right section - Location and Sign In */}
-        <Stack direction="row" spacing={2} alignItems="center">
+        <Stack direction="row" spacing={2} alignItems="center" sx={{ ml: 2 }}>
           {/* Location */}
           <Autocomplete
+            disableClearable={true}
             freeSolo
             value={searchParams.location}
             inputValue={locationInput}
@@ -242,9 +331,7 @@ const Header = () => {
             }}
             options={allCities}
             getOptionLabel={(option) => {
-              if (typeof option === 'string') {
-                return option;
-              }
+              if (typeof option === 'string') return option;
               return option.name || '';
             }}
             groupBy={(option) => {
@@ -252,24 +339,8 @@ const Header = () => {
               return option.featured ? 'Featured Cities' : 'All Cities';
             }}
             sx={{ 
-              minWidth: 280,
-              '& .MuiOutlinedInput-root': {
-                color: 'white',
-                '& .MuiOutlinedInput-notchedOutline': { border: 'none' },
-                bgcolor: 'rgba(255,255,255,0.1)',
-                borderRadius: '25px',
-                py: 0.5,
-                pl: 1
-              },
-              '& .MuiAutocomplete-input': {
-                color: 'white',
-              },
-              '& .MuiAutocomplete-popupIndicator': {
-                color: 'white'
-              },
-              '& .MuiAutocomplete-clearIndicator': {
-                color: 'white'
-              }
+              width: '280px',
+              ...commonInputStyles,
             }}
             renderInput={(params) => (
               <TextField
@@ -279,9 +350,9 @@ const Header = () => {
                   ...params.InputProps,
                   startAdornment: (
                     <InputAdornment position="start">
-                      <LocationOnIcon sx={{ color: 'white', ml: 1 }} />
+                      <LocationOnIcon />
                     </InputAdornment>
-                  )
+                  ),
                 }}
               />
             )}
@@ -290,7 +361,13 @@ const Header = () => {
         {!token ? (
           <Button 
             variant="contained" 
-            sx={{ bgcolor: '#2DD4BF', '&:hover': { bgcolor: '#14B8A6' } }}
+            sx={{ 
+              bgcolor: '#2DD4BF',
+              '&:hover': { bgcolor: '#14B8A6' },
+              height: '48px',
+              borderRadius: '8px',
+              px: 3,
+            }}
             component={RouterLink}
             to="/login"
           >

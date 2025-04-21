@@ -8,12 +8,13 @@ import {
   Typography,
   Box,
   TextField,
-  Button,
+  Button, Link,
   Alert,
   Divider
 } from '@mui/material';
 
 import GoogleLoginButton from '../components/auth/GoogleLoginButton';
+import { Link as RouterLink } from 'react-router-dom';
 
 const Login = () => {
   const dispatch = useDispatch();
@@ -96,6 +97,14 @@ const Login = () => {
           >
             Sign In
           </Button>
+          <Box sx={{ textAlign: 'center' }}>
+            <Typography variant="body2" color="text.secondary">
+              Don't have an account?{' '}
+              <Link component={RouterLink} to="/register" color="primary">
+                Sign Up
+              </Link>
+            </Typography>
+          </Box>
         </Box>
         <Divider sx={{ width: '100%', my: 2 }}>OR</Divider>
         <GoogleLoginButton />
