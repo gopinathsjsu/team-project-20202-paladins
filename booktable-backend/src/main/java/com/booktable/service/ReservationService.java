@@ -46,4 +46,10 @@ public class ReservationService {
                 )
                 .collect(Collectors.toSet());
     }
+
+    public long countReservationsForDate(ObjectId restaurantId, LocalDate date) {
+        return reservationRepository.countByRestaurantIdAndDate(restaurantId, date);
+    }
+
+
 }

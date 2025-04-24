@@ -7,7 +7,6 @@ import com.booktable.model.Restaurant;
 import com.booktable.model.Table;
 import com.booktable.service.RestaurantService;
 import com.booktable.service.TableService;
-import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -38,17 +37,18 @@ public class RestaurantController {
             @RequestParam(required = false) String state,
             @RequestParam(required = false) String zip,
             @RequestParam(required = false) String noOfPeople,
-            @RequestParam LocalTime startTime,
-            @RequestParam LocalTime endTime) {
+            @RequestParam LocalTime startTime
+    ) {
 
-        List<Restaurant> restaurants = restaurantService.searchRestaurants(city, state, zip, noOfPeople, startTime, endTime);
+        List<Restaurant> restaurants = restaurantService.searchRestaurants(city, state, zip, noOfPeople, startTime);
 
         List<RestaurantTableOutput> restaurantTableOutputs = new ArrayList<>();
         for (Restaurant restaurant : restaurants) {
             RestaurantTableOutput restaurantTableOutput = new RestaurantTableOutput();
 
             List<TableSlots> tableSlots = new ArrayList<>();
-            for (List<Object> tableData : tableService.getAvaiableTables(restaurant.getId(), LocalDate.now())) {
+            for (List<Object> tableData : tableService.getBestAvailableTimeSlots(restaurant.getId(),
+                    startTime, LocalDate.now())) {
                 TableSlots slot = new TableSlots();
                 slot.setTableId(String.valueOf(tableData.get(0)));
                 slot.setSlot((List<LocalTime>) tableData.get(1));
