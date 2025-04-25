@@ -19,7 +19,7 @@ import java.util.UUID;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Document(collection = "restaurant") // Corrected spelling
+@Document(collection = "restaurant")
 public class Restaurant {
     @Id
     @JsonSerialize(using = ObjectIdJsonSerializer.class)
@@ -37,7 +37,7 @@ public class Restaurant {
     private String email;
     private String imageUrl;
 
-    private UUID managerId;
+    private String managerId;
 
     private BigDecimal coordinatesLatitude;
     private BigDecimal coordinatesLongitude;
@@ -51,4 +51,6 @@ public class Restaurant {
     private LocalTime openingHour;
     @NonNull
     private LocalTime closingHour;
+
+    private boolean approved;
 }
