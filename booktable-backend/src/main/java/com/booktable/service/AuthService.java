@@ -8,6 +8,8 @@ import com.booktable.model.Role;
 import com.booktable.model.User;
 import com.booktable.repository.UserRepository;
 import com.booktable.security.JwtUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +21,8 @@ import java.util.Collections;
 @Service
 public class AuthService {
 
+    private static final Logger log = LoggerFactory.getLogger(AuthService.class);
+
     @Autowired
     private UserRepository userRepository;
 
@@ -29,7 +33,9 @@ public class AuthService {
     private JwtUtil jwtUtil;
 
     public ResponseEntity<String> registerUser(RegisterRequest request) {
+        log.info("Received signup request: {}", request);
         if (userRepository.existsByEmail(request.getEmail())) {
+            log.warn("User with email {} already exists", request.getEmail());
             return ResponseEntity
                     .status(HttpStatus.CONFLICT)
                     .body("User with this email already exists.");
@@ -50,10 +56,12 @@ public class AuthService {
     }
 
     public ResponseEntity<?> login(LoginRequest request) {
+        log.info("Received login request: {}", request);
         User user = userRepository.findByEmail(request.getEmail())
                 .orElse(null);
 
         if (user == null || !passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+            log.warn("Invalid login attempt for email {}", request.getEmail());
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid email or password.");
         }
 

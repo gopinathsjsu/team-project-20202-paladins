@@ -8,6 +8,8 @@ import com.booktable.model.Table;
 import com.booktable.service.ReservationService;
 import com.booktable.service.RestaurantService;
 import com.booktable.service.TableService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,6 +22,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/book")
 public class ReservationController {
+    private static final Logger log = LoggerFactory.getLogger(ReservationController.class);
     private final ReservationService reservationService;
     private final TableService tableService;
     private final RestaurantService restaurantService;
@@ -35,6 +38,7 @@ public class ReservationController {
 
     @PostMapping
     public BookingDto addReservation(@RequestBody Reservation reservation) {
+        log.info("Received reservation request: {}", reservation);
         // add validations
         // TODO PUSH THIS ERROR OUT TO FRONTEND
 
