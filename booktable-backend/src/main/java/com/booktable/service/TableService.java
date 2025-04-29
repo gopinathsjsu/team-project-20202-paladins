@@ -11,11 +11,15 @@ import com.booktable.model.Restaurant;
 import com.booktable.model.Table;
 import com.booktable.repository.TableRepository;
 import org.bson.types.ObjectId;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class TableService {
+
+    private static final Logger log = LoggerFactory.getLogger(TableService.class);
     private final TableRepository tableRepository;
     private final ReservationService reservationService;
     private final RestaurantService restaurantService;
@@ -29,19 +33,23 @@ public class TableService {
     }
 
     public Table getTableById(ObjectId tableId) {
+        log.info("Fetching table with ID: {}", tableId);
         return tableRepository.findById(tableId.toString())
                 .orElseThrow(() -> new RuntimeException("Table not found"));
     }
 
     public Table saveTable(Table table) {
+        log.info("Saving table: {}", table);
         return tableRepository.save(table);
     }
 
     public List<Table> saveTables(List<Table> tables) {
+        log.info("Saving tables: {}", tables);
         return tableRepository.saveAll(tables);
     }
 
-    public List<List<Object>> getAvaiableTables(ObjectId restaurantId, LocalDate date) {
+    public List<List<Object>> getAvailableTables(ObjectId restaurantId, LocalDate date) {
+        log.info("Fetching available tables for restaurant ID: {} on date: {}", restaurantId, date);
         Set<List<Object>> bookedTables = reservationService.getBookedTablesAndTimes(restaurantId, date);
         List<Table> allTables = tableRepository.findByRestaurantId(restaurantId);
 
@@ -72,11 +80,10 @@ public class TableService {
 
                 freeTables.add(ll);
                 presentSlots.add(slot);
-
             }
         }
 
-
+        log.info("Found {} free tables", freeTables.size());
 //        Set<List<Object>> availableTables = new HashSet<>(freeTables);
 //        availableTables.removeAll(bookedTables);
 

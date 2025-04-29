@@ -10,7 +10,8 @@ import com.booktable.model.Table;
 import com.booktable.model.User;
 import com.booktable.service.RestaurantService;
 import com.booktable.service.TableService;
-import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -21,7 +22,6 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 //Display a list of restaurants that have availability at the specified time +/- 30minutes - with
 // Name, Cuisine type, Cost rating, Reviews and Ratings, and #of times booked today,
@@ -30,6 +30,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/restaurant")
 public class RestaurantController {
+    private static final Logger log = LoggerFactory.getLogger(RestaurantController.class);
     private final RestaurantService restaurantService;
     private final TableService tableService;
     private final RestaurantMapper restaurantMapper;
@@ -50,6 +51,9 @@ public class RestaurantController {
             @RequestParam LocalTime startTime,
             @RequestParam LocalTime endTime) {
 
+        log.info("Received search request for restaurants with params: city={}, state={}, zip={}, noOfPeople={}, startTime={}, endTime={}",
+                city, state, zip, noOfPeople, startTime, endTime);
+
         List<Restaurant> restaurants = restaurantService.searchRestaurants(city, state, zip, noOfPeople, startTime, endTime);
 
         List<RestaurantTableOutput> restaurantTableOutputs = new ArrayList<>();
@@ -57,7 +61,7 @@ public class RestaurantController {
             RestaurantTableOutput restaurantTableOutput = new RestaurantTableOutput();
 
             List<TableSlots> tableSlots = new ArrayList<>();
-            for (List<Object> tableData : tableService.getAvaiableTables(restaurant.getId(), LocalDate.now())) {
+            for (List<Object> tableData : tableService.getAvailableTables(restaurant.getId(), LocalDate.now())) {
                 TableSlots slot = new TableSlots();
                 slot.setTableId(String.valueOf(tableData.get(0)));
                 slot.setSlot((List<LocalTime>) tableData.get(1));
@@ -76,6 +80,7 @@ public class RestaurantController {
     // Get a single restaurant by ID
     @GetMapping("/{id}")
     public Restaurant getRestaurantById(@PathVariable String id) {
+        log.info("Received request to get restaurant with ID: {}", id);
         return restaurantService.getRestaurantById(id);
     }
 
@@ -84,6 +89,7 @@ public class RestaurantController {
     public List<Restaurant> listRestaurants(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
+        log.info("Received request to list restaurants with pagination: page={}, size={}", page, size);
         return restaurantService.listRestaurants(page, size);
     }
 
@@ -91,6 +97,7 @@ public class RestaurantController {
     @PreAuthorize("hasAuthority('RESTAURANT_MANAGER')")
     @PostMapping
     public Restaurant addRestaurant(@RequestBody RestaurantTableInput restaurantTable) {
+        log.info("Received request to add restaurant: {}", restaurantTable);
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User currentUser = (User) authentication.getPrincipal();
 
@@ -117,6 +124,7 @@ public class RestaurantController {
     @PreAuthorize("hasAuthority('RESTAURANT_MANAGER')")
     @PutMapping("/{id}")
     public Restaurant updateRestaurant(@PathVariable String id, @RequestBody Restaurant restaurant) {
+        log.info("Received request to update restaurant with ID: {} and data: {}", id, restaurant);
         return restaurantService.updateRestaurant(id, restaurant);
     }
 
@@ -124,6 +132,7 @@ public class RestaurantController {
     @PreAuthorize("hasAuthority('RESTAURANT_MANAGER')")
     @PatchMapping("/{id}")
     public Restaurant patchRestaurant(@PathVariable String id, @RequestBody Restaurant restaurant) {
+        log.info("Received request to patch restaurant with ID: {} and data: {}", id, restaurant);
         return restaurantService.patchRestaurant(id, restaurant);
     }
 
@@ -131,6 +140,7 @@ public class RestaurantController {
     @PreAuthorize("hasAuthority('ADMIN')")
     @DeleteMapping("/{id}")
     public void deleteRestaurant(@PathVariable String id) {
+        log.info("Received request to delete restaurant with ID: {}", id);
         restaurantService.deleteRestaurant(id);
     }
 }

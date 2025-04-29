@@ -6,6 +6,8 @@ import com.booktable.repository.RestaurantRepository;
 import com.booktable.repository.ReviewRepository;
 import org.bson.types.ObjectId;
 import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -22,6 +24,7 @@ import java.util.Optional;
 public class RestaurantService {
     private final RestaurantRepository restaurantRepository;
     private final ReviewRepository reviewRepository;
+    private static final Logger log = LoggerFactory.getLogger(RestaurantService.class);
 
     @Autowired
     public RestaurantService(RestaurantRepository restaurantRepository, ReviewRepository reviewRepository) {
@@ -30,11 +33,14 @@ public class RestaurantService {
     }
 
     public Restaurant getRestaurantById(Object id) {
+        log.info("Fetching restaurant with ID: {}", id);
         return restaurantRepository.findById(String.valueOf(id)).orElseThrow(() -> new RuntimeException("Restaurant not found"));
     }
 
     public List<Restaurant> searchRestaurants(String city, String state, String zip, String noOfPeople,
                                               LocalTime startTime, LocalTime endTime) {
+        log.info("Searching restaurants with params: city={}, state={}, zip={}, noOfPeople={}, startTime={}, endTime={}",
+                city, state, zip, noOfPeople, startTime, endTime);
         return restaurantRepository.searchRestaurants(
                 city != null ? city : "",
                 state != null ? state : "",
@@ -47,21 +53,25 @@ public class RestaurantService {
     }
 
     public List<Restaurant> listRestaurants(int page, int size) {
+        log.info("Listing restaurants with pagination: page={}, size={}", page, size);
         Pageable pageable = PageRequest.of(page, size);
         return restaurantRepository.findAll(pageable).getContent();
     }
 
     public Restaurant saveRestaurant(Restaurant restaurant) {
+        log.info("Saving restaurant: {}", restaurant);
         return restaurantRepository.save(restaurant);
     }
 
     public Restaurant updateRestaurant(String id, Restaurant updatedRestaurant) {
+        log.info("Updating restaurant with ID: {}", id);
         Restaurant existingRestaurant = getRestaurantById(id);
         updatedRestaurant.setId(existingRestaurant.getId());
         return restaurantRepository.save(updatedRestaurant);
     }
 
     public Restaurant patchRestaurant(String id, Restaurant partialUpdate) {
+        log.info("Partially updating restaurant with ID: {}", id);
         Restaurant existingRestaurant = getRestaurantById(id);
         if (partialUpdate.getName() != null) existingRestaurant.setName(partialUpdate.getName());
         if (partialUpdate.getDescription() != null) existingRestaurant.setDescription(partialUpdate.getDescription());
@@ -69,23 +79,29 @@ public class RestaurantService {
     }
 
     public void deleteRestaurant(String id) {
+        log.info("Deleting restaurant with ID: {}", id);
         restaurantRepository.deleteById(id);
     }
 
     @Async
     @Transactional
     public void updateRestaurantRatingStatsAsync(ObjectId restaurantId) {
+        log.info("Updating restaurant rating stats asynchronously for restaurant ID: {}", restaurantId);
         try {
             Optional<RatingStats> statsOpt = reviewRepository.getRatingStats(restaurantId);
             Optional<Restaurant> restaurantOpt = restaurantRepository.findById(restaurantId.toHexString());
 
             if (restaurantOpt.isPresent()) {
+                log.info("Updating restaurant rating stats for restaurant ID: {}", restaurantId);
                 Restaurant restaurant = getRestaurant(restaurantOpt, statsOpt);
 
                 restaurantRepository.save(restaurant);
+            } else {
+                log.warn("Restaurant not found for ID: {}", restaurantId);
             }
         } catch (Exception e) {
-            System.err.println("Error updating restaurant rating stats: " + e.getMessage());
+            log.error("Error updating restaurant rating stats for restaurant ID: {}", restaurantId, e);
+            log.error("Stacktrace: {}", (Object) e.getStackTrace());
         }
     }
 
