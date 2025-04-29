@@ -10,7 +10,6 @@ import com.booktable.model.Table;
 import com.booktable.model.User;
 import com.booktable.service.RestaurantService;
 import com.booktable.service.TableService;
-import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -23,7 +22,6 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 //Display a list of restaurants that have availability at the specified time +/- 30minutes - with
 // Name, Cuisine type, Cost rating, Reviews and Ratings, and #of times booked today,
@@ -63,7 +61,7 @@ public class RestaurantController {
             RestaurantTableOutput restaurantTableOutput = new RestaurantTableOutput();
 
             List<TableSlots> tableSlots = new ArrayList<>();
-            for (List<Object> tableData : tableService.getAvaiableTables(restaurant.getId(), LocalDate.now())) {
+            for (List<Object> tableData : tableService.getAvailableTables(restaurant.getId(), LocalDate.now())) {
                 TableSlots slot = new TableSlots();
                 slot.setTableId(String.valueOf(tableData.get(0)));
                 slot.setSlot((List<LocalTime>) tableData.get(1));
