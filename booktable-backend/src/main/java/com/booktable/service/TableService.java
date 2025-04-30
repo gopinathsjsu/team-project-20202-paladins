@@ -44,14 +44,14 @@ public class TableService {
         return tableRepository.saveAll(tables);
     }
 
-    public List<List<Object>> getBestAvailableTimeSlots(ObjectId restaurantId, LocalTime requestStart,LocalDate date) {
+    public List<List<Object>> getBestAvailableTimeSlots(ObjectId restaurantId, LocalTime requestStart,LocalDate date, int resultCount) {
         Restaurant restaurant = restaurantService.getRestaurantById(restaurantId);
         LocalTime openingHour = restaurant.getOpeningHour();
         LocalTime closingHour = restaurant.getClosingHour();
 
         // Check if request is within operating hours
         if (requestStart.isBefore(openingHour) || requestStart.isAfter(closingHour.minusHours(1))) {
-            return List.of(List.of("N/A", List.of(openingHour, openingHour.plusHours(1))));
+            return List.of();
         }
 
         // Get all reservations for the restaurant on the given date
@@ -63,9 +63,9 @@ public class TableService {
                 .map(table -> table.getId().toString())
                 .collect(Collectors.toSet());
 
-        List<List<Object>> availableSlots = new ArrayList<>();
+//        List<List<Object>> availableSlots = new ArrayList<>();
 
-        List<List<Object>> slots = findClosestSlots(openingHour, closingHour, bookedTables, requestStart, tableIds);
+        List<List<Object>> slots = findClosestSlots(openingHour, closingHour, bookedTables, requestStart, tableIds, resultCount);
 
 //        return slots;
 //        return availableSlots.stream()

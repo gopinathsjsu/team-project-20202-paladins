@@ -1,6 +1,6 @@
 package com.booktable.utils;
 
-import java.time.*;
+import java.time.LocalTime;
 import java.util.*;
 
 public class TimeSlotFinder {
@@ -21,10 +21,10 @@ public class TimeSlotFinder {
 
         Set<String> tableIds = new HashSet<>(Arrays.asList("T1", "T2"));
 
-        List<List<Object>> result = findClosestSlots(workStart, workEnd, bookedSlots, requestedStart, tableIds);
+        List<List<Object>> result = findClosestSlots(workStart, workEnd, bookedSlots, requestedStart, tableIds, 15);
 
         // Print result
-        System.out.println("Available 15-min Slots:");
+        System.out.println("Available 30-min Slots:");
         for (List<Object> slot : result) {
             String tableId = (String) slot.get(0);
             List<LocalTime> timeSlot = (List<LocalTime>) slot.get(1);
@@ -33,11 +33,13 @@ public class TimeSlotFinder {
     }
 
     public static List<List<Object>> findClosestSlots(LocalTime workStart,
-                                                           LocalTime workEnd,
-                                                           Set<List<Object>> bookedSlotObjects,
-                                                           LocalTime requestedStart,
-                                                           Set<String> tableIds) {
+                                                      LocalTime workEnd,
+                                                      Set<List<Object>> bookedSlotObjects,
+                                                      LocalTime requestedStart,
+                                                      Set<String> tableIds,
+                                                      int resultCount) {
         Map<String, List<List<LocalTime>>> bookedByTable = new HashMap<>();
+        Set<List<LocalTime>> seenSlots = new HashSet<>();
 
         // Organize booked slots by table
         for (List<Object> entry : bookedSlotObjects) {
@@ -79,15 +81,20 @@ public class TimeSlotFinder {
             for (List<LocalTime> free : freeSlots) {
                 LocalTime start = free.get(0);
                 LocalTime end = free.get(1);
+
                 while (!start.plusHours(1).isAfter(end)) {
                     tableSlots.add(Arrays.asList(tableId, Arrays.asList(start, start.plusHours(1))));
                     start = start.plusMinutes(30);
                 }
+
+
             }
             for (List<Object> slot : tableSlots) {
                 LocalTime slotStart = ((List<LocalTime>) slot.get(1)).get(0);
                 if (!slotStart.isBefore(requestedStart)) {
-                    all15MinSlots.add(slot);
+                    if (seenSlots.add((List<LocalTime>) slot.get(1))) {
+                        all15MinSlots.add(slot);
+                    }
                 }
             }
         }
@@ -97,8 +104,9 @@ public class TimeSlotFinder {
             if (!bookedByTable.containsKey(tableId)) {
                 LocalTime start = workStart;
                 while (!start.plusHours(1).isAfter(workEnd)) {
-                    if (!start.isBefore(requestedStart)) {
-                        all15MinSlots.add(Arrays.asList(tableId, Arrays.asList(start, start.plusHours(1))));
+                    List<LocalTime> timeSlot = Arrays.asList(start, start.plusHours(1));
+                    if (!start.isBefore(requestedStart) && seenSlots.add(timeSlot)) {
+                        all15MinSlots.add(List.of(tableId, timeSlot));
                     }
                     start = start.plusMinutes(30);
                 }
@@ -109,6 +117,6 @@ public class TimeSlotFinder {
         all15MinSlots.sort(Comparator.comparing(slot -> ((List<LocalTime>) slot.get(1)).get(0)));
 
         // Return top 3
-        return all15MinSlots.subList(0, Math.min(3, all15MinSlots.size()));
+        return all15MinSlots.subList(0, Math.min(resultCount, all15MinSlots.size()));
     }
 }
