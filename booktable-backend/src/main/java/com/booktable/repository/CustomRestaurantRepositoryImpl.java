@@ -20,7 +20,7 @@ public class CustomRestaurantRepositoryImpl implements CustomRestaurantRepositor
     private MongoTemplate mongoTemplate;
 
     @Override
-    public List<Restaurant> searchRestaurants(String city, String state, String zip, int numberOfPeople, LocalDate date, LocalTime startTime, LocalTime endTime) {
+    public List<Restaurant> searchRestaurants(String city, String state, String zip, int numberOfPeople, LocalDate date, LocalTime startTime) {
         MatchOperation matchCityStateZip = match(Criteria.where("addressCity").regex(city, "i")
                 .and("addressState").regex(state, "i")
                 .and("addressZip").regex(zip, "i"));
@@ -31,7 +31,7 @@ public class CustomRestaurantRepositoryImpl implements CustomRestaurantRepositor
 
         MatchOperation matchCapacityAndAvailability = match(Criteria.where("tables").elemMatch(Criteria.where("isActive").is(true))
                 .and("reservations").not().elemMatch(Criteria.where("date").is(date)
-                        .and("time").gte(startTime).lte(endTime)));
+                        .and("time").gte(startTime)));
 
 
 

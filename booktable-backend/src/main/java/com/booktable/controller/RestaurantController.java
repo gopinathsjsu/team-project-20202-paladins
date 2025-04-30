@@ -10,7 +10,6 @@ import com.booktable.model.Table;
 import com.booktable.model.User;
 import com.booktable.service.RestaurantService;
 import com.booktable.service.TableService;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +27,6 @@ import java.util.UUID;
 // Name, Cuisine type, Cost rating, Reviews and Ratings, and #of times booked today,
 // display clickable buttons with available times - that can be clicked to book the table
 
-@SecurityRequirement(name = "bearerAuth")
 @RestController
 @RequestMapping("/api/restaurant")
 public class RestaurantController {
@@ -49,17 +47,18 @@ public class RestaurantController {
             @RequestParam(required = false) String state,
             @RequestParam(required = false) String zip,
             @RequestParam(required = false) String noOfPeople,
-            @RequestParam LocalTime startTime,
-            @RequestParam LocalTime endTime) {
+            @RequestParam LocalTime startTime
+    ) {
 
-        List<Restaurant> restaurants = restaurantService.searchRestaurants(city, state, zip, noOfPeople, startTime, endTime);
+        List<Restaurant> restaurants = restaurantService.searchRestaurants(city, state, zip, noOfPeople, startTime);
 
         List<RestaurantTableOutput> restaurantTableOutputs = new ArrayList<>();
         for (Restaurant restaurant : restaurants) {
             RestaurantTableOutput restaurantTableOutput = new RestaurantTableOutput();
 
             List<TableSlots> tableSlots = new ArrayList<>();
-            for (List<Object> tableData : tableService.getAvaiableTables(restaurant.getId(), LocalDate.now())) {
+            for (List<Object> tableData : tableService.getBestAvailableTimeSlots(restaurant.getId(),
+                    startTime, LocalDate.now())) {
                 TableSlots slot = new TableSlots();
                 slot.setTableId(String.valueOf(tableData.get(0)));
                 slot.setSlot((List<LocalTime>) tableData.get(1));
@@ -90,14 +89,14 @@ public class RestaurantController {
     }
 
     // Create a new restaurant
-    @PreAuthorize("hasAuthority('RESTAURANT_MANAGER')")
+//    @PreAuthorize("hasAuthority('RESTAURANT_MANAGER')")
     @PostMapping
     public Restaurant addRestaurant(@RequestBody RestaurantTableInput restaurantTable) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        User currentUser = (User) authentication.getPrincipal();
+//        User currentUser = (User) authentication.getPrincipal();
 
         RestaurantInput restaurantInput = restaurantTable.getRestaurantInput();
-        Restaurant res = restaurantMapper.toEntity(restaurantInput, currentUser.getId());
+        Restaurant res = restaurantMapper.toEntity(restaurantInput,"123"); //todo revert this
 
         // Save restaurant to database
         res = restaurantService.saveRestaurant(res);
@@ -116,21 +115,21 @@ public class RestaurantController {
     }
 
     // Update an existing restaurant (full update)
-    @PreAuthorize("hasAuthority('RESTAURANT_MANAGER')")
+//    @PreAuthorize("hasAuthority('RESTAURANT_MANAGER')")
     @PutMapping("/{id}")
     public Restaurant updateRestaurant(@PathVariable String id, @RequestBody Restaurant restaurant) {
         return restaurantService.updateRestaurant(id, restaurant);
     }
 
     // Partially update an existing restaurant
-    @PreAuthorize("hasAuthority('RESTAURANT_MANAGER')")
+//    @PreAuthorize("hasAuthority('RESTAURANT_MANAGER')")
     @PatchMapping("/{id}")
     public Restaurant patchRestaurant(@PathVariable String id, @RequestBody Restaurant restaurant) {
         return restaurantService.patchRestaurant(id, restaurant);
     }
 
     // Delete a restaurant by ID
-    @PreAuthorize("hasAuthority('ADMIN')")
+//    @PreAuthorize("hasAuthority('ADMIN')")
     @DeleteMapping("/{id}")
     public void deleteRestaurant(@PathVariable String id) {
         restaurantService.deleteRestaurant(id);

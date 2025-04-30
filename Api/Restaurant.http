@@ -6,11 +6,11 @@ GET http://127.0.0.1:8080/api/restaurant?page=2&size=38
 
 
 ### GET
-GET http://127.0.0.1:8080/api/restaurant/67f9b8ce4c583975339c8025
+GET http://127.0.0.1:8080/api/restaurant/6812ad84ca189206978c56d5
 
 
 ### GET (Search)
-GET http://127.0.0.1:8080 /api/restaurant/search?startTime=09:00:00&endTime=16:00:00
+GET http://127.0.0.1:8080/api/restaurant/search?startTime=08:30:00
 
 
 ### POST
@@ -18,7 +18,7 @@ POST http://127.0.0.1:8080/api/restaurant
 Content-Type: application/json
 
 {
-  "restaurant": {
+  "restaurantInput": {
     "name": "Mo:mo:",
     "description": "A cozy restaurant serving best in town momo view of the hills.",
     "addressStreet": "123 Summit Ave",
@@ -47,7 +47,6 @@ Content-Type: application/json
 ### PUT
 PUT http://127.0.0.1:8080/api/restaurant/67f9b8ce4c583975339c8025
 Content-Type: application/json
-
 {
   "name": "Momo Palace1",
   "description": "A cozy restaurant serving best in town momo view of the hills.",

@@ -34,15 +34,15 @@ public class RestaurantService {
     }
 
     public List<Restaurant> searchRestaurants(String city, String state, String zip, String noOfPeople,
-                                              LocalTime startTime, LocalTime endTime) {
+                                              LocalTime startTime) {
         return restaurantRepository.searchRestaurants(
                 city != null ? city : "",
                 state != null ? state : "",
                 zip != null ? zip : "",
                 noOfPeople != null ? Integer.parseInt(noOfPeople) : 0,
                 LocalDate.now(),
-                startTime,
-                endTime
+                startTime
+
         );
     }
 

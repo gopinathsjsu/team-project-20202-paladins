@@ -28,6 +28,8 @@ public interface ReservationRepository extends MongoRepository<Reservation, Obje
     List<Reservation> findByStartSlotTime(LocalTime startSlotTime);
 
     List<Reservation> findByEndSlotTime(LocalTime endSlotTime);
+
+    long countByRestaurantIdAndDate(ObjectId restaurantId, LocalDate date);
 }
 
 
