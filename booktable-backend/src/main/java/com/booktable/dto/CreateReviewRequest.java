@@ -11,8 +11,8 @@ public class CreateReviewRequest {
     @NotNull
     private ObjectId restaurantId;
 
-    @NotNull
-    private ObjectId customerId;
+//    @NotNull
+//    private ObjectId customerId;
 
     @NotNull
     @Min(value = 1, message = "Rating must be at least 1")
