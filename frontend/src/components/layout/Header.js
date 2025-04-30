@@ -10,7 +10,6 @@ import {
     Toolbar,
     Typography,
 } from '@mui/material';
-import dayjs from 'dayjs';
 import {Link as RouterLink, useNavigate} from 'react-router-dom';
 import SearchIcon from '@mui/icons-material/Search';
 import LocationOnIcon from '@mui/icons-material/LocationOn';

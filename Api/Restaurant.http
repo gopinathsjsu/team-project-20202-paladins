@@ -10,7 +10,7 @@ GET http://127.0.0.1:8080/api/restaurant/68096806b776a1439f7bf01c
 
 
 ### GET (Search)
-GET http://127.0.0.1:8080/api/restaurant/search?startTime=10:30:00
+GET http://127.0.0.1:8080/api/restaurant/search?startTime=08:30:00
 
 
 ### POST
@@ -47,7 +47,6 @@ Content-Type: application/json
 ### PUT
 PUT http://127.0.0.1:8080/api/restaurant/67f9b8ce4c583975339c8025
 Content-Type: application/json
-
 {
   "name": "Momo Palace1",
   "description": "A cozy restaurant serving best in town momo view of the hills.",
