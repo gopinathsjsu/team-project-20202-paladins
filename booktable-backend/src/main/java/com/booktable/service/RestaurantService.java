@@ -1,23 +1,32 @@
 package com.booktable.service;
 
+import com.booktable.dto.RatingStats;
 import com.booktable.model.Restaurant;
 import com.booktable.repository.RestaurantRepository;
+import com.booktable.repository.ReviewRepository;
+import org.bson.types.ObjectId;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class RestaurantService {
     private final RestaurantRepository restaurantRepository;
+    private final ReviewRepository reviewRepository;
 
     @Autowired
-    public RestaurantService(RestaurantRepository restaurantRepository) {
+    public RestaurantService(RestaurantRepository restaurantRepository, ReviewRepository reviewRepository) {
         this.restaurantRepository = restaurantRepository;
+        this.reviewRepository = reviewRepository;
     }
 
     public Restaurant getRestaurantById(Object id) {
@@ -56,7 +65,6 @@ public class RestaurantService {
         Restaurant existingRestaurant = getRestaurantById(id);
         if (partialUpdate.getName() != null) existingRestaurant.setName(partialUpdate.getName());
         if (partialUpdate.getDescription() != null) existingRestaurant.setDescription(partialUpdate.getDescription());
-        // Add other fields as needed
         return restaurantRepository.save(existingRestaurant);
     }
 
@@ -64,6 +72,36 @@ public class RestaurantService {
         restaurantRepository.deleteById(id);
     }
 
+    @Async
+    @Transactional
+    public void updateRestaurantRatingStatsAsync(ObjectId restaurantId) {
+        try {
+            Optional<RatingStats> statsOpt = reviewRepository.getRatingStats(restaurantId);
+            Optional<Restaurant> restaurantOpt = restaurantRepository.findById(restaurantId.toHexString());
 
+            if (restaurantOpt.isPresent()) {
+                Restaurant restaurant = getRestaurant(restaurantOpt, statsOpt);
 
+                restaurantRepository.save(restaurant);
+            }
+        } catch (Exception e) {
+            System.err.println("Error updating restaurant rating stats: " + e.getMessage());
+        }
+    }
+
+    @NotNull
+    private static Restaurant getRestaurant(Optional<Restaurant> restaurantOpt, Optional<RatingStats> statsOpt) {
+        Restaurant restaurant = restaurantOpt.get();
+
+        if (statsOpt.isPresent()) {
+            RatingStats stats = statsOpt.get();
+            restaurant.setAverageRating(stats.getAverageRating());
+            restaurant.setReviewCount(stats.getCount());
+        } else {
+            // No reviews found, reset stats
+            restaurant.setAverageRating(0.0);
+            restaurant.setReviewCount(0);
+        }
+        return restaurant;
+    }
 }

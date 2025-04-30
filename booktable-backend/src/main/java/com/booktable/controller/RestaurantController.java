@@ -1,20 +1,27 @@
 package com.booktable.controller;
 
+import com.booktable.dto.RestaurantInput;
 import com.booktable.dto.RestaurantTableInput;
 import com.booktable.dto.RestaurantTableOutput;
 import com.booktable.dto.TableSlots;
+import com.booktable.mapper.RestaurantMapper;
 import com.booktable.model.Restaurant;
 import com.booktable.model.Table;
+import com.booktable.model.User;
 import com.booktable.service.RestaurantService;
 import com.booktable.service.TableService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 //Display a list of restaurants that have availability at the specified time +/- 30minutes - with
 // Name, Cuisine type, Cost rating, Reviews and Ratings, and #of times booked today,
@@ -25,11 +32,13 @@ import java.util.List;
 public class RestaurantController {
     private final RestaurantService restaurantService;
     private final TableService tableService;
+    private final RestaurantMapper restaurantMapper;
 
     @Autowired
-    public RestaurantController(RestaurantService restaurantService, TableService tableService) {
+    public RestaurantController(RestaurantService restaurantService, TableService tableService, RestaurantMapper restaurantMapper) {
         this.restaurantService = restaurantService;
         this.tableService = tableService;
+        this.restaurantMapper = restaurantMapper;
     }
 
     @GetMapping("/search")
@@ -83,7 +92,14 @@ public class RestaurantController {
     @PreAuthorize("hasAuthority('RESTAURANT_MANAGER')")
     @PostMapping
     public Restaurant addRestaurant(@RequestBody RestaurantTableInput restaurantTable) {
-        Restaurant res = restaurantService.saveRestaurant(restaurantTable.getRestaurant());
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User currentUser = (User) authentication.getPrincipal();
+
+        RestaurantInput restaurantInput = restaurantTable.getRestaurantInput();
+        Restaurant res = restaurantMapper.toEntity(restaurantInput, currentUser.getId());
+
+        // Save restaurant to database
+        res = restaurantService.saveRestaurant(res);
 
         List<Table> tables = new ArrayList<>();
         for (int i = 0; i < restaurantTable.getTable().getCount(); i++) {

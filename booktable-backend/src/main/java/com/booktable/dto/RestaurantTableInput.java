@@ -5,6 +5,6 @@ import lombok.Data;
 
 @Data
 public class RestaurantTableInput {
-    private Restaurant restaurant;
+    private RestaurantInput restaurantInput;
     private TableDetails table;
 }
