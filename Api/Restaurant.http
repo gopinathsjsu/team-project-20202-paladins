@@ -6,11 +6,12 @@ GET http://127.0.0.1:8080/api/restaurant?page=2&size=38
 
 
 ### GET
-GET http://127.0.0.1:8080/api/restaurant/6812ad84ca189206978c56d5
+GET http://127.0.0.1:8080/api/restaurant/6812b11d605c867c73dd2f7c
 
+####
 
 ### GET (Search)
-GET http://127.0.0.1:8080/api/restaurant/search?startTime=08:30:00
+GET http://127.0.0.1:8080/api/restaurant/search?startTime=09:30:00
 
 
 ### POST

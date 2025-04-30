@@ -17,6 +17,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class RestaurantService {
@@ -36,14 +37,16 @@ public class RestaurantService {
     public List<Restaurant> searchRestaurants(String city, String state, String zip, String noOfPeople,
                                               LocalTime startTime) {
         return restaurantRepository.searchRestaurants(
-                city != null ? city : "",
-                state != null ? state : "",
-                zip != null ? zip : "",
-                noOfPeople != null ? Integer.parseInt(noOfPeople) : 0,
-                LocalDate.now(),
-                startTime
-
-        );
+                        city != null ? city : "",
+                        state != null ? state : "",
+                        zip != null ? zip : "",
+                        noOfPeople != null ? Integer.parseInt(noOfPeople) : 0,
+                        LocalDate.now(),
+                        startTime
+                ).stream()
+                .filter(restaurant ->
+                        restaurant.getOpeningHour().isBefore(startTime) && restaurant.getClosingHour().isAfter(startTime))
+                .collect(Collectors.toList());
     }
 
     public List<Restaurant> listRestaurants(int page, int size) {
