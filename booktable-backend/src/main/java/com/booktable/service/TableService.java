@@ -1,18 +1,21 @@
 package com.booktable.service;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import com.booktable.model.Restaurant;
 import com.booktable.model.Table;
 import com.booktable.repository.TableRepository;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import static com.booktable.utils.TimeSlotFinder.findClosestSlots;
 
 @Service
 public class TableService {
@@ -41,6 +44,39 @@ public class TableService {
         return tableRepository.saveAll(tables);
     }
 
+    public List<List<Object>> getBestAvailableTimeSlots(ObjectId restaurantId, LocalTime requestStart,LocalDate date) {
+        Restaurant restaurant = restaurantService.getRestaurantById(restaurantId);
+        LocalTime openingHour = restaurant.getOpeningHour();
+        LocalTime closingHour = restaurant.getClosingHour();
+
+        // Check if request is within operating hours
+        if (requestStart.isBefore(openingHour) || requestStart.isAfter(closingHour.minusHours(1))) {
+            return List.of(List.of("N/A", List.of(openingHour, openingHour.plusHours(1))));
+        }
+
+        // Get all reservations for the restaurant on the given date
+        Set<List<Object>> bookedTables = reservationService.getBookedTablesAndTimes(restaurantId, date);
+
+        // Get all tables for the restaurant
+        List<Table> allTables = tableRepository.findByRestaurantId(restaurantId);
+        Set<String> tableIds = allTables.stream()
+                .map(table -> table.getId().toString())
+                .collect(Collectors.toSet());
+
+        List<List<Object>> availableSlots = new ArrayList<>();
+
+        List<List<Object>> slots = findClosestSlots(openingHour, closingHour, bookedTables, requestStart, tableIds);
+
+//        return slots;
+//        return availableSlots.stream()
+//                .sorted((a, b) -> ((LocalTime) ((List<?>) a.get(1)).get(0))
+//                        .compareTo((LocalTime) ((List<?>) b.get(1)).get(0)))
+//                .limit(3)
+//                .toList();
+        return slots;
+    }
+
+
     public List<List<Object>> getAvaiableTables(ObjectId restaurantId, LocalDate date) {
         Set<List<Object>> bookedTables = reservationService.getBookedTablesAndTimes(restaurantId, date);
         List<Table> allTables = tableRepository.findByRestaurantId(restaurantId);
@@ -52,6 +88,7 @@ public class TableService {
 
         Set<List<Object>> freeTables = new HashSet<>();
         Set<List<LocalTime>> presentSlots = new HashSet<>();
+
 
         for (Table table : allTables) {
             LocalTime currentTime = openingHour;
