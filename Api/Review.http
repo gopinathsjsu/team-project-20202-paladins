@@ -1,0 +1,27 @@
+### Review
+POST http://127.0.0.1:8080/api/review
+Content-Type: application/json
+
+{
+  "restaurantId": "67fdcbd1b8d1fb10b3c9fc5a",
+  "rating": 1,
+  "comment": "string"
+}
+
+### PUT
+PUT http://127.0.0.1:8080/api/review/681002fae1357b771b423099
+Content-Type: application/json
+
+{
+  "restaurantId": "67fdcbd1b8d1fb10b3c9fc5a",
+  "rating": 1,
+  "comment": "string"
+}
+
+### DELETE
+DELETE http://127.0.0.1:8080/api/review/681002fae1357b771b423099
+Content-Type: application/json
+
+### GET
+GET http://127.0.0.1:8080/api/review/restaurant/67fdcbd1b8d1fb10b3c9fc5a
+Content-Type: application/json
