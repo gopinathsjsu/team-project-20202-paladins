@@ -15,4 +15,13 @@ public class AdminService {
     public List<Restaurant> getPendingRestaurants() {
         return restaurantRepository.findByApprovedFalse();
     }
+
+    public boolean approveRestaurant(String restaurantId) {
+        return restaurantRepository.findById(restaurantId).map(restaurant -> {
+            restaurant.setApproved(true);
+            restaurantRepository.save(restaurant);
+            return true;
+        }).orElse(false);
+    }
+
 }

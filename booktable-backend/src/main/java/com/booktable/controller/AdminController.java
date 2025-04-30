@@ -4,11 +4,9 @@ import com.booktable.dto.RestaurantTableOutput;
 import com.booktable.model.Restaurant;
 import com.booktable.service.AdminService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import java.util.List;
 
@@ -29,4 +27,13 @@ public class AdminController {
     public ResponseEntity<List<Restaurant>> getPendingRestaurants() {
         return ResponseEntity.ok(adminService.getPendingRestaurants());
     }
+
+    @PatchMapping("/approve/{restaurantId}")
+    public ResponseEntity<String> approveRestaurant(@PathVariable String restaurantId) {
+        boolean success = adminService.approveRestaurant(restaurantId);
+        return success
+                ? ResponseEntity.ok("Restaurant approved successfully")
+                : ResponseEntity.status(HttpStatus.NOT_FOUND).body("Restaurant not found");
+    }
+
 }
