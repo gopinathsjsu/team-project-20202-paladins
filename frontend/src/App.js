@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import {BrowserRouter as Router, Routes, Route, Navigate} from 'react-router-dom';
 import { ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 
@@ -11,6 +11,7 @@ import Layout from './components/layout/Layout';
 
 // Pages
 import Home from "./pages/Home";
+import Home2 from "./pages/Home2";
 import RestaurantList from "./pages/RestaurantList";
 import RestaurantDetail from "./pages/RestaurantDetail";
 import Booking from "./pages/Booking";
@@ -33,6 +34,7 @@ function App() {
         <Layout>
           <Routes>
             <Route path="/" element={<Home />} />
+            <Route path="/home2" element={<Home2 />} />
             <Route path="/restaurants" element={<RestaurantList />} />
             <Route path="/restaurants/:id" element={<RestaurantDetail />} />
             <Route path="/booking/:restaurantId" element={<Booking />} />
@@ -47,6 +49,15 @@ function App() {
             <Route element={<ProtectedRoute allowedRoles={['RESTAURANT_MANAGER']} />}>
               <Route path="/manager/dasshboard" element={<ManagerDashboard />} />
             </Route>
+            <Route path="/booking" element={<Navigate to="/" replace />} />
+            <Route
+                path="/booking/:restaurantId"
+                element={
+                  <ProtectedRoute> {/* Keep if booking requires login */}
+                    <Booking /> {/* <--- Use the existing Booking component */}
+                  </ProtectedRoute>
+                }
+            />
           </Routes>
         </Layout>
       </Router>
