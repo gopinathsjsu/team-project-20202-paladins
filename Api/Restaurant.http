@@ -6,13 +6,23 @@ GET http://127.0.0.1:8080/api/restaurant?page=2&size=38
 
 
 ### GET
-GET http://127.0.0.1:8080/api/restaurant/6812ad84ca189206978c56d5?startTime=09:30:00
-
+GET http://127.0.0.1:8080/api/restaurant/6813269bee172466f8574c21
 ####
 
 ### GET (Search)
 GET http://127.0.0.1:8080/api/restaurant/search?startTime=09:30:00
 
+### GET (Search)
+http://localhost:8080/api/restaurant/search?name=mo&location=&date=2025-04-30&time=19:00&partySize=2&startTime=10:00:00
+
+### GET (Search)
+GET http://localhost:8080/api/restaurant/search?restaurant=&location=&date=2025-04-30&time=19:00&partySize=2&startTime=19:00:00
+
+### GET (Search)
+GET http://localhost:8080/api/restaurant/search?restaurant=&location=&date=2025-04-30&time=19:00&partySize=2&startTime=10:00:00
+
+### GET (search)
+http://localhost:8080/api/restaurant/search?restaurant=mo&location=&date=2025-04-30&time=09:00&partySize=4&startTime=09:00:00
 
 ### POST
 POST http://127.0.0.1:8080/api/restaurant
@@ -37,7 +47,7 @@ Content-Type: application/json
       "Tibetan"
     ],
     "openingHour": "09:00:00",
-      "closingHour": "16:00:00"
+    "closingHour": "16:00:00"
   },
   "table": {
     "capacity": 4,

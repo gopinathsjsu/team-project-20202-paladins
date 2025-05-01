@@ -11,6 +11,8 @@ import com.booktable.service.ReservationService;
 import com.booktable.service.RestaurantService;
 import com.booktable.service.TableService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -30,9 +32,9 @@ import java.util.List;
 @RequestMapping("/api/restaurant")
 public class RestaurantController {
     private final RestaurantService restaurantService;
-    private final ReservationService reservationService;
     private final TableService tableService;
     private final RestaurantMapper restaurantMapper;
+    private final ReservationService reservationService;
 
     @Autowired
     public RestaurantController(RestaurantService restaurantService, TableService tableService,
@@ -47,14 +49,15 @@ public class RestaurantController {
 
     @GetMapping("/search")
     public List<RestaurantTableOutput> searchRestaurants(
+            @RequestParam(name = "restaurant", required = false) String name,
             @RequestParam(required = false) String city,
             @RequestParam(required = false) String state,
             @RequestParam(required = false) String zip,
-            @RequestParam(required = false) String noOfPeople,
+            @RequestParam(name = "partySize", required = false) String noOfPeople,
             @RequestParam(required = false) LocalTime startTime
     ) {
 
-        List<Restaurant> restaurants = restaurantService.searchRestaurants(city, state, zip, noOfPeople, startTime);
+        List<Restaurant> restaurants = restaurantService.searchRestaurants(name, city, state, zip, noOfPeople, startTime);
 
         List<RestaurantTableOutput> restaurantTableOutputs = new ArrayList<>();
         for (Restaurant restaurant : restaurants) {
@@ -68,6 +71,7 @@ public class RestaurantController {
                 slot.setSlot((List<LocalTime>) tableData.get(1));
                 tableSlots.add(slot);
             }
+
             restaurantTableOutput.setRestaurant(restaurant);
             restaurantTableOutput.setTableSlots(tableSlots);
             restaurantTableOutput.setNoOfTimesBookedToday(reservationService.countReservationsForDate(
@@ -104,8 +108,9 @@ public class RestaurantController {
 
         restaurantTableOutput.setRestaurant(restaurant);
         restaurantTableOutput.setTableSlots(tableSlots);
-        restaurantTableOutput.setNoOfTimesBookedToday(restaurantTableOutput.getNoOfTimesBookedToday() + 1);
-
+        restaurantTableOutput.setNoOfTimesBookedToday(reservationService.countReservationsForDate(
+                restaurant.getId(), LocalDate.now()
+        ));
         return restaurantTableOutput;
     }
 

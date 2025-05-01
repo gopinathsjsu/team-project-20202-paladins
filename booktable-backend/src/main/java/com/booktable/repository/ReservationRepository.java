@@ -1,5 +1,8 @@
 package com.booktable.repository;
-
+import com.booktable.model.Reservation;
+import com.booktable.model.Table;
+import lombok.NonNull;
+import org.bson.types.ObjectId;
 import com.booktable.model.Reservation;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.repository.MongoRepository;

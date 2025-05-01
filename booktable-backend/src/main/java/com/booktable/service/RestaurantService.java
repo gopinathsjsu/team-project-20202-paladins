@@ -34,7 +34,7 @@ public class RestaurantService {
         return restaurantRepository.findById(String.valueOf(id)).orElseThrow(() -> new RuntimeException("Restaurant not found"));
     }
 
-    public List<Restaurant> searchRestaurants(String city, String state, String zip, String noOfPeople,
+    public List<Restaurant> searchRestaurants(String name, String city, String state, String zip, String noOfPeople,
                                               LocalTime startTime) {
         return restaurantRepository.searchRestaurants(
                         city != null ? city : "",
@@ -42,10 +42,12 @@ public class RestaurantService {
                         zip != null ? zip : "",
                         noOfPeople != null ? Integer.parseInt(noOfPeople) : 0,
                         LocalDate.now(),
-                        startTime
+                        startTime,
+                        name != null ? name : ""
                 ).stream()
                 .filter(restaurant ->
-                        restaurant.getOpeningHour().isBefore(startTime) && restaurant.getClosingHour().isAfter(startTime))
+                        restaurant.getOpeningHour().isBefore(startTime.plusMinutes(1)) &&
+                                restaurant.getClosingHour().isAfter(startTime))
                 .collect(Collectors.toList());
     }
 
