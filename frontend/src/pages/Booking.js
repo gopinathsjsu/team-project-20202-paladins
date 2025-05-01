@@ -7,8 +7,6 @@ import {
     Container, Typography, Box, Button, Alert, CircularProgress, Paper, Divider
 } from '@mui/material';
 
-const formatReadableTime = (timeString) => { /* ... same as before ... */ };
-
 const Booking = () => {
     const { restaurantId } = useParams();
     const location = useLocation();
