@@ -1,12 +1,10 @@
 package com.booktable.service;
 
+import com.booktable.model.Reservation;
 import com.booktable.repository.ReservationRepository;
-import com.booktable.repository.RestaurantRepository;
-import com.booktable.repository.TableRepository;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.booktable.model.Reservation;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -49,6 +47,18 @@ public class ReservationService {
 
     public long countReservationsForDate(ObjectId restaurantId, LocalDate date) {
         return reservationRepository.countByRestaurantIdAndDate(restaurantId, date);
+    }
+
+    public List<Reservation> getReservations(LocalDate date, String restaurantId) {
+        if (date != null && restaurantId != null) {
+            return reservationRepository.findByRestaurantIdAndDate(new ObjectId(restaurantId), date);
+        } else if (date != null) {
+            return reservationRepository.findByDate(String.valueOf(date));
+        } else if (restaurantId != null) {
+            return reservationRepository.findByRestaurantId(new ObjectId(restaurantId));
+        } else {
+            return reservationRepository.findAll();
+        }
     }
 
 

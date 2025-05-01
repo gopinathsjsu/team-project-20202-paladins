@@ -1,7 +1,6 @@
 package com.booktable.controller;
 
 import com.booktable.dto.BookingDto;
-import com.booktable.dto.RestaurantTableInput;
 import com.booktable.model.Reservation;
 import com.booktable.model.Restaurant;
 import com.booktable.model.Table;
@@ -9,11 +8,10 @@ import com.booktable.service.ReservationService;
 import com.booktable.service.RestaurantService;
 import com.booktable.service.TableService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -72,7 +70,42 @@ public class ReservationController {
 
         return bookingDto;
     }
+
+    @GetMapping
+    public List<BookingDto> getReservations(
+            @RequestParam(required = false)
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
+            @RequestParam(name = "restaurant_id", required = false) String restaurantId) {
+
+        List<Reservation> reservations = reservationService.getReservations(date, restaurantId);
+        List<BookingDto> bookingDtos = new ArrayList<>();
+
+        for (Reservation res : reservations) {
+            Table table = tableService.getTableById(res.getTableId());
+            Restaurant restaurant = restaurantService.getRestaurantById(res.getRestaurantId());
+
+            BookingDto dto = new BookingDto(
+                    res.getRestaurantId(),
+                    res.getTableId(),
+                    res.getStartSlotTime(),
+                    res.getEndSlotTime(),
+                    res.getDate()
+            );
+            dto.setReservationId(res.getId());
+            if (table != null) dto.setTableNumber(table.getTableNumber());
+            if (restaurant != null) dto.setRestaurantName(restaurant.getName());
+
+            bookingDtos.add(dto);
+        }
+
+        return bookingDtos;
+    }
+
+
 }
+
+
+
 
 
 

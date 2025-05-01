@@ -11,7 +11,8 @@ Content-Type: application/json
   "date": "2019-03-27"
 }
 
-###
-
+### Get all bookings
+GET http://127.0.0.1:8080/api/book?restaurantId=6812ad84ca189206978c56d5&date=2019-03-27
+Content-Type: application/json
 
 
