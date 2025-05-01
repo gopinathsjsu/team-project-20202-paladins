@@ -1,11 +1,14 @@
 package com.booktable.service;
 
 import com.booktable.model.Reservation;
+import com.booktable.model.Restaurant;
 import com.booktable.repository.ReservationRepository;
+import com.booktable.repository.RestaurantRepository;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.nio.file.AccessDeniedException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
@@ -14,11 +17,12 @@ import java.util.stream.Collectors;
 @Service
 public class ReservationService {
     private final ReservationRepository reservationRepository;
-
+    private final RestaurantRepository restaurantRepository;
 
     @Autowired
-    public ReservationService(ReservationRepository reservationRepository) {
+    public ReservationService(ReservationRepository reservationRepository, RestaurantRepository restaurantRepository) {
         this.reservationRepository = reservationRepository;
+        this.restaurantRepository = restaurantRepository;
     }
 
     public Reservation saveReservation(Reservation reservation) {
@@ -49,21 +53,40 @@ public class ReservationService {
         return (int) reservationRepository.countByRestaurantIdAndDate(restaurantId, date);
     }
 
-    public List<Reservation> getReservations(LocalDate date, LocalDate startDate, LocalDate endDate, String restaurantId) {
-        if (date != null && restaurantId != null) {
-            return reservationRepository.findByDateAndRestaurantId(date, restaurantId);
-        } else if (startDate != null && endDate != null && restaurantId != null) {
-            return reservationRepository.findByDateBetweenAndRestaurantId(startDate, endDate, restaurantId);
+    public List<Reservation> getReservations(LocalDate date, LocalDate startDate, LocalDate endDate, String restaurantId, String managerId) throws AccessDeniedException {
+
+        ObjectId restaurantObjectId = restaurantId != null ? new ObjectId(restaurantId) : null;
+
+        // If a managerId is provided, verify they own the restaurant
+        if (managerId != null && restaurantObjectId != null) {
+            verifyManagerOwnership(restaurantObjectId, managerId);
+        }
+
+        if (date != null && restaurantObjectId != null) {
+            return reservationRepository.findByDateAndRestaurantId(date, restaurantObjectId);
+        } else if (startDate != null && endDate != null && restaurantObjectId != null) {
+            return reservationRepository.findByDateBetweenAndRestaurantId(startDate, endDate, restaurantObjectId);
         } else if (startDate != null && endDate != null) {
             return reservationRepository.findByDateBetween(startDate, endDate);
         } else if (date != null) {
             return reservationRepository.findByDate(date);
-        } else if (restaurantId != null) {
-            return reservationRepository.findByRestaurantId(new ObjectId(restaurantId));
+        } else if (restaurantObjectId != null) {
+            return reservationRepository.findByRestaurantId(restaurantObjectId);
         } else {
             return reservationRepository.findAll();
         }
     }
 
+    public List<Reservation> getReservationsByCustomerId(ObjectId customerId) {
+        return reservationRepository.findByCustomerId(customerId);
+    }
 
+    private void verifyManagerOwnership(ObjectId restaurantId, String managerId) throws AccessDeniedException {
+        Restaurant restaurant = restaurantRepository.findById(restaurantId.toHexString())
+                .orElseThrow(() -> new RuntimeException("Restaurant not found with ID: " + restaurantId));
+
+        if (!restaurant.getManagerId().equals(managerId)) {
+            throw new AccessDeniedException("Manager does not own restaurant with ID: " + restaurantId);
+        }
+    }
 }
