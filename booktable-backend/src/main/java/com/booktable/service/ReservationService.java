@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -46,8 +45,8 @@ public class ReservationService {
                 .collect(Collectors.toSet());
     }
 
-    public long countReservationsForDate(ObjectId restaurantId, LocalDate date) {
-        return reservationRepository.countByRestaurantIdAndDate(restaurantId, date);
+    public int countReservationsForDate(ObjectId restaurantId, LocalDate date) {
+        return (int) reservationRepository.countByRestaurantIdAndDate(restaurantId, date);
     }
 
     public List<Reservation> getReservations(LocalDate date, LocalDate startDate, LocalDate endDate, String restaurantId) {

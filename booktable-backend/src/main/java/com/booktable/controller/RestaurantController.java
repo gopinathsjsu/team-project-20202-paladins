@@ -7,11 +7,10 @@ import com.booktable.dto.TableSlots;
 import com.booktable.mapper.RestaurantMapper;
 import com.booktable.model.Restaurant;
 import com.booktable.model.Table;
+import com.booktable.service.ReservationService;
 import com.booktable.service.RestaurantService;
 import com.booktable.service.TableService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import lombok.RequiredArgsConstructor;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -31,14 +30,19 @@ import java.util.List;
 @RequestMapping("/api/restaurant")
 public class RestaurantController {
     private final RestaurantService restaurantService;
+    private final ReservationService reservationService;
     private final TableService tableService;
     private final RestaurantMapper restaurantMapper;
 
     @Autowired
-    public RestaurantController(RestaurantService restaurantService, TableService tableService, RestaurantMapper restaurantMapper) {
+    public RestaurantController(RestaurantService restaurantService, TableService tableService,
+                                RestaurantMapper restaurantMapper,
+                                ReservationService reservationService
+    ) {
         this.restaurantService = restaurantService;
         this.tableService = tableService;
         this.restaurantMapper = restaurantMapper;
+        this.reservationService = reservationService;
     }
 
     @GetMapping("/search")
@@ -47,7 +51,7 @@ public class RestaurantController {
             @RequestParam(required = false) String state,
             @RequestParam(required = false) String zip,
             @RequestParam(required = false) String noOfPeople,
-            @RequestParam LocalTime startTime
+            @RequestParam(required = false) LocalTime startTime
     ) {
 
         List<Restaurant> restaurants = restaurantService.searchRestaurants(city, state, zip, noOfPeople, startTime);
@@ -66,6 +70,9 @@ public class RestaurantController {
             }
             restaurantTableOutput.setRestaurant(restaurant);
             restaurantTableOutput.setTableSlots(tableSlots);
+            restaurantTableOutput.setNoOfTimesBookedToday(reservationService.countReservationsForDate(
+                    restaurant.getId(), LocalDate.now()
+            ));
 
             restaurantTableOutputs.add(restaurantTableOutput);
         }
@@ -97,6 +104,7 @@ public class RestaurantController {
 
         restaurantTableOutput.setRestaurant(restaurant);
         restaurantTableOutput.setTableSlots(tableSlots);
+        restaurantTableOutput.setNoOfTimesBookedToday(restaurantTableOutput.getNoOfTimesBookedToday() + 1);
 
         return restaurantTableOutput;
     }

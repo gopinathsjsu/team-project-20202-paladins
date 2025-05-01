@@ -37,7 +37,7 @@ Content-Type: application/json
       "Tibetan"
     ],
     "openingHour": "09:00:00",
-    "closingHour": "16:00:00"
+      "closingHour": "16:00:00"
   },
   "table": {
     "capacity": 4,
