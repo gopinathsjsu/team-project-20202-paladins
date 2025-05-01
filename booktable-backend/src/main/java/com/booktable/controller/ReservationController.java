@@ -10,19 +10,22 @@ import com.booktable.service.RestaurantService;
 import com.booktable.service.TableService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.bson.types.ObjectId;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.nio.file.AccessDeniedException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
 @SecurityRequirement(name = "bearerAuth")
 @RestController
-@RequestMapping("/api/book")
+@RequestMapping("/api/reservation/")
 public class ReservationController {
     private final ReservationService reservationService;
     private final TableService tableService;
@@ -37,7 +40,7 @@ public class ReservationController {
         this.restaurantService = restaurantService;
     }
 
-    @PostMapping
+    @PostMapping("/book")
     public BookingDto addReservation(@RequestBody Reservation request,
                                      @AuthenticationPrincipal User currentUser) {
         // add validations
@@ -89,13 +92,34 @@ public class ReservationController {
     }
 
     @GetMapping
+    @PreAuthorize("hasAnyAuthority('RESTAURANT_MANAGER', 'ADMIN')")
     public List<BookingDto> getReservations(
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
-            @RequestParam(name = "restaurantId", required = false) String restaurantId) {
+            @RequestParam(name = "restaurantId", required = false) String restaurantId,
+            @AuthenticationPrincipal User currentUser) throws AccessDeniedException {
 
-        List<Reservation> reservations = reservationService.getReservations(date, startDate, endDate, restaurantId);
+        String managerId = null;
+        if (currentUser.getRoles().stream().anyMatch(role -> role.getAuthority().equals("RESTAURANT_MANAGER"))) {
+            managerId = currentUser.getId();
+        }
+
+        List<Reservation> reservations = reservationService.getReservations(date, startDate, endDate, restaurantId, managerId);
+        return getBookingDtos(reservations);
+    }
+
+    @GetMapping("/my-bookings")
+    @PreAuthorize("hasAuthority('CUSTOMER')") // Ensure only customers can access
+    public List<BookingDto> getMyReservations(@AuthenticationPrincipal User currentUser) {
+        ObjectId customerId = new ObjectId(currentUser.getId());
+        List<Reservation> reservations = reservationService.getReservationsByCustomerId(customerId);
+
+        return getBookingDtos(reservations);
+    }
+
+    @NotNull
+    private List<BookingDto> getBookingDtos(List<Reservation> reservations) {
         List<BookingDto> bookingDtos = new ArrayList<>();
 
         for (Reservation res : reservations) {

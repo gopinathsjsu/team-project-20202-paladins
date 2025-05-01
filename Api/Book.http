@@ -1,9 +1,8 @@
 ### Book
-POST http://127.0.0.1:8080/api/book
+POST http://127.0.0.1:8080/api/reservation/book
 Content-Type: application/json
 
 {
-  "customerId": "67fdb6489fc4ac62aeb9eb5e",
   "restaurantId": "6812ad84ca189206978c56d5",
   "tableId": "6812ad85ca189206978c56d9",
   "startSlotTime": "11:00:00",
@@ -12,7 +11,7 @@ Content-Type: application/json
 }
 
 ### Get all bookings
-GET http://127.0.0.1:8080/api/book?startDate=2025-05-26&endDate=2025-05-26
+GET http://127.0.0.1:8080/api/reservation?startDate=2025-05-26&endDate=2025-05-26
 Content-Type: application/json
 
 ### Get all bookings
