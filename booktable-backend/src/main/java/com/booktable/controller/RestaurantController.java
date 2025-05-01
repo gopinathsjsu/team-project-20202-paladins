@@ -7,7 +7,6 @@ import com.booktable.dto.TableSlots;
 import com.booktable.mapper.RestaurantMapper;
 import com.booktable.model.Restaurant;
 import com.booktable.model.Table;
-import com.booktable.model.User;
 import com.booktable.service.RestaurantService;
 import com.booktable.service.TableService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -22,7 +21,6 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 //Display a list of restaurants that have availability at the specified time +/- 30minutes - with
 // Name, Cuisine type, Cost rating, Reviews and Ratings, and #of times booked today,
@@ -60,26 +58,47 @@ public class RestaurantController {
 
             List<TableSlots> tableSlots = new ArrayList<>();
             for (List<Object> tableData : tableService.getBestAvailableTimeSlots(restaurant.getId(),
-                    startTime, LocalDate.now())) {
+                    startTime, LocalDate.now(), 3)) {
                 TableSlots slot = new TableSlots();
                 slot.setTableId(String.valueOf(tableData.get(0)));
                 slot.setSlot((List<LocalTime>) tableData.get(1));
                 tableSlots.add(slot);
             }
-
             restaurantTableOutput.setRestaurant(restaurant);
             restaurantTableOutput.setTableSlots(tableSlots);
 
             restaurantTableOutputs.add(restaurantTableOutput);
         }
 
+        // todo #of times booked today
         return restaurantTableOutputs;
     }
 
     // Get a single restaurant by ID
     @GetMapping("/{id}")
-    public Restaurant getRestaurantById(@PathVariable String id) {
-        return restaurantService.getRestaurantById(id);
+    public RestaurantTableOutput getRestaurantById(@PathVariable String id,
+                                                   @RequestParam(required = false) LocalTime startTime
+    ) {
+        RestaurantTableOutput restaurantTableOutput = new RestaurantTableOutput();
+        Restaurant restaurant = restaurantService.getRestaurantById(id);
+
+        if (startTime == null) {
+            startTime = LocalTime.now();
+        }
+
+        List<TableSlots> tableSlots = new ArrayList<>();
+        for (List<Object> tableData : tableService.getBestAvailableTimeSlots(restaurant.getId(),
+                startTime, LocalDate.now(), 15)) {
+            TableSlots slot = new TableSlots();
+            slot.setTableId(String.valueOf(tableData.get(0)));
+            slot.setSlot((List<LocalTime>) tableData.get(1));
+            tableSlots.add(slot);
+        }
+
+        restaurantTableOutput.setRestaurant(restaurant);
+        restaurantTableOutput.setTableSlots(tableSlots);
+
+        return restaurantTableOutput;
     }
 
     // List all restaurants
@@ -98,7 +117,7 @@ public class RestaurantController {
 //        User currentUser = (User) authentication.getPrincipal();
 
         RestaurantInput restaurantInput = restaurantTable.getRestaurantInput();
-        Restaurant res = restaurantMapper.toEntity(restaurantInput,"123"); //todo revert this
+        Restaurant res = restaurantMapper.toEntity(restaurantInput, "123"); //todo revert this
 
         // Save restaurant to database
         res = restaurantService.saveRestaurant(res);

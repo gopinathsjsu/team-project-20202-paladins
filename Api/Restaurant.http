@@ -6,7 +6,7 @@ GET http://127.0.0.1:8080/api/restaurant?page=2&size=38
 
 
 ### GET
-GET http://127.0.0.1:8080/api/restaurant/6812b11d605c867c73dd2f7c
+GET http://127.0.0.1:8080/api/restaurant/6812ad84ca189206978c56d5?startTime=09:30:00
 
 ####
 
@@ -20,7 +20,7 @@ Content-Type: application/json
 
 {
   "restaurantInput": {
-    "name": "Mo:mo:",
+    "name": "KaKa",
     "description": "A cozy restaurant serving best in town momo view of the hills.",
     "addressStreet": "123 Summit Ave",
     "addressCity": "Boulder Creek",
