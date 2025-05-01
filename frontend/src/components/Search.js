@@ -14,8 +14,6 @@ const Search = ({ onSearch }) => {
     const [partySize, setPartySize] = useState(2);
 
     const handleSearch = () => {
-        const paddedTime = time ? `${time}:00` : "";
-
         const params = {};
         if (restaurant) params.restaurant = restaurant;
         if (date) params.date = date;
