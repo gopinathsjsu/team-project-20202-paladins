@@ -1,10 +1,8 @@
-// src/components/RestaurantCard.js
-
 import React from "react";
 import { Card, CardContent, Typography, Button, Box, Rating, Stack } from "@mui/material";
 import { Link } from "react-router-dom";
 
-const RestaurantCard = ({ restaurant, userRole, approveRestaurant, deleteRestaurant }) => {
+const RestaurantCard = ({ restaurant, userRole, approveRestaurant, deleteRestaurant, onEdit }) => {
   return (
     <Card
       sx={{
@@ -101,30 +99,15 @@ const RestaurantCard = ({ restaurant, userRole, approveRestaurant, deleteRestaur
             </Button>
           </>
         ) : userRole === "RESTAURANT_MANAGER" ? (
-          restaurant.approved ? (
-            <Link to={`/manager/edit/${restaurant.id}`} style={{ width: "100%" }}>
-              <Button
-                variant="contained"
-                fullWidth
-                color="primary"
-                sx={{ borderRadius: "30px", fontSize: "14px" }}
-              >
-                Edit Restaurant
-              </Button>
-            </Link>
+            <Button
+              variant="outlined"
+              color="primary"
+              onClick={() => onEdit(restaurant)}
+              sx={{ width: "100%" }}
+            >
+              Edit Restaurant
+            </Button>
           ) : (
-            <Link to={`/manager/approve/${restaurant.id}`} style={{ width: "100%" }}>
-              <Button
-                variant="contained"
-                fullWidth
-                color="primary"
-                sx={{ borderRadius: "30px", fontSize: "14px" }}
-              >
-                Approve Restaurant
-              </Button>
-            </Link>
-          )
-        ) : (
           <Link to={`/booking/${restaurant.id}`} style={{ width: "100%" }}>
             <Button variant="contained" fullWidth color="primary" sx={{ borderRadius: "30px" }}>
               Book a Table

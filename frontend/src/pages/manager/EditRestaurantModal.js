@@ -10,17 +10,17 @@ import {
   InputLabel,
   FormControl,
   CircularProgress,
-  FormHelperText,
   Modal,
   Backdrop,
   Fade,
   IconButton,
+  FormHelperText,
 } from "@mui/material";
 import { useDispatch } from "react-redux";
-import { createRestaurant } from "../../redux/slices/managerSlice";
-import CloseIcon from '@mui/icons-material/Close';
+import { updateRestaurant } from "../../redux/slices/managerSlice";
+import CloseIcon from "@mui/icons-material/Close";
 
-const CreateRestaurantModal = ({ open, handleClose }) => {
+const EditRestaurantModal = ({ open, handleClose, restaurantData }) => {
   const dispatch = useDispatch();
 
   const [formData, setFormData] = useState({
@@ -39,24 +39,21 @@ const CreateRestaurantModal = ({ open, handleClose }) => {
     latitude: "",
     longitude: "",
     tableCapacity: 4,
-    tableCount: 10,
+    tableCount: 1,
   });
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  // Use Geolocation API to set latitude and longitude by default
+  // Pre-fill the form with the existing restaurant data
   useEffect(() => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition((position) => {
-        setFormData((prevState) => ({
-          ...prevState,
-          latitude: position.coords.latitude,
-          longitude: position.coords.longitude,
-        }));
+    if (restaurantData) {
+      setFormData({
+        ...restaurantData,
+        cuisines: restaurantData.cuisines || [],
       });
     }
-  }, []);
+  }, [restaurantData]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -73,30 +70,29 @@ const CreateRestaurantModal = ({ open, handleClose }) => {
     });
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setError("");
+    const handleSubmit = async (e) => {
+      e.preventDefault();
+      setLoading(true);
+      setError("");
 
-    const restaurantData = {
-      restaurantInput: {
+      const updatedRestaurantData = {
         ...formData,
-      },
-      table: {
-        capacity: formData.tableCapacity,
-        count: formData.tableCount,
-      },
-    };
+        table: {
+          capacity: formData.tableCapacity,
+          count: formData.tableCount,
+        },
+      };
+    
 
-    try {
-      await dispatch(createRestaurant(restaurantData));
-      setLoading(false);
-      handleClose();
-    } catch (err) {
-      setLoading(false);
-      setError("Failed to create restaurant. Please try again.");
-    }
-  };
+      try {
+        await dispatch(updateRestaurant(updatedRestaurantData));
+        setLoading(false);
+        handleClose();
+      } catch (err) {
+        setLoading(false);
+        setError("Failed to update restaurant. Please try again.");
+      }
+    };
 
   return (
     <Modal
@@ -107,9 +103,9 @@ const CreateRestaurantModal = ({ open, handleClose }) => {
       BackdropProps={{
         timeout: 500,
         style: {
-          backgroundColor: 'rgba(0, 0, 0, 0.7)', // Dark background with opacity
-          backdropFilter: 'blur(10px)', // Applying blur effect
-        }
+          backgroundColor: "rgba(0, 0, 0, 0.7)",
+          backdropFilter: "blur(10px)",
+        },
       }}
     >
       <Fade in={open}>
@@ -122,14 +118,13 @@ const CreateRestaurantModal = ({ open, handleClose }) => {
             width: "80%",
             maxWidth: "600px",
             margin: "auto",
-            marginTop: "5%", // Reduced from 10% to move the modal up
+            marginTop: "5%",
             outline: "none",
-            position: "relative", // Added for positioning the close button
-            maxHeight: "80vh", // Limit the max height of the modal
-            overflowY: "auto", // Enable vertical scrolling
+            position: "relative",
+            maxHeight: "80vh",
+            overflowY: "auto",
           }}
         >
-          {/* Close Button */}
           <IconButton
             onClick={handleClose}
             sx={{
@@ -143,7 +138,7 @@ const CreateRestaurantModal = ({ open, handleClose }) => {
           </IconButton>
 
           <Typography variant="h5" gutterBottom>
-            Create New Restaurant
+            Edit Restaurant
           </Typography>
           <form onSubmit={handleSubmit}>
             <Grid container spacing={3}>
@@ -276,7 +271,6 @@ const CreateRestaurantModal = ({ open, handleClose }) => {
                     <MenuItem value="Chinese">Chinese</MenuItem>
                     <MenuItem value="Indian">Indian</MenuItem>
                     <MenuItem value="Mexican">Mexican</MenuItem>
-                    {/* Add more cuisines as needed */}
                   </Select>
                   <FormHelperText>Select cuisines offered by your restaurant</FormHelperText>
                 </FormControl>
@@ -379,7 +373,7 @@ const CreateRestaurantModal = ({ open, handleClose }) => {
                     },
                   }}
                 >
-                  {loading ? <CircularProgress size={24} /> : "Create Restaurant"}
+                  {loading ? <CircularProgress size={24} /> : "Update Restaurant"}
                 </Button>
               </Grid>
             </Grid>
@@ -396,4 +390,4 @@ const CreateRestaurantModal = ({ open, handleClose }) => {
   );
 };
 
-export default CreateRestaurantModal;
+export default EditRestaurantModal;
