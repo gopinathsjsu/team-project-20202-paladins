@@ -4,12 +4,16 @@ import com.booktable.dto.BookingDto;
 import com.booktable.model.Reservation;
 import com.booktable.model.Restaurant;
 import com.booktable.model.Table;
+import com.booktable.model.User;
 import com.booktable.service.ReservationService;
 import com.booktable.service.RestaurantService;
 import com.booktable.service.TableService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
+
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -34,9 +38,20 @@ public class ReservationController {
     }
 
     @PostMapping
-    public BookingDto addReservation(@RequestBody Reservation reservation) {
+    public BookingDto addReservation(@RequestBody Reservation request,
+                                     @AuthenticationPrincipal User currentUser) {
         // add validations
         // TODO PUSH THIS ERROR OUT TO FRONTEND
+
+        Reservation reservation = Reservation.builder()
+                .customerId(new ObjectId(currentUser.getId()))
+                .restaurantId(request.getRestaurantId())
+                .tableId(request.getTableId())
+                .date(request.getDate())
+                .startSlotTime(request.getStartSlotTime())
+                .endSlotTime(request.getEndSlotTime())
+                .partySize(request.getPartySize())
+                .build();
 
         // Check for duplicate reservation
         boolean isDuplicate = reservationService.isDuplicateReservation(reservation);
