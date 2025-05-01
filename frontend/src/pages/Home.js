@@ -19,7 +19,6 @@ import {API_ENDPOINTS} from "../constants/api";
 import {formatTime} from "../utils/dateUtils";
 import {useSearchParams} from "react-router-dom";
 import RestaurantCard from "../components/RestaurantCard/RestaurantCard";
-import api from "../services/api";  // Import axios instance
 
 const Home = () => {
   const [allRestaurants, setAllRestaurants] = useState([]);
