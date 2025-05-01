@@ -3,7 +3,9 @@ package com.booktable.repository;
 import com.booktable.model.Restaurant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.aggregation.*;
+import org.springframework.data.mongodb.core.aggregation.Aggregation;
+import org.springframework.data.mongodb.core.aggregation.LookupOperation;
+import org.springframework.data.mongodb.core.aggregation.MatchOperation;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.stereotype.Repository;
 
@@ -20,10 +22,12 @@ public class CustomRestaurantRepositoryImpl implements CustomRestaurantRepositor
     private MongoTemplate mongoTemplate;
 
     @Override
-    public List<Restaurant> searchRestaurants(String city, String state, String zip, int numberOfPeople, LocalDate date, LocalTime startTime) {
+    public List<Restaurant> searchRestaurants(String city, String state, String zip, int numberOfPeople, LocalDate date, LocalTime startTime, String name) {
         MatchOperation matchCityStateZip = match(Criteria.where("addressCity").regex(city, "i")
                 .and("addressState").regex(state, "i")
                 .and("addressZip").regex(zip, "i"));
+
+        MatchOperation matchName = match(Criteria.where("name").regex(name, "i"));
 
         LookupOperation lookupTables = lookup("table", "_id", "restaurantId", "tables");
 
@@ -33,10 +37,9 @@ public class CustomRestaurantRepositoryImpl implements CustomRestaurantRepositor
                 .and("reservations").not().elemMatch(Criteria.where("date").is(date)
                         .and("time").gte(startTime)));
 
-
-
         Aggregation aggregation = newAggregation(
                 matchCityStateZip,
+                matchName,
                 lookupTables,
                 lookupReservations,
                 matchCapacityAndAvailability

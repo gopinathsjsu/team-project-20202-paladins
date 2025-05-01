@@ -11,7 +11,7 @@ GET http://127.0.0.1:8080/api/restaurant/6812b11d605c867c73dd2f7c
 ####
 
 ### GET (Search)
-GET http://127.0.0.1:8080/api/restaurant/search?startTime=09:30:00
+GET http://127.0.0.1:8080/api/restaurant/search?startTime=09:30:00&name=lUw
 
 ### GET (Search)
 GET http://localhost:8080/api/restaurant/search?restaurant=&location=&date=2025-04-30&time=19:00&partySize=2&startTime=19:00:00

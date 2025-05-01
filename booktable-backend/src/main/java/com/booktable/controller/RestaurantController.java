@@ -43,6 +43,7 @@ public class RestaurantController {
 
     @GetMapping("/search")
     public List<RestaurantTableOutput> searchRestaurants(
+            @RequestParam(required = false) String name,
             @RequestParam(required = false) String city,
             @RequestParam(required = false) String state,
             @RequestParam(required = false) String zip,
@@ -50,7 +51,7 @@ public class RestaurantController {
             @RequestParam LocalTime startTime
     ) {
 
-        List<Restaurant> restaurants = restaurantService.searchRestaurants(city, state, zip, noOfPeople, startTime);
+        List<Restaurant> restaurants = restaurantService.searchRestaurants(name, city, state, zip, noOfPeople, startTime);
 
         List<RestaurantTableOutput> restaurantTableOutputs = new ArrayList<>();
         for (Restaurant restaurant : restaurants) {
