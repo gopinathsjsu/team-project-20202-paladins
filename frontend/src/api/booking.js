@@ -13,6 +13,6 @@ import axios from "./API";
  * @returns {Promise<object>} The Axios promise for the API request. The resolved value will typically be the created booking object or confirmation data from the backend.
  */
 export const bookRestaurant = async (bookingData) => {
-    const response = await axios.post('/api/book', bookingData);
+    const response = await axios.post('/api/reservation/book', bookingData);
     return response.data;
 };

@@ -16,6 +16,8 @@ public interface ReservationRepository extends MongoRepository<Reservation, Obje
     List<Reservation> findByRestaurantIdAndTableIdAndDateAndStartSlotTimeAndEndSlotTime(
             ObjectId restaurantId, ObjectId tableId, LocalDate date, LocalTime startSlotTime, LocalTime endSlotTime);
 
+    List<Reservation> findByCustomerId(ObjectId customerId);
+
     List<Reservation> findByRestaurantId(ObjectId restaurantId);
 
     List<Reservation> findByTableId(ObjectId tableId);
@@ -30,10 +32,10 @@ public interface ReservationRepository extends MongoRepository<Reservation, Obje
 
     List<Reservation> findByRestaurantIdAndDate(ObjectId objectId, LocalDate date);
 
-    List<Reservation> findByDateAndRestaurantId(LocalDate date, String restaurantId);
+    List<Reservation> findByDateAndRestaurantId(LocalDate date, ObjectId restaurantId);
 
     @Query(value = "{ 'date': { '$gte': ?0, '$lte': ?1 }, 'restaurantId': ObjectId(?2) }")
-    List<Reservation> findByDateBetweenAndRestaurantId(LocalDate startDate, LocalDate endDate, String restaurantId);
+    List<Reservation> findByDateBetweenAndRestaurantId(LocalDate startDate, LocalDate endDate, ObjectId restaurantId);
 
     @Query(value = "{ 'date': { '$gte': ?0, '$lte': ?1 } }")
     List<Reservation> findByDateBetween(LocalDate startDate, LocalDate endDate);
