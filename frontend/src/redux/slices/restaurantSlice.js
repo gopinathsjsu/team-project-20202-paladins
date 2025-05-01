@@ -11,7 +11,7 @@ export const fetchRestaurants = createAsyncThunk(
   'restaurants/fetchRestaurants',
   async () => {
     const response = await getRestaurants();
-    return response;
+    return response.data;
   }
 );
 

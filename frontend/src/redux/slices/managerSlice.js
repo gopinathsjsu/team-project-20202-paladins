@@ -1,12 +1,13 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { getManagerRestaurants, createRestaurantApi } from '../../api/manager';
+import { getManagerRestaurants, createRestaurantApi, updateRestaurantApi } from '../../api/manager';
 
 // Thunk to fetch manager's restaurants
 export const fetchManagerRestaurants = createAsyncThunk(
   'manager/fetchManagerRestaurants',
   async (_, { rejectWithValue }) => {
     try {
-      return await getManagerRestaurants();
+        const response = await getManagerRestaurants();
+        return response.data;
     } catch (err) {
       return rejectWithValue(err.response?.data || 'Failed to fetch');
     }
@@ -22,6 +23,18 @@ export const createRestaurant = createAsyncThunk(
       return response.data;
     } catch (err) {
       return rejectWithValue(err.response?.data || 'Failed to create restaurant');
+    }
+  }
+);
+
+export const updateRestaurant = createAsyncThunk(
+  'manager/updateRestaurant',
+  async (restaurantData, { rejectWithValue }) => {
+    try {
+      const response = await updateRestaurantApi(restaurantData.id, restaurantData);
+      return response.data;
+    } catch (err) {
+      return rejectWithValue(err.response?.data || 'Failed to update restaurant');
     }
   }
 );
@@ -61,6 +74,23 @@ const managerSlice = createSlice({
         state.restaurants.push(action.payload);
       })
       .addCase(createRestaurant.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+
+      // Update Restaurant
+      .addCase(updateRestaurant.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(updateRestaurant.fulfilled, (state, action) => {
+        state.loading = false;
+        const updatedRestaurant = action.payload;
+        state.restaurants = state.restaurants.map((restaurant) =>
+          restaurant.id === updatedRestaurant.id ? updatedRestaurant : restaurant
+        );
+      })
+      .addCase(updateRestaurant.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });

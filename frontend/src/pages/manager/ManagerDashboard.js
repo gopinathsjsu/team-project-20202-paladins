@@ -5,6 +5,7 @@ import { Card, Typography, Button, Box, Grid, CircularProgress, Pagination } fro
 import RestaurantCard from "../../components/RestaurantCard";
 import { RESTAURANTS_PER_PAGE } from "../../constants";
 import CreateRestaurantModal from "./CreateRestaurant";
+import EditRestaurantModal from "./EditRestaurantModal";
 
 const ManagerDashboard = () => {
   const dispatch = useDispatch();
@@ -14,6 +15,18 @@ const ManagerDashboard = () => {
   const restaurantsPerPage = RESTAURANTS_PER_PAGE;
 
   const [openModal, setOpenModal] = useState(false);
+  const [openEditModal, setOpenEditModal] = useState(false);
+  const [selectedRestaurant, setSelectedRestaurant] = useState(null);
+
+  const handleEditRestaurant = (restaurant) => {
+    setSelectedRestaurant(restaurant);
+    setOpenEditModal(true);
+  };
+
+  const handleCloseEditModal = () => {
+    setOpenEditModal(false);
+    setSelectedRestaurant(null);
+  };
 
   const handleOpenModal = () => {
     setOpenModal(true);
@@ -66,7 +79,11 @@ const ManagerDashboard = () => {
         ) : (
           currentRestaurants.map((restaurant) => (
             <Grid item key={restaurant.id}>
-              <RestaurantCard restaurant={restaurant} userRole="RESTAURANT_MANAGER" />
+              <RestaurantCard
+                restaurant={restaurant}
+                userRole="RESTAURANT_MANAGER"
+                onEdit={handleEditRestaurant}
+              />
             </Grid>
           ))
         )}
@@ -107,6 +124,13 @@ const ManagerDashboard = () => {
 
       {/* Create Restaurant Modal */}
       <CreateRestaurantModal open={openModal} handleClose={handleCloseModal} />
+
+      <EditRestaurantModal
+        open={openEditModal}
+        handleClose={handleCloseEditModal}
+        restaurantData={selectedRestaurant}
+      />
+
     </Box>
   );
 };

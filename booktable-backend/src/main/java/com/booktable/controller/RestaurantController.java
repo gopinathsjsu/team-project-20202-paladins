@@ -149,21 +149,21 @@ public class RestaurantController {
     }
 
     // Update an existing restaurant (full update)
-//    @PreAuthorize("hasAuthority('RESTAURANT_MANAGER')")
+    @PreAuthorize("hasAuthority('RESTAURANT_MANAGER')")
     @PutMapping("/{id}")
     public Restaurant updateRestaurant(@PathVariable String id, @RequestBody Restaurant restaurant) {
         return restaurantService.updateRestaurant(id, restaurant);
     }
 
     // Partially update an existing restaurant
-//    @PreAuthorize("hasAuthority('RESTAURANT_MANAGER')")
+    @PreAuthorize("hasAuthority('RESTAURANT_MANAGER')")
     @PatchMapping("/{id}")
     public Restaurant patchRestaurant(@PathVariable String id, @RequestBody Restaurant restaurant) {
         return restaurantService.patchRestaurant(id, restaurant);
     }
 
     // Delete a restaurant by ID
-//    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     @DeleteMapping("/{id}")
     public void deleteRestaurant(@PathVariable String id) {
         restaurantService.deleteRestaurant(id);
