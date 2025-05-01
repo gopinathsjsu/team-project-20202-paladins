@@ -1,5 +1,3 @@
-// src/pages/manager/ManagerDashboard.js
-
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchManagerRestaurants } from "../../redux/slices/managerSlice";
@@ -52,12 +50,22 @@ const ManagerDashboard = () => {
         Create New Restaurant
       </Button>
 
-      <Grid container spacing={3}>
+      {/* Restaurant Cards Section */}
+      <Grid
+        container
+        spacing={4}
+        justifyContent="center"
+        sx={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fill, minmax(250px, 1fr))", // Flexible grid
+          gap: "16px",
+        }}
+      >
         {currentRestaurants.length === 0 ? (
           <Typography variant="body1">You haven't added any restaurants yet. Click the button above to create one.</Typography>
         ) : (
           currentRestaurants.map((restaurant) => (
-            <Grid item xs={12} md={6} lg={4} key={restaurant.id}>
+            <Grid item key={restaurant.id}>
               <RestaurantCard restaurant={restaurant} userRole="RESTAURANT_MANAGER" />
             </Grid>
           ))

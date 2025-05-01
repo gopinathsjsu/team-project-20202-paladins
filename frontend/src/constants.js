@@ -1,1 +1,2 @@
-export const RESTAURANTS_PER_PAGE = 3;
+export const RESTAURANTS_PER_PAGE = 4;
+export const RESTAURANTS_TO_DISPLAY_HOME_PAGE = 8;

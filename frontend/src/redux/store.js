@@ -3,6 +3,7 @@ import authReducer from './slices/authSlice';
 import adminReducer from './slices/adminSlice';
 import managerReducer from './slices/managerSlice';
 import bookingReducer from './slices/bookingSlice';
+import restaurantReducer from './slices/restaurantSlice';
 
 
 // This is the Redux store configuration file.
@@ -13,6 +14,7 @@ const store = configureStore({
     admin: adminReducer,
     manager: managerReducer,  
     booking: bookingReducer,
+    restaurants: restaurantReducer,
   },
 });
 
