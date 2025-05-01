@@ -3,6 +3,7 @@ POST http://127.0.0.1:8080/api/reservation/book
 Content-Type: application/json
 
 {
+  "customerId": "67fdb6489fc4ac62aeb9eb5e",
   "restaurantId": "6812ad84ca189206978c56d5",
   "tableId": "6812ad85ca189206978c56d9",
   "startSlotTime": "11:00:00",
