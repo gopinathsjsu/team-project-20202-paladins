@@ -6,12 +6,11 @@ GET http://127.0.0.1:8080/api/restaurant?page=2&size=38
 
 
 ### GET
-GET http://127.0.0.1:8080/api/restaurant/6812b11d605c867c73dd2f7c
-
+GET http://127.0.0.1:8080/api/restaurant/68130de1678653775de1f35c
 ####
 
 ### GET (Search)
-GET http://127.0.0.1:8080/api/restaurant/search?startTime=09:30:00&name=mo
+GET http://127.0.0.1:8080/api/restaurant/search?startTime=09:30:00
 
 ### GET (Search)
 http://localhost:8080/api/restaurant/search?name=mo&location=&date=2025-04-30&time=19:00&partySize=2&startTime=10:00:00
@@ -22,6 +21,8 @@ GET http://localhost:8080/api/restaurant/search?restaurant=&location=&date=2025-
 ### GET (Search)
 GET http://localhost:8080/api/restaurant/search?restaurant=&location=&date=2025-04-30&time=19:00&partySize=2&startTime=10:00:00
 
+### GET (search)
+http://localhost:8080/api/restaurant/search?restaurant=mo&location=&date=2025-04-30&time=09:00&partySize=4&startTime=09:00:00
 
 ### POST
 POST http://127.0.0.1:8080/api/restaurant

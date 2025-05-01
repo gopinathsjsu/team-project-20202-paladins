@@ -28,7 +28,7 @@ import java.util.UUID;
 // Name, Cuisine type, Cost rating, Reviews and Ratings, and #of times booked today,
 // display clickable buttons with available times - that can be clicked to book the table
 
-@SecurityRequirement(name = "bearerAuth")
+//@SecurityRequirement(name = "bearerAuth")
 @RestController
 @RequestMapping("/api/restaurant")
 public class RestaurantController {
@@ -45,12 +45,12 @@ public class RestaurantController {
 
     @GetMapping("/search")
     public List<RestaurantTableOutput> searchRestaurants(
-            @RequestParam(required = false) String name,
+            @RequestParam(name = "restaurant", required = false) String name,
             @RequestParam(required = false) String city,
             @RequestParam(required = false) String state,
             @RequestParam(required = false) String zip,
-            @RequestParam(required = false) String noOfPeople,
-            @RequestParam LocalTime startTime
+            @RequestParam(name = "partySize", required = false) String noOfPeople,
+            @RequestParam(required = false) LocalTime startTime
     ) {
 
         List<Restaurant> restaurants = restaurantService.searchRestaurants(name, city, state, zip, noOfPeople, startTime);

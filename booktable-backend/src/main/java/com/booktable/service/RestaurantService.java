@@ -45,7 +45,7 @@ public class RestaurantService {
                         name != null ? name : ""
                 ).stream()
                 .filter(restaurant ->
-                        restaurant.getOpeningHour().isBefore(startTime) &&
+                        restaurant.getOpeningHour().isBefore(startTime.plusMinutes(1)) &&
                                 restaurant.getClosingHour().isAfter(startTime))
                 .collect(Collectors.toList());
     }

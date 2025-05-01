@@ -33,7 +33,8 @@ public class CustomRestaurantRepositoryImpl implements CustomRestaurantRepositor
 
         LookupOperation lookupReservations = lookup("reservation", "tables._id", "tableId", "reservations");
 
-        MatchOperation matchCapacityAndAvailability = match(Criteria.where("tables").elemMatch(Criteria.where("isActive").is(true))
+        MatchOperation matchCapacityAndAvailability = match(Criteria.where("tables").elemMatch(Criteria.where("isActive").is(true)
+                        .and("capacity").gte(numberOfPeople))
                 .and("reservations").not().elemMatch(Criteria.where("date").is(date)
                         .and("time").gte(startTime)));
 
