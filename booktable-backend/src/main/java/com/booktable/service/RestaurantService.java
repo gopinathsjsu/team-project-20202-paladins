@@ -30,6 +30,11 @@ public class RestaurantService {
         this.reviewRepository = reviewRepository;
     }
 
+    // Get restaurants by managerId
+    public List<Restaurant> getRestaurantsByManagerId(String managerId) {
+        return restaurantRepository.findByManagerId(managerId);
+    }
+
     public Restaurant getRestaurantById(Object id) {
         return restaurantRepository.findById(String.valueOf(id)).orElseThrow(() -> new RuntimeException("Restaurant not found"));
     }

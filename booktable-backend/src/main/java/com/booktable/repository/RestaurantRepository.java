@@ -9,4 +9,5 @@ import java.util.List;
 @Repository
 public interface RestaurantRepository extends MongoRepository<Restaurant, String>, CustomRestaurantRepository {
     List<Restaurant> findByApprovedFalse();
+    List<Restaurant> findByManagerId(String managerId);
 }
