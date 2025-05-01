@@ -1,4 +1,3 @@
-// src/main/java/com/booktable/controller/RestaurantController.java
 package com.booktable.controller;
 
 import com.booktable.dto.RestaurantInput;
@@ -8,14 +7,13 @@ import com.booktable.dto.TableSlots;
 import com.booktable.mapper.RestaurantMapper;
 import com.booktable.model.Restaurant;
 import com.booktable.model.Table;
+import com.booktable.model.User;
 import com.booktable.service.RestaurantService;
 import com.booktable.service.TableService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
-import org.bson.types.ObjectId;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
@@ -24,110 +22,117 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
+
+//Display a list of restaurants that have availability at the specified time +/- 30minutes - with
+// Name, Cuisine type, Cost rating, Reviews and Ratings, and #of times booked today,
+// display clickable buttons with available times - that can be clicked to book the table
 
 @SecurityRequirement(name = "bearerAuth")
 @RestController
 @RequestMapping("/api/restaurant")
-@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class RestaurantController {
+    private final RestaurantService restaurantService;
+    private final TableService tableService;
+    private final RestaurantMapper restaurantMapper;
 
-    private final RestaurantService  restaurantService;
-    private final TableService       tableService;
-    private final RestaurantMapper   restaurantMapper;
-
-    /* ───────────────────────────────────────────────────────────── */
+    @Autowired
+    public RestaurantController(RestaurantService restaurantService, TableService tableService, RestaurantMapper restaurantMapper) {
+        this.restaurantService = restaurantService;
+        this.tableService = tableService;
+        this.restaurantMapper = restaurantMapper;
+    }
 
     @GetMapping("/search")
     public List<RestaurantTableOutput> searchRestaurants(
-            @RequestParam(required = false) String  restaurant,
-            @RequestParam(required = false) String  city,
-            @RequestParam(required = false) String  state,
-            @RequestParam(required = false) String  zip,
-            @RequestParam(required = false) Integer partySize,
-            @RequestParam
-            @DateTimeFormat(iso = DateTimeFormat.ISO.TIME) LocalTime startTime
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) String city,
+            @RequestParam(required = false) String state,
+            @RequestParam(required = false) String zip,
+            @RequestParam(required = false) String noOfPeople,
+            @RequestParam LocalTime startTime
     ) {
 
-        /* 1) fetch restaurants by text / location (repo can ignore partySize) */
-        List<Restaurant> initial = restaurantService
-                .searchRestaurants(restaurant, city, state, zip, String.valueOf(partySize), startTime);
+        List<Restaurant> restaurants = restaurantService.searchRestaurants(name, city, state, zip, noOfPeople, startTime);
 
-        /* 2) keep only restaurants that own at least one active table ≥ partySize */
-        if (partySize != null) {
-            initial = initial.stream()
-                    .filter(r -> tableService.existsTableWithCapacity(r.getId(), partySize))
-                    .toList();
-        }
+        List<RestaurantTableOutput> restaurantTableOutputs = new ArrayList<>();
+        for (Restaurant restaurant : restaurants) {
+            RestaurantTableOutput restaurantTableOutput = new RestaurantTableOutput();
 
-        /* 3) build output DTOs with capacity-aware slot search */
-        List<RestaurantTableOutput> out = new ArrayList<>();
-
-        for (Restaurant res : initial) {
-
-            List<TableSlots> slotDtos = new ArrayList<>();
-
-            for (List<Object> row : tableService.getBestAvailableTimeSlots(
-                    res.getId(), startTime, LocalDate.now(), partySize)) {
-
-                TableSlots ts = new TableSlots();
-                ts.setTableId(String.valueOf(row.get(0)));
-                ts.setSlot((List<LocalTime>) row.get(1));
-                slotDtos.add(ts);
+            List<TableSlots> tableSlots = new ArrayList<>();
+            for (List<Object> tableData : tableService.getBestAvailableTimeSlots(restaurant.getId(),
+                    startTime, LocalDate.now())) {
+                TableSlots slot = new TableSlots();
+                slot.setTableId(String.valueOf(tableData.get(0)));
+                slot.setSlot((List<LocalTime>) tableData.get(1));
+                tableSlots.add(slot);
             }
 
-            RestaurantTableOutput dto = new RestaurantTableOutput();
-            dto.setRestaurant(res);
-            dto.setTableSlots(slotDtos);
-            out.add(dto);
+            restaurantTableOutput.setRestaurant(restaurant);
+            restaurantTableOutput.setTableSlots(tableSlots);
+
+            restaurantTableOutputs.add(restaurantTableOutput);
         }
 
-        return out;
+        return restaurantTableOutputs;
     }
 
-    /* ───────── remaining CRUD endpoints unchanged ───────── */
-
+    // Get a single restaurant by ID
     @GetMapping("/{id}")
     public Restaurant getRestaurantById(@PathVariable String id) {
         return restaurantService.getRestaurantById(id);
     }
 
+    // List all restaurants
     @GetMapping
     public List<Restaurant> listRestaurants(
-            @RequestParam(defaultValue = "0")  int page,
+            @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
         return restaurantService.listRestaurants(page, size);
     }
 
+    // Create a new restaurant
+//    @PreAuthorize("hasAuthority('RESTAURANT_MANAGER')")
     @PostMapping
-    public Restaurant addRestaurant(@RequestBody RestaurantTableInput payload) {
-        Restaurant res = restaurantMapper.toEntity(payload.getRestaurantInput(), "123");
+    public Restaurant addRestaurant(@RequestBody RestaurantTableInput restaurantTable) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//        User currentUser = (User) authentication.getPrincipal();
+
+        RestaurantInput restaurantInput = restaurantTable.getRestaurantInput();
+        Restaurant res = restaurantMapper.toEntity(restaurantInput,"123"); //todo revert this
+
+        // Save restaurant to database
         res = restaurantService.saveRestaurant(res);
 
         List<Table> tables = new ArrayList<>();
-        for (int i = 0; i < payload.getTable().getCount(); i++) {
-            Table t = new Table();
-            t.setRestaurantId(res.getId());
-            t.setTableNumber(String.valueOf(i + 1));
-            t.setCapacity(payload.getTable().getCapacity());
-            t.setIsActive(true);
-            tables.add(t);
+        for (int i = 0; i < restaurantTable.getTable().getCount(); i++) {
+            Table table = new Table();
+            table.setRestaurantId(res.getId());
+            table.setTableNumber(String.valueOf(i + 1));
+            table.setCapacity(restaurantTable.getTable().getCapacity());
+            table.setIsActive(true);
+            tables.add(table);
         }
         tableService.saveTables(tables);
         return res;
     }
 
+    // Update an existing restaurant (full update)
+//    @PreAuthorize("hasAuthority('RESTAURANT_MANAGER')")
     @PutMapping("/{id}")
-    public Restaurant updateRestaurant(@PathVariable String id,
-                                       @RequestBody Restaurant restaurant) {
+    public Restaurant updateRestaurant(@PathVariable String id, @RequestBody Restaurant restaurant) {
         return restaurantService.updateRestaurant(id, restaurant);
     }
 
+    // Partially update an existing restaurant
+//    @PreAuthorize("hasAuthority('RESTAURANT_MANAGER')")
     @PatchMapping("/{id}")
-    public Restaurant patchRestaurant(@PathVariable String id,
-                                      @RequestBody Restaurant restaurant) {
+    public Restaurant patchRestaurant(@PathVariable String id, @RequestBody Restaurant restaurant) {
         return restaurantService.patchRestaurant(id, restaurant);
     }
 
+    // Delete a restaurant by ID
+//    @PreAuthorize("hasAuthority('ADMIN')")
     @DeleteMapping("/{id}")
     public void deleteRestaurant(@PathVariable String id) {
         restaurantService.deleteRestaurant(id);
