@@ -34,6 +34,7 @@ public class RestaurantController {
     private final RestaurantService restaurantService;
     private final TableService tableService;
     private final RestaurantMapper restaurantMapper;
+    private final ReservationService reservationService;
 
     @Autowired
     public RestaurantController(RestaurantService restaurantService, TableService tableService,
