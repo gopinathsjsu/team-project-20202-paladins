@@ -9,4 +9,5 @@ import java.util.List;
 public class RestaurantTableOutput {
     private Restaurant restaurant;
     private List<TableSlots> tableSlots;
+    private Integer noOfTimesBookedToday;
 }

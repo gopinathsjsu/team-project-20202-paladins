@@ -1,12 +1,10 @@
 package com.booktable.service;
 
+import com.booktable.model.Reservation;
 import com.booktable.repository.ReservationRepository;
-import com.booktable.repository.RestaurantRepository;
-import com.booktable.repository.TableRepository;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.booktable.model.Reservation;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -47,8 +45,24 @@ public class ReservationService {
                 .collect(Collectors.toSet());
     }
 
-    public long countReservationsForDate(ObjectId restaurantId, LocalDate date) {
-        return reservationRepository.countByRestaurantIdAndDate(restaurantId, date);
+    public int countReservationsForDate(ObjectId restaurantId, LocalDate date) {
+        return (int) reservationRepository.countByRestaurantIdAndDate(restaurantId, date);
+    }
+
+    public List<Reservation> getReservations(LocalDate date, LocalDate startDate, LocalDate endDate, String restaurantId) {
+        if (date != null && restaurantId != null) {
+            return reservationRepository.findByDateAndRestaurantId(date, restaurantId);
+        } else if (startDate != null && endDate != null && restaurantId != null) {
+            return reservationRepository.findByDateBetweenAndRestaurantId(startDate, endDate, restaurantId);
+        } else if (startDate != null && endDate != null) {
+            return reservationRepository.findByDateBetween(startDate, endDate);
+        } else if (date != null) {
+            return reservationRepository.findByDate(date);
+        } else if (restaurantId != null) {
+            return reservationRepository.findByRestaurantId(new ObjectId(restaurantId));
+        } else {
+            return reservationRepository.findAll();
+        }
     }
 
 

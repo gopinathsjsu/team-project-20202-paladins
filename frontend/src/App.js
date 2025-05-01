@@ -25,6 +25,7 @@ import NotFound from "./pages/NotFound";
 
 // Routes
 import ProtectedRoute from "./components/auth/ProtectedRoute";
+import AnalyticsDashboard from "./pages/admin/AnalyticsDashboard";
 
 function App() {
   return (
@@ -47,8 +48,11 @@ function App() {
               <Route path="/admin/dashboard" element={<AdminDashboard />} />
             </Route>
             <Route element={<ProtectedRoute allowedRoles={['RESTAURANT_MANAGER']} />}>
-              <Route path="/manager/dasshboard" element={<ManagerDashboard />} />
+              <Route path="/manager/dashboard" element={<ManagerDashboard />} />
             </Route>
+            {/*<Route element={<ProtectedRoute allowedRoles={['RESTAURANT_MANAGER']} />}>*/}
+              <Route path="/admin/analytics" element={<AnalyticsDashboard />} />
+            {/*</Route>*/}
             <Route path="/booking" element={<Navigate to="/" replace />} />
             <Route
                 path="/booking/:restaurantId"
