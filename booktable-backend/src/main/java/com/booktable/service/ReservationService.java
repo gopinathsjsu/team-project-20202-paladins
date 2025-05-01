@@ -1,12 +1,10 @@
 package com.booktable.service;
+
 import com.booktable.model.Reservation;
 import com.booktable.repository.ReservationRepository;
-import com.booktable.repository.RestaurantRepository;
-import com.booktable.repository.TableRepository;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.booktable.model.Reservation;
 
 import java.time.LocalDate;
 import java.util.List;

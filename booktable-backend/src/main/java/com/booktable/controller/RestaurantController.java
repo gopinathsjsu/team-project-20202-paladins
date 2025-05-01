@@ -22,18 +22,16 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 //Display a list of restaurants that have availability at the specified time +/- 30minutes - with
 // Name, Cuisine type, Cost rating, Reviews and Ratings, and #of times booked today,
 // display clickable buttons with available times - that can be clicked to book the table
 
-//@SecurityRequirement(name = "bearerAuth")
+@SecurityRequirement(name = "bearerAuth")
 @RestController
 @RequestMapping("/api/restaurant")
 public class RestaurantController {
     private final RestaurantService restaurantService;
-    private final ReservationService reservationService;
     private final TableService tableService;
     private final RestaurantMapper restaurantMapper;
 
@@ -109,11 +107,9 @@ public class RestaurantController {
 
         restaurantTableOutput.setRestaurant(restaurant);
         restaurantTableOutput.setTableSlots(tableSlots);
-
         restaurantTableOutput.setNoOfTimesBookedToday(reservationService.countReservationsForDate(
                 restaurant.getId(), LocalDate.now()
         ));
-
         return restaurantTableOutput;
     }
 
@@ -133,7 +129,7 @@ public class RestaurantController {
 //        User currentUser = (User) authentication.getPrincipal();
 
         RestaurantInput restaurantInput = restaurantTable.getRestaurantInput();
-        Restaurant res = restaurantMapper.toEntity(restaurantInput,"123"); //todo revert this
+        Restaurant res = restaurantMapper.toEntity(restaurantInput, "123"); //todo revert this
 
         // Save restaurant to database
         res = restaurantService.saveRestaurant(res);

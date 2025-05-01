@@ -4,7 +4,7 @@ import com.booktable.model.Table;
 import lombok.NonNull;
 import org.bson.types.ObjectId;
 import com.booktable.model.Reservation;
-import org.springframework.data.domain.Example;
+import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 

@@ -41,9 +41,9 @@ public class SecurityConfig {
                 )
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(SecurityConstants.PUBLIC_URLS.toArray(new String[0])).permitAll() // public routes
-//                        .requestMatchers("/api/admin/**").hasAuthority("ADMIN")
-//                        .requestMatchers("/api/manager/**").hasAuthority("RESTAURANT_MANAGER")
-                        .anyRequest().permitAll() // everything else must be authenticated
+                        .requestMatchers("/api/admin/**").hasAuthority("ADMIN")
+                        .requestMatchers("/api/manager/**").hasAuthority("RESTAURANT_MANAGER")
+                        .anyRequest().authenticated() // everything else must be authenticated
                 )
                 .oauth2Login(oauth2 -> oauth2
                         .loginPage("/oauth2/authorization/google")

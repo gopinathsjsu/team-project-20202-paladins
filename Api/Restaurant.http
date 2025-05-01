@@ -30,7 +30,7 @@ Content-Type: application/json
 
 {
   "restaurantInput": {
-    "name": "Mo:mo:",
+    "name": "KaKa",
     "description": "A cozy restaurant serving best in town momo view of the hills.",
     "addressStreet": "123 Summit Ave",
     "addressCity": "Boulder Creek",
