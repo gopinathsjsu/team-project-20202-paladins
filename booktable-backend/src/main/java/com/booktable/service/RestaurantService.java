@@ -34,7 +34,8 @@ public class RestaurantService {
         return restaurantRepository.findById(String.valueOf(id)).orElseThrow(() -> new RuntimeException("Restaurant not found"));
     }
 
-    public List<Restaurant> searchRestaurants(String name, String city, String state, String zip, String noOfPeople, LocalTime startTime) {
+    public List<Restaurant> searchRestaurants(String city, String state, String zip, String noOfPeople,
+                                              LocalTime startTime) {
         return restaurantRepository.searchRestaurants(
                         city != null ? city : "",
                         state != null ? state : "",

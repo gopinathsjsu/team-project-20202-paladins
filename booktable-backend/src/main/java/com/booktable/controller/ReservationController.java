@@ -14,7 +14,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -74,7 +75,43 @@ public class ReservationController {
 
         return bookingDto;
     }
+
+    @GetMapping
+    public List<BookingDto> getReservations(
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
+            @RequestParam(name = "restaurantId", required = false) String restaurantId) {
+
+        List<Reservation> reservations = reservationService.getReservations(date, startDate, endDate, restaurantId);
+        List<BookingDto> bookingDtos = new ArrayList<>();
+
+        for (Reservation res : reservations) {
+            Table table = tableService.getTableById(res.getTableId());
+            Restaurant restaurant = restaurantService.getRestaurantById(res.getRestaurantId());
+
+            BookingDto dto = new BookingDto(
+                    res.getRestaurantId(),
+                    res.getTableId(),
+                    res.getStartSlotTime(),
+                    res.getEndSlotTime(),
+                    res.getDate()
+            );
+            dto.setReservationId(res.getId());
+            if (table != null) dto.setTableNumber(table.getTableNumber());
+            if (restaurant != null) dto.setRestaurantName(restaurant.getName());
+
+            bookingDtos.add(dto);
+        }
+
+        return bookingDtos;
+    }
+
+
 }
+
+
+
 
 
 
