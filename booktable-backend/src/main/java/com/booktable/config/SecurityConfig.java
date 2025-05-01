@@ -31,7 +31,7 @@ public class SecurityConfig {
         return http
                 .cors(Customizer.withDefaults())    // Enable CORS handling
                 .csrf(AbstractHttpConfigurer::disable) // CSRF is off for stateless APIs
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .exceptionHandling(ex -> ex
                         .authenticationEntryPoint((request, response, authException) -> {
                             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);

@@ -90,7 +90,7 @@ public class RestaurantController {
     }
 
     // Create a new restaurant
-    @PreAuthorize("hasAuthority('RESTAURANT_MANAGER')")
+//    @PreAuthorize("hasAuthority('RESTAURANT_MANAGER')")
     @PostMapping
     public Restaurant addRestaurant(@RequestBody RestaurantTableInput restaurantTable) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
