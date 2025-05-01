@@ -5,9 +5,10 @@ import {
   deleteRestaurantThunk
 } from '../../redux/slices/adminSlice';
 import {
-  Container, Typography, Card, CardContent, Button, Grid, Box
+  Container, Typography, Grid
 } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
+import RestaurantCard from '../../components/RestaurantCard'; // Import the RestaurantCard
 
 const AdminDashboard = () => {
   const dispatch = useDispatch();
@@ -31,30 +32,14 @@ const AdminDashboard = () => {
         <Grid container spacing={2}>
           {pendingRestaurants.map((res) => (
             <Grid item xs={12} md={6} lg={4} key={res.id}>
-              <Card>
-                <CardContent>
-                  <Typography variant="h6">{res.name}</Typography>
-                  <Typography variant="body2" color="textSecondary">
-                    {res.addressStreet}, {res.addressCity}, {res.addressState} {res.addressZip}
-                  </Typography>
-                  <Box sx={{ mt: 2, display: 'flex', gap: 1 }}>
-                    <Button
-                      variant="contained"
-                      color="success"
-                      onClick={() => dispatch(approveRestaurantThunk(res.id))}
-                    >
-                      Approve
-                    </Button>
-                    <Button
-                      variant="outlined"
-                      color="error"
-                      onClick={() => dispatch(deleteRestaurantThunk(res.id))}
-                    >
-                      Delete
-                    </Button>
-                  </Box>
-                </CardContent>
-              </Card>
+              {/* Use the RestaurantCard for each restaurant */}
+              <RestaurantCard 
+                restaurant={res} 
+                userRole="ADMIN" 
+                // Passing the admin specific buttons to RestaurantCard component
+                approveRestaurant={() => dispatch(approveRestaurantThunk(res.id))}
+                deleteRestaurant={() => dispatch(deleteRestaurantThunk(res.id))}
+              />
             </Grid>
           ))}
         </Grid>
