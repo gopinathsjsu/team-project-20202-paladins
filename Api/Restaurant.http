@@ -6,7 +6,7 @@ GET http://127.0.0.1:8080/api/restaurant?page=2&size=38
 
 
 ### GET
-GET http://127.0.0.1:8080/api/restaurant/68130de1678653775de1f35c
+GET http://127.0.0.1:8080/api/restaurant/6813269bee172466f8574c21
 ####
 
 ### GET (Search)

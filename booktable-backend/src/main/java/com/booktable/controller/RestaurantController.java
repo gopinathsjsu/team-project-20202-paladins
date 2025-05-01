@@ -33,14 +33,19 @@ import java.util.UUID;
 @RequestMapping("/api/restaurant")
 public class RestaurantController {
     private final RestaurantService restaurantService;
+    private final ReservationService reservationService;
     private final TableService tableService;
     private final RestaurantMapper restaurantMapper;
 
     @Autowired
-    public RestaurantController(RestaurantService restaurantService, TableService tableService, RestaurantMapper restaurantMapper) {
+    public RestaurantController(RestaurantService restaurantService, TableService tableService,
+                                RestaurantMapper restaurantMapper,
+                                ReservationService reservationService
+    ) {
         this.restaurantService = restaurantService;
         this.tableService = tableService;
         this.restaurantMapper = restaurantMapper;
+        this.reservationService = reservationService;
     }
 
     @GetMapping("/search")
@@ -104,7 +109,10 @@ public class RestaurantController {
 
         restaurantTableOutput.setRestaurant(restaurant);
         restaurantTableOutput.setTableSlots(tableSlots);
-        restaurantTableOutput.setNoOfTimesBookedToday(restaurantTableOutput.getNoOfTimesBookedToday() + 1);
+
+        restaurantTableOutput.setNoOfTimesBookedToday(reservationService.countReservationsForDate(
+                restaurant.getId(), LocalDate.now()
+        ));
 
         return restaurantTableOutput;
     }
@@ -125,7 +133,7 @@ public class RestaurantController {
 //        User currentUser = (User) authentication.getPrincipal();
 
         RestaurantInput restaurantInput = restaurantTable.getRestaurantInput();
-        Restaurant res = restaurantMapper.toEntity(restaurantInput, "123"); //todo revert this
+        Restaurant res = restaurantMapper.toEntity(restaurantInput,"123"); //todo revert this
 
         // Save restaurant to database
         res = restaurantService.saveRestaurant(res);
