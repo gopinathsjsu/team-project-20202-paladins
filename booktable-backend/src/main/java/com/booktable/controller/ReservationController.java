@@ -7,6 +7,7 @@ import com.booktable.model.Table;
 import com.booktable.service.ReservationService;
 import com.booktable.service.RestaurantService;
 import com.booktable.service.TableService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
@@ -15,6 +16,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+@SecurityRequirement(name = "bearerAuth")
 @RestController
 @RequestMapping("/api/book")
 public class ReservationController {

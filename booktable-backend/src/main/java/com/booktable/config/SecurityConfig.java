@@ -31,7 +31,7 @@ public class SecurityConfig {
         return http
                 .cors(Customizer.withDefaults())    // Enable CORS handling
                 .csrf(AbstractHttpConfigurer::disable) // CSRF is off for stateless APIs
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .exceptionHandling(ex -> ex
                         .authenticationEntryPoint((request, response, authException) -> {
                             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
@@ -43,7 +43,7 @@ public class SecurityConfig {
                         .requestMatchers(SecurityConstants.PUBLIC_URLS.toArray(new String[0])).permitAll() // public routes
                         .requestMatchers("/api/admin/**").hasAuthority("ADMIN")
                         .requestMatchers("/api/manager/**").hasAuthority("RESTAURANT_MANAGER")
-                        .anyRequest().permitAll() // everything else must be authenticated
+                        .anyRequest().authenticated() // everything else must be authenticated
                 )
                 .oauth2Login(oauth2 -> oauth2
                         .loginPage("/oauth2/authorization/google")
