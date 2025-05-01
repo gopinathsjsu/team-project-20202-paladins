@@ -60,13 +60,13 @@ public class RestaurantController {
                 slot.setSlot((List<LocalTime>) tableData.get(1));
                 tableSlots.add(slot);
             }
-
             restaurantTableOutput.setRestaurant(restaurant);
             restaurantTableOutput.setTableSlots(tableSlots);
 
             restaurantTableOutputs.add(restaurantTableOutput);
         }
 
+        // todo #of times booked today
         return restaurantTableOutputs;
     }
 
