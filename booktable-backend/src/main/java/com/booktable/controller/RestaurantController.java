@@ -10,6 +10,7 @@ import com.booktable.model.Table;
 import com.booktable.model.User;
 import com.booktable.service.RestaurantService;
 import com.booktable.service.TableService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,7 @@ import java.util.UUID;
 // Name, Cuisine type, Cost rating, Reviews and Ratings, and #of times booked today,
 // display clickable buttons with available times - that can be clicked to book the table
 
+@SecurityRequirement(name = "bearerAuth")
 @RestController
 @RequestMapping("/api/restaurant")
 public class RestaurantController {
