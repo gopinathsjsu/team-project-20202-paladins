@@ -7,11 +7,13 @@ import com.booktable.dto.TableSlots;
 import com.booktable.mapper.RestaurantMapper;
 import com.booktable.model.Restaurant;
 import com.booktable.model.Table;
+import com.booktable.model.User;
 import com.booktable.service.ReservationService;
 import com.booktable.service.RestaurantService;
 import com.booktable.service.TableService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
@@ -118,14 +120,14 @@ public class RestaurantController {
     }
 
     // Create a new restaurant
-//    @PreAuthorize("hasAuthority('RESTAURANT_MANAGER')")
+    @PreAuthorize("hasAuthority('RESTAURANT_MANAGER')")
     @PostMapping
     public Restaurant addRestaurant(@RequestBody RestaurantTableInput restaurantTable) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        User currentUser = (User) authentication.getPrincipal();
+        User currentUser = (User) authentication.getPrincipal();
 
         RestaurantInput restaurantInput = restaurantTable.getRestaurantInput();
-        Restaurant res = restaurantMapper.toEntity(restaurantInput, "123"); //todo revert this
+        Restaurant res = restaurantMapper.toEntity(restaurantInput, currentUser.getId());
 
         // Save restaurant to database
         res = restaurantService.saveRestaurant(res);

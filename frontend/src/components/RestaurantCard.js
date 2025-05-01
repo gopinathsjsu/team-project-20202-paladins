@@ -1,0 +1,139 @@
+// src/components/RestaurantCard.js
+
+import React from "react";
+import { Card, CardContent, Typography, Button, Box, Rating, Stack } from "@mui/material";
+import { Link } from "react-router-dom";
+
+const RestaurantCard = ({ restaurant, userRole, approveRestaurant, deleteRestaurant }) => {
+  return (
+    <Card
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        borderRadius: 4,
+        boxShadow: 3,
+        height: "100%",
+        overflow: "hidden",
+        "&:hover": {
+          boxShadow: 10,
+          transform: "scale(1.05)",
+          transition: "all 0.3s ease-in-out",
+        },
+      }}
+    >
+      {/* Fixed size image container */}
+      <Box
+        sx={{
+          height: "250px", // Fixed height for uniformity
+          width: "100%", // Full width for consistency
+          overflow: "hidden", // Ensure content is cropped
+          borderTopLeftRadius: 4,
+          borderTopRightRadius: 4,
+          position: "relative", // For absolute positioning of image
+        }}
+      >
+        <img
+          src={restaurant.imageUrl || "https://placekitten.com/586/788"}
+          alt={restaurant.name}
+          style={{
+            objectFit: "cover", // Ensures the image fills the container and crops excess
+            width: "100%", // Stretch to fill the width of the container
+            height: "100%", // Stretch to fill the height of the container
+            position: "absolute", // Position image absolutely within the container
+            top: "0", // Align top
+            left: "0", // Align left
+          }}
+        />
+      </Box>
+
+      {/* Content Section */}
+      <CardContent sx={{ padding: 2, flexGrow: 1 }}>
+        <Typography variant="h6" component="div" sx={{ fontWeight: 600, mb: 1 }}>
+          {restaurant.name}
+        </Typography>
+
+        {/* Ratings and Review Count */}
+        <Stack direction="row" spacing={1} alignItems="center" mb={2}>
+          <Rating value={restaurant.averageRating} precision={0.1} readOnly size="small" />
+          <Typography variant="body2" color="text.secondary">
+            ({restaurant.reviewCount} reviews)
+          </Typography>
+        </Stack>
+
+        
+      </CardContent>
+
+      {/* Dynamic Button Section */}
+      <Box sx={{ padding: "16px", display: "flex", justifyContent: "center", gap: 1 }}>
+        {userRole === "ADMIN" && !restaurant.approved ? (
+          <>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={approveRestaurant}
+              sx={{
+                borderRadius: "30px",
+                width: "48%", // Make the button width smaller
+                fontSize: "14px", // Smaller text size
+                "&:hover": {
+                  backgroundColor: "#2DD4BF",
+                },
+              }}
+            >
+              Approve
+            </Button>
+            <Button
+              variant="outlined"
+              color="error"
+              onClick={deleteRestaurant}
+              sx={{
+                borderRadius: "30px",
+                width: "48%",
+                fontSize: "14px",
+                "&:hover": {
+                  borderColor: "#F44336",
+                  backgroundColor: "#F44336",
+                  color: "white",
+                },
+              }}
+            >
+              Reject
+            </Button>
+          </>
+        ) : userRole === "RESTAURANT_MANAGER" ? (
+          restaurant.approved ? (
+            <Link to={`/manager/edit/${restaurant.id}`} style={{ width: "100%" }}>
+              <Button
+                variant="contained"
+                fullWidth
+                color="primary"
+                sx={{ borderRadius: "30px", fontSize: "14px" }}
+              >
+                Edit Restaurant
+              </Button>
+            </Link>
+          ) : (
+            <Link to={`/manager/approve/${restaurant.id}`} style={{ width: "100%" }}>
+              <Button
+                variant="contained"
+                fullWidth
+                color="primary"
+                sx={{ borderRadius: "30px", fontSize: "14px" }}
+              >
+                Approve Restaurant
+              </Button>
+            </Link>
+          )
+        ) : (
+          <Link to={`/booking/${restaurant.id}`} style={{ width: "100%" }}>
+            <Button variant="contained" fullWidth color="primary" sx={{ borderRadius: "30px" }}>
+              Book a Table
+            </Button>
+          </Link>
+        )}
+      </Box>
+    </Card>
+  );
+};
+
+export default RestaurantCard;

@@ -46,13 +46,11 @@ function App() {
             <Route path="*" element={<NotFound />} />
             <Route element={<ProtectedRoute allowedRoles={['ADMIN']} />}>
               <Route path="/admin/dashboard" element={<AdminDashboard />} />
+              <Route path="/admin/analytics" element={<AnalyticsDashboard />} />
             </Route>
             <Route element={<ProtectedRoute allowedRoles={['RESTAURANT_MANAGER']} />}>
               <Route path="/manager/dashboard" element={<ManagerDashboard />} />
             </Route>
-            {/*<Route element={<ProtectedRoute allowedRoles={['RESTAURANT_MANAGER']} />}>*/}
-              <Route path="/admin/analytics" element={<AnalyticsDashboard />} />
-            {/*</Route>*/}
             <Route path="/booking" element={<Navigate to="/" replace />} />
             <Route
                 path="/booking/:restaurantId"
