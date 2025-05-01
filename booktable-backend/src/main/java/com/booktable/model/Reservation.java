@@ -35,7 +35,7 @@ public class Reservation {
     private ObjectId tableId;
 
 
-    private String date;
+    private LocalDate date;
 
     @NonNull
     private LocalTime startSlotTime;
