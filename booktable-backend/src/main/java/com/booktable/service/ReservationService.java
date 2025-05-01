@@ -50,7 +50,8 @@ public class ReservationService {
     }
 
     public int countReservationsForDate(ObjectId restaurantId, LocalDate date) {
-        return (int) reservationRepository.countByRestaurantIdAndDate(restaurantId, date);
+        Long count = reservationRepository.countByRestaurantIdAndDate(restaurantId, date);
+        return count != null ? count.intValue() : 0;
     }
 
     public List<Reservation> getReservations(LocalDate date, LocalDate startDate, LocalDate endDate, String restaurantId, String managerId) throws AccessDeniedException {
