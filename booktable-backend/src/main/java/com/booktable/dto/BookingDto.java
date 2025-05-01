@@ -24,7 +24,7 @@ public class BookingDto {
     @NonNull
     private LocalTime endSlotTime;
     @NonNull
-    private String date;
+    private LocalDate date;
     private String tableNumber;
     private String restaurantName;
     @JsonSerialize(using = ObjectIdJsonSerializer.class)

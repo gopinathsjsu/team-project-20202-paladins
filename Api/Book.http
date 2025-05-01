@@ -6,13 +6,13 @@ Content-Type: application/json
   "customerId": "67fdb6489fc4ac62aeb9eb5e",
   "restaurantId": "6812ad84ca189206978c56d5",
   "tableId": "6812ad85ca189206978c56d9",
-  "startSlotTime": "14:00:00",
-  "endSlotTime": "15:00:00",
+  "startSlotTime": "11:00:00",
+  "endSlotTime": "12:00:00",
   "date": "2019-03-27"
 }
 
 ### Get all bookings
-GET http://127.0.0.1:8080/api/book?restaurantId=6812ad84ca189206978c56d5&date=2019-03-27
+GET http://127.0.0.1:8080/api/book
 Content-Type: application/json
 
 

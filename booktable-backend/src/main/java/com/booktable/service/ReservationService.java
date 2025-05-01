@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -49,11 +50,15 @@ public class ReservationService {
         return reservationRepository.countByRestaurantIdAndDate(restaurantId, date);
     }
 
-    public List<Reservation> getReservations(LocalDate date, String restaurantId) {
+    public List<Reservation> getReservations(LocalDate date, LocalDate startDate, LocalDate endDate, String restaurantId) {
         if (date != null && restaurantId != null) {
-            return reservationRepository.findByRestaurantIdAndDate(new ObjectId(restaurantId), date);
+            return reservationRepository.findByDateAndRestaurantId(date, restaurantId);
+        } else if (startDate != null && endDate != null && restaurantId != null) {
+            return reservationRepository.findByDateBetweenAndRestaurantId(startDate, endDate, restaurantId);
+        } else if (startDate != null && endDate != null) {
+            return reservationRepository.findByDateBetween(startDate, endDate);
         } else if (date != null) {
-            return reservationRepository.findByDate(String.valueOf(date));
+            return reservationRepository.findByDate(date);
         } else if (restaurantId != null) {
             return reservationRepository.findByRestaurantId(new ObjectId(restaurantId));
         } else {

@@ -73,11 +73,12 @@ public class ReservationController {
 
     @GetMapping
     public List<BookingDto> getReservations(
-            @RequestParam(required = false)
-            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
-            @RequestParam(name = "restaurant_id", required = false) String restaurantId) {
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
+            @RequestParam(name = "restaurantId", required = false) String restaurantId) {
 
-        List<Reservation> reservations = reservationService.getReservations(date, restaurantId);
+        List<Reservation> reservations = reservationService.getReservations(date, startDate, endDate, restaurantId);
         List<BookingDto> bookingDtos = new ArrayList<>();
 
         for (Reservation res : reservations) {

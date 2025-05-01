@@ -17,13 +17,13 @@ public interface ReservationRepository extends MongoRepository<Reservation, Obje
     List<Object[]> findBookedTablesAndTimes(ObjectId restaurantId, LocalDate date);
 
     List<Reservation> findByRestaurantIdAndTableIdAndDateAndStartSlotTimeAndEndSlotTime(
-            ObjectId restaurantId, ObjectId tableId, String date, LocalTime startSlotTime, LocalTime endSlotTime);
+            ObjectId restaurantId, ObjectId tableId, LocalDate date, LocalTime startSlotTime, LocalTime endSlotTime);
 
     List<Reservation> findByRestaurantId(ObjectId restaurantId);
 
     List<Reservation> findByTableId(ObjectId tableId);
 
-    List<Reservation> findByDate(String date);
+    List<Reservation> findByDate(LocalDate date);
 
     List<Reservation> findByStartSlotTime(LocalTime startSlotTime);
 
@@ -32,6 +32,12 @@ public interface ReservationRepository extends MongoRepository<Reservation, Obje
     long countByRestaurantIdAndDate(ObjectId restaurantId, LocalDate date);
 
     List<Reservation> findByRestaurantIdAndDate(ObjectId objectId, LocalDate date);
+
+    List<Reservation> findByDateAndRestaurantId(LocalDate date, String restaurantId);
+
+    List<Reservation> findByDateBetweenAndRestaurantId(LocalDate startDate, LocalDate endDate, String restaurantId);
+
+    List<Reservation> findByDateBetween(LocalDate startDate, LocalDate endDate);
 }
 
 
