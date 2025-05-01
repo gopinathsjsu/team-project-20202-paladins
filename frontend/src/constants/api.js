@@ -5,9 +5,9 @@ export const API_ENDPOINTS = {
     LOGOUT: '/auth/logout',
   },
   RESTAURANTS: {
-    LIST: '/restaurants',
-    DETAIL: (id) => `/restaurants/${id}`,
-    SEARCH: '/restaurants/search',
+    LIST: '/restaurant',
+    DETAIL: (id) => `/restaurant/${id}`,
+    SEARCH: '/api/restaurant/search',
   },
   BOOKINGS: {
     CREATE: '/bookings',
