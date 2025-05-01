@@ -20,8 +20,9 @@ import RestaurantIcon from '@mui/icons-material/Restaurant';
 import { useDispatch, useSelector } from 'react-redux';
 import { logout } from '../../redux/slices/authSlice';
 import StyledTooltip from '../common/StyledTooltip';
-import API from '../../api/API';
-import { API_ENDPOINTS } from '../../constants/api';
+import {searchRestaurant} from '../../api/restaurant'
+// import API from '../../api/API';
+// import { API_ENDPOINTS } from '../../api/re';
 
 const Header = () => {
   /* ------------ UI state ------------ */
@@ -39,7 +40,7 @@ const Header = () => {
   const navigate = useNavigate();
   const { token, email, role } = useSelector((s) => s.auth);
 
-  /* ------------ featured cities ------ */
+  /* ------------   ------ */
   const featuredCities = useMemo(
       () => [
         { name: 'New York, NY', featured: true },
@@ -110,12 +111,13 @@ const Header = () => {
     };
 
     try {
-      const { data, status } = await API.get(API_ENDPOINTS.RESTAURANTS.SEARCH, { params });
-      if (status === 200) {
-        navigate('/restaurants', { state: { searchResults: data }, replace: true });
-      } else {
-        console.error('Search failed', status);
-      }
+        const data = await searchRestaurant()
+      // const { data, status } = await API.get(API_ENDPOINTS.RESTAURANTS.SEARCH, { params });
+      // if (status === 200) {
+      //   navigate('/restaurants', { state: { searchResults: data }, replace: true });
+      // } else {
+      //   console.error('Search failed', status);
+      // }
     } catch (err) {
       console.error('Search error:', err);
     }
@@ -155,60 +157,6 @@ const Header = () => {
           >
             BookTable
           </Typography>
-
-          {/* search inputs */}
-          <Stack direction="row" spacing={2} sx={{ flex: 1, mx: 3, alignItems: 'center' }}>
-            <TextField
-                placeholder="Search restaurants"
-                value={searchParams.restaurant}
-                onChange={(e) => setSearchParams({ ...searchParams, restaurant: e.target.value })}
-                sx={{ ...commonInputStyles, width: 300 }}
-                InputProps={{
-                  startAdornment: (
-                      <InputAdornment position="start">
-                        <RestaurantIcon />
-                      </InputAdornment>
-                  ),
-                }}
-            />
-            <TextField
-                type="date"
-                value={searchParams.date}
-                onChange={(e) => setSearchParams({ ...searchParams, date: e.target.value })}
-                sx={{ ...commonInputStyles, width: 200, '& .MuiInputBase-input': { textAlign: 'center' } }}
-            />
-            <TextField
-                type="time"
-                value={searchParams.time}
-                onChange={(e) => setSearchParams({ ...searchParams, time: e.target.value })}
-                sx={{ ...commonInputStyles, width: 180 }}
-            />
-            <Autocomplete
-                disableClearable
-                value={searchParams.partySize.toString()}
-                onChange={(_, v) => setSearchParams({ ...searchParams, partySize: parseInt(v, 10) })}
-                options={[...Array(10)].map((_, i) => (i + 1).toString())}
-                getOptionLabel={(o) => `${o} ${parseInt(o, 10) === 1 ? 'Person' : 'People'}`}
-                sx={{ width: 190, ...commonInputStyles }}
-                renderInput={(p) => (
-                    <TextField
-                        {...p}
-                        placeholder="Party size"
-                        InputProps={{
-                          ...p.InputProps,
-                          startAdornment: (
-                              <InputAdornment position="start">
-                                <PeopleIcon sx={{ color: 'white' }} />
-                              </InputAdornment>
-                          ),
-                        }}
-                    />
-                )}
-            />
-            <Button variant="contained" sx={{ bgcolor: '#2DD4BF' }} onClick={handleSearch}>
-              <SearchIcon />
-            </Button>
-          </Stack>
 
           {/* location + auth */}
           <Stack direction="row" spacing={2} alignItems="center" sx={{ ml: 2 }}>

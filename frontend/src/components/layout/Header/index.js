@@ -2,7 +2,6 @@ import React, { useMemo, useState, useCallback, useEffect } from 'react';
 import {
     AppBar,
     Autocomplete,
-    Avatar,
     Button,
     InputAdornment,
     Stack,
@@ -13,17 +12,9 @@ import {
 import dayjs from 'dayjs';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import SearchIcon from '@mui/icons-material/Search';
-import LocationOnIcon from '@mui/icons-material/LocationOn';
-import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
 import PeopleIcon from '@mui/icons-material/People';
 import { useDispatch, useSelector } from 'react-redux';
-import { logout } from '../redux/slices/authSlice';
-import StyledTooltip from '../common/StyledTooltip.js';
 import RestaurantIcon from '@mui/icons-material/Restaurant';
-import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
-import AccessTimeIcon from '@mui/icons-material/AccessTime';
-import API from "../../api/API.js";
-import { API_ENDPOINTS } from "../../constants/api.js";
 import {useSearchParams} from "react-router-dom";
 
 
