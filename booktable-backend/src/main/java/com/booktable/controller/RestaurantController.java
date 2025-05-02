@@ -151,8 +151,8 @@ public class RestaurantController {
     // Update an existing restaurant (full update)
     @PreAuthorize("hasAuthority('RESTAURANT_MANAGER')")
     @PutMapping("/{id}")
-    public Restaurant updateRestaurant(@PathVariable String id, @RequestBody Restaurant restaurant) {
-        return restaurantService.updateRestaurant(id, restaurant);
+    public Restaurant updateRestaurant(@PathVariable String id, @RequestBody RestaurantTableInput restaurantTable) {
+        return restaurantService.updateRestaurant(id, restaurantTable);
     }
 
     // Partially update an existing restaurant

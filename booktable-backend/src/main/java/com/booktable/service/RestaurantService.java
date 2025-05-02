@@ -1,6 +1,10 @@
 package com.booktable.service;
 
 import com.booktable.dto.RatingStats;
+import com.booktable.dto.RestaurantInput;
+import com.booktable.dto.RestaurantTableInput;
+import com.booktable.dto.TableDetails;
+import com.booktable.mapper.RestaurantUpdateMapper;
 import com.booktable.model.Restaurant;
 import com.booktable.repository.RestaurantRepository;
 import com.booktable.repository.ReviewRepository;
@@ -21,13 +25,21 @@ import java.util.stream.Collectors;
 
 @Service
 public class RestaurantService {
+
     private final RestaurantRepository restaurantRepository;
     private final ReviewRepository reviewRepository;
+    private final RestaurantUpdateMapper restaurantUpdateMapper;
+    private final RestaurantTableManager restaurantTableManager;
 
     @Autowired
-    public RestaurantService(RestaurantRepository restaurantRepository, ReviewRepository reviewRepository) {
+    public RestaurantService(RestaurantRepository restaurantRepository,
+                             ReviewRepository reviewRepository,
+                             RestaurantUpdateMapper restaurantUpdateMapper,
+                             RestaurantTableManager restaurantTableManager) {
         this.restaurantRepository = restaurantRepository;
         this.reviewRepository = reviewRepository;
+        this.restaurantUpdateMapper = restaurantUpdateMapper;
+        this.restaurantTableManager = restaurantTableManager;
     }
 
     // Get restaurants by managerId
@@ -65,9 +77,16 @@ public class RestaurantService {
         return restaurantRepository.save(restaurant);
     }
 
-    public Restaurant updateRestaurant(String id, Restaurant updatedRestaurant) {
-        Restaurant existingRestaurant = getRestaurantById(id);
-        updatedRestaurant.setId(existingRestaurant.getId());
+    public Restaurant updateRestaurant(String id, RestaurantTableInput updatedRestaurantTableInput) {
+        RestaurantInput inputRestaurant = updatedRestaurantTableInput.getRestaurantInput();
+        TableDetails tableDetails = updatedRestaurantTableInput.getTable();
+
+        Restaurant existingRestaurant = getRestaurantById(new ObjectId(id));
+
+        Restaurant updatedRestaurant = restaurantUpdateMapper.updateEntity(inputRestaurant, existingRestaurant);
+
+        restaurantTableManager.deleteAndCreateTablesForRestaurant(id, tableDetails);
+
         return restaurantRepository.save(updatedRestaurant);
     }
 
