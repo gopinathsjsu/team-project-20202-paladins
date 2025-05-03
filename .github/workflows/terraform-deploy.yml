@@ -39,7 +39,7 @@ jobs:
       run: terraform plan -out=tfplan
 
     - name: Wait for manual approval
-      uses: peter-evans/workflow-dispatch@v1
+      uses: peter-evans/workflow-dispatch@v3
       with:
         workflow: 'Approve Terraform Plan'
         ref: ${{ github.ref }}
