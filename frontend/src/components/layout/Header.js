@@ -1,8 +1,6 @@
-// src/components/layout/Header.js
 import React, { useState, useMemo } from 'react';
 import {
-  AppBar, Toolbar, Typography, Button, Stack,
-  IconButton, Avatar, Menu, MenuItem, Box
+  AppBar, Toolbar, Typography, Button, Stack, Avatar, Box
 } from '@mui/material';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
@@ -15,7 +13,7 @@ const Header = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { token, email, role } = useSelector((state) => state.auth);
-  const [anchorEl, setAnchorEl] = useState(null);
+  // const [anchorEl, setAnchorEl] = useState(null);
   const [location, setLocation] = useState('');
 
   const featuredCities = useMemo(() => [
@@ -25,8 +23,8 @@ const Header = () => {
     { name: 'Chicago, IL', featured: true },
   ], []);
 
-  const handleMenuOpen = (e) => setAnchorEl(e.currentTarget);
-  const handleMenuClose = () => setAnchorEl(null);
+  // const handleMenuOpen = (e) => setAnchorEl(e.currentTarget);
+  // const handleMenuClose = () => setAnchorEl(null);
 
   const handleLogout = () => {
     dispatch(logout());
@@ -124,10 +122,7 @@ const Header = () => {
               {/* Logout */}
               <Button
                 variant="outlined"
-                onClick={() => {
-                  dispatch(logout());
-                  navigate('/login');
-                }}
+                onClick={handleLogout}
                 sx={{
                   borderColor: '#2DD4BF',
                   color: '#2DD4BF',

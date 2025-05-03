@@ -4,8 +4,6 @@ import {
 } from "@mui/material";
 import {DateTimePicker} from "@mui/x-date-pickers"
 import RestaurantIcon from "@mui/icons-material/Restaurant";
-import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
-import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import EventIcon from '@mui/icons-material/Event';
 import PeopleIcon from "@mui/icons-material/People";
 import SearchIcon from "@mui/icons-material/Search";
