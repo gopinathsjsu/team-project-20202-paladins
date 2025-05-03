@@ -54,6 +54,36 @@ resource "aws_security_group" "web_sg" {
   }
 }
 
+# Create IAM Role for EC2 to allow SSM usage
+resource "aws_iam_role" "ec2_ssm_role" {
+  name = "EC2SSMRole"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action    = "sts:AssumeRole"
+        Effect    = "Allow"
+        Principal = {
+          Service = "ec2.amazonaws.com"
+        }
+      },
+    ]
+  })
+}
+
+# Attach the SSM policy to the IAM Role
+resource "aws_iam_role_policy_attachment" "ec2_ssm_policy_attachment" {
+  role       = aws_iam_role.ec2_ssm_role.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+}
+
+# Create IAM Instance Profile
+resource "aws_iam_instance_profile" "ec2_ssm_profile" {
+  name = "EC2SSMProfile"
+  role = aws_iam_role.ec2_ssm_role.name
+}
+
 # EC2 instances
 resource "aws_instance" "backend" {
   ami           = "ami-04fc83311a8d478df"  # Amazon Linux AMI
@@ -61,9 +91,11 @@ resource "aws_instance" "backend" {
   count         = 2
 
   security_groups = [aws_security_group.web_sg.name]
+  iam_instance_profile = aws_iam_instance_profile.ec2_ssm_profile.name
 
   tags = {
     Name = "BookTableEC2"
+    Environment = "production"
   }
 }
 
@@ -138,8 +170,64 @@ resource "aws_autoscaling_group" "app_auto_scaling_group" {
     value               = "BookTableASG"
     propagate_at_launch = true
   }
+  tag {
+    key                 = "Environment"
+    value               = "production"
+    propagate_at_launch = true
+  }
+
 }
 
-output "ec2_ips" {
+resource "aws_ssm_document" "install_docker_nginx_run_app" {
+  name          = "InstallDockerNginxRunApp"
+  document_type = "Command"
+  content = jsonencode({
+    schemaVersion = "2.2",
+    description   = "Install Docker, Nginx, and Run Docker containers from Docker Hub",
+    mainSteps = [
+      {
+        action = "aws:runShellScript"
+        name   = "installDockerNginxAndRunApp"
+        inputs = {
+          runCommand = [
+            "sudo yum update -y",
+            "echo Installing Docker...",
+            "sudo amazon-linux-extras install docker -y",
+            "sudo service docker start",
+            "echo Installing nginx...",
+            "sudo yum install nginx -y",
+            "sudo service nginx start",
+            "sudo docker pull bhusalashish/booktable-backend:latest",
+            "sudo docker pull bhusalashish/booktable-frontend:latest",
+            "sudo docker run -d -p 8080:8080 bhusalashish/booktable-backend:latest",
+            "sudo docker run -d -p 80:80 bhusalashish/booktable-frontend:latest"
+          ]
+        }
+      }
+    ]
+  })
+}
+
+output "ec2_public_ips" {
   value = aws_instance.backend[*].public_ip
+}
+
+output "ec2_private_ips" {
+  value = aws_instance.backend[*].private_ip
+}
+
+output "load_balancer_dns_name" {
+  value = aws_lb.app_lb.dns_name
+}
+
+output "security_group_id" {
+  value = aws_security_group.web_sg.id
+}
+
+output "auto_scaling_group_name" {
+  value = aws_autoscaling_group.app_auto_scaling_group.name
+}
+
+output "load_balancer_arn" {
+  value = aws_lb.app_lb.arn
 }
