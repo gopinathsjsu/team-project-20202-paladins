@@ -7,7 +7,6 @@ import RestaurantIcon from "@mui/icons-material/Restaurant";
 import EventIcon from '@mui/icons-material/Event';
 import PeopleIcon from "@mui/icons-material/People";
 import SearchIcon from "@mui/icons-material/Search";
-// import { TimePicker } from "@mui/x-date-pickers/TimePicker";
 import dayjs from 'dayjs';
 
 const Search = ({ onSearch }) => {
@@ -24,7 +23,7 @@ const Search = ({ onSearch }) => {
     const params = {};
     if (restaurant) params.restaurant = restaurant;
     if (date) params.date = date;
-    if (time) params.startTime = `${time}:00`;
+    if (time) params.startTime = `${time}`;
     if (partySize) params.partySize = partySize;
 
     onSearch(params);

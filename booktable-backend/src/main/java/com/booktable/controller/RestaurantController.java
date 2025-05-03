@@ -27,7 +27,6 @@ import java.util.List;
 // Name, Cuisine type, Cost rating, Reviews and Ratings, and #of times booked today,
 // display clickable buttons with available times - that can be clicked to book the table
 
-@SecurityRequirement(name = "bearerAuth")
 @RestController
 @RequestMapping("/api/restaurant")
 public class RestaurantController {
@@ -123,6 +122,7 @@ public class RestaurantController {
     }
 
     // Create a new restaurant
+    @SecurityRequirement(name = "bearerAuth")
     @PreAuthorize("hasAuthority('RESTAURANT_MANAGER')")
     @PostMapping
     public Restaurant addRestaurant(@RequestBody RestaurantTableInput restaurantTable) {
@@ -149,6 +149,7 @@ public class RestaurantController {
     }
 
     // Update an existing restaurant (full update)
+    @SecurityRequirement(name = "bearerAuth")
     @PreAuthorize("hasAuthority('RESTAURANT_MANAGER')")
     @PutMapping("/{id}")
     public Restaurant updateRestaurant(@PathVariable String id, @RequestBody Restaurant restaurant) {
@@ -156,6 +157,7 @@ public class RestaurantController {
     }
 
     // Partially update an existing restaurant
+    @SecurityRequirement(name = "bearerAuth")
     @PreAuthorize("hasAuthority('RESTAURANT_MANAGER')")
     @PatchMapping("/{id}")
     public Restaurant patchRestaurant(@PathVariable String id, @RequestBody Restaurant restaurant) {
@@ -163,6 +165,7 @@ public class RestaurantController {
     }
 
     // Delete a restaurant by ID
+    @SecurityRequirement(name = "bearerAuth")
     @PreAuthorize("hasAuthority('ADMIN')")
     @DeleteMapping("/{id}")
     public void deleteRestaurant(@PathVariable String id) {

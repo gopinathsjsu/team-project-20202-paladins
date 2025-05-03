@@ -2,7 +2,17 @@ import React from "react";
 import { Card, CardContent, Typography, Button, Box, Rating, Stack } from "@mui/material";
 import { Link } from "react-router-dom";
 
-const RestaurantCard = ({ restaurant, userRole, approveRestaurant, deleteRestaurant, onEdit }) => {
+const RestaurantCard = ({ restaurant, userRole, approveRestaurant, deleteRestaurant, onEdit, tableSlots }) => {
+
+  const getEndTime = (startTime) => {
+    const [hours, minutes, seconds] = startTime.split(":").map(Number);
+    const date = new Date();
+    date.setHours(hours);
+    date.setMinutes(minutes + 60);
+    date.setSeconds(seconds || 0);
+    return date.toTimeString().split(" ")[0];
+  };
+
   return (
     <Card
       sx={{
@@ -107,7 +117,66 @@ const RestaurantCard = ({ restaurant, userRole, approveRestaurant, deleteRestaur
             >
               Edit Restaurant
             </Button>
-          ) : (
+          ) : tableSlots && tableSlots.length > 0 ? (
+          <Box>
+            <Typography variant="subtitle2" sx={{ mb: 1 }}>
+              Available Time Slots:
+            </Typography>
+            <Box
+              sx={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(3, 1fr)',
+                gap: '8px',
+              }}
+            >
+              {tableSlots.map((slotInfo) =>
+                slotInfo.slot.map((startTime, i) => {
+                  const endTime = slotInfo.slot[i + 1] || getEndTime(startTime);
+                  // const slotData = {
+                  //   tableId: slotInfo.tableId,
+                  //   startSlotTime: startTime,
+                  //   endSlotTime: endTime,
+                  //   date: new Date().toISOString().split('T')[0],
+                  // };
+                  return (
+                    <Link
+                      key={`${slotInfo.tableId}-${startTime}`}
+                      to={`/booking/${restaurant.id}`}
+                      state={{
+                        selectedSlot: {
+                          restaurantId: restaurant.id,
+                          tableId: slotInfo.tableId,
+                          startSlotTime: startTime,
+                          endSlotTime: endTime,
+                          date: new Date().toISOString().split("T")[0], // today's date
+                        },
+                        restaurantDetails: {
+                          id: restaurant.id,
+                          name: restaurant.name,
+                          addressStreet: restaurant.addressStreet,
+                          addressCity: restaurant.addressCity,
+                        },
+                      }}
+                      style={{ textDecoration: "none" }}
+                    >
+                      <Button
+                        size="small"
+                        variant="outlined"
+                        sx={{
+                          borderRadius: "20px",
+                          textTransform: "none",
+                          width: "100%",
+                        }}
+                      >
+                        {startTime}
+                      </Button>
+                    </Link>
+                  );
+                })
+              )}
+            </Box>
+          </Box>
+        ) : (
           <Link to={`/booking/${restaurant.id}`} style={{ width: "100%" }}>
             <Button variant="contained" fullWidth color="primary" sx={{ borderRadius: "30px" }}>
               Book a Table
