@@ -67,7 +67,8 @@ const Header = () => {
           alignItems="center"
           sx={{ width: '100%', justifyContent: { sm: 'flex-end' } }}
         >
-          <Box sx={{ width: { xs: '100%', sm: 'auto' } }}>
+          <Box
+            sx={{ width: { xs: '100%', sm: 'auto' } }}>
             <LocationSearch
               value={location}
               onChange={(value) => setLocation(value)}
@@ -78,16 +79,18 @@ const Header = () => {
           {/* Avatar or Sign In */}
           {!token ? (
             <Button
-              variant="contained"
+              variant="outlined"
               component={RouterLink}
               to="/login"
               fullWidth={true}
               sx={{
-                bgcolor: '#2DD4BF',
-                '&:hover': { bgcolor: '#14B8A6' },
-                height: '48px',
-                borderRadius: '8px',
-                px: 3,
+                borderColor: '#2DD4BF',
+                color: '#2DD4BF',
+                '&:hover': {
+                  bgcolor: '#14B8A6',
+                  color: '#fff',
+                  borderColor: '#14B8A6'
+                },
                 width: { xs: '100%', sm: 'auto' }
               }}
             >
