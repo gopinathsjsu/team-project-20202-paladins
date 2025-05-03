@@ -1,0 +1,20 @@
+# Terraform State Files
+*.tfstate
+*.tfstate.*
+
+# Crash log files
+crash.log
+
+# .terraform directory (Terraform dependency plugins)
+.terraform/
+
+# Override files
+override.tf
+override.tf.json
+
+# Local variable definitions (you can keep this in place if you want to keep secrets or variables)
+*.tfvars
+*.tfvars.json
+
+# .terraform.lock.hcl is used to lock provider versions, you can ignore it if not managing lock file versioning
+.terraform.lock.hcl
