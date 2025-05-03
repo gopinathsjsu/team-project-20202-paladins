@@ -96,23 +96,22 @@ const Home = () => {
           ) : (
               <>
                 <Grid
-                    container
-                    spacing={4}
-                    justifyContent="center"
-                    sx={{
-                      display: "grid",
-                      gridTemplateColumns: "repeat(auto-fill, minmax(250px, 1fr))",
-                      gap: "16px",
-                    }}
+                  container
+                  spacing={4}
+                  justifyContent="center"
+                  sx={{
+                    display: "grid",
+                    gridTemplateColumns: "repeat(auto-fill, minmax(250px, 1fr))",
+                    gap: "16px",
+                  }}
                 >
                   {restaurants
-                      .slice(0, RESTAURANTS_TO_DISPLAY_HOME_PAGE)
-                      .map((restaurant) => (
-                          <Grid item key={restaurant.id}>
-                            <RestaurantCard restaurant={restaurant} />
-                          </Grid>
-                      ))}
+                    .slice(0, RESTAURANTS_TO_DISPLAY_HOME_PAGE)
+                    .map((restaurant) => (
+                      <RestaurantCard key={restaurant.id} restaurant={restaurant} />
+                    ))}
                 </Grid>
+
 
                 <Box sx={{ textAlign: "center", mt: 4 }}>
                   <Link to="/restaurants">
