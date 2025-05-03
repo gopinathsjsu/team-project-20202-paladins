@@ -1,5 +1,5 @@
 import React from 'react';
-import { Container, Grid, Typography, CircularProgress, Box, Alert } from '@mui/material';
+import { Container, Grid, Typography, Box, Alert } from '@mui/material';
 import { useLocation } from 'react-router-dom';
 import RestaurantCard from '../components/RestaurantCard';
 

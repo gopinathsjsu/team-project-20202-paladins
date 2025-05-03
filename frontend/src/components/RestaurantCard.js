@@ -132,12 +132,12 @@ const RestaurantCard = ({ restaurant, userRole, approveRestaurant, deleteRestaur
               {tableSlots.map((slotInfo) =>
                 slotInfo.slot.map((startTime, i) => {
                   const endTime = slotInfo.slot[i + 1] || getEndTime(startTime);
-                  const slotData = {
-                    tableId: slotInfo.tableId,
-                    startSlotTime: startTime,
-                    endSlotTime: endTime,
-                    date: new Date().toISOString().split('T')[0],
-                  };
+                  // const slotData = {
+                  //   tableId: slotInfo.tableId,
+                  //   startSlotTime: startTime,
+                  //   endSlotTime: endTime,
+                  //   date: new Date().toISOString().split('T')[0],
+                  // };
                   return (
                     <Link
                       key={`${slotInfo.tableId}-${startTime}`}
