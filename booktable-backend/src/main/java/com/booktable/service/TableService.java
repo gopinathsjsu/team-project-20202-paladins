@@ -1,5 +1,6 @@
 package com.booktable.service;
 
+import com.booktable.dto.TableDetails;
 import com.booktable.model.Restaurant;
 import com.booktable.model.Table;
 import com.booktable.repository.TableRepository;
@@ -34,6 +35,24 @@ public class TableService {
     public Table getTableById(ObjectId tableId) {
         return tableRepository.findById(tableId.toString())
                 .orElseThrow(() -> new RuntimeException("Table not found"));
+    }
+
+    public void deleteTablesByRestaurantId(String restaurantId) {
+        tableRepository.deleteByRestaurantId(new ObjectId(restaurantId));
+    }
+
+    public void createTablesForRestaurant(String restaurantId, TableDetails tableDetails) {
+        List<Table> tables = new ArrayList<>();
+
+        for (int i = 0; i < tableDetails.getCount(); i++) {
+            Table table = new Table();
+            table.setRestaurantId(new ObjectId(restaurantId));
+            table.setTableNumber(String.valueOf(i + 1));
+            table.setCapacity(tableDetails.getCapacity());
+            table.setIsActive(true); // All new tables are active by default
+            tables.add(table);
+        }
+        tableRepository.saveAll(tables);
     }
 
     public Table saveTable(Table table) {

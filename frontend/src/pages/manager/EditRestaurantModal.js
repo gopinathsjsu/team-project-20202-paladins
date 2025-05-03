@@ -76,7 +76,9 @@ const EditRestaurantModal = ({ open, handleClose, restaurantData }) => {
       setError("");
 
       const updatedRestaurantData = {
-        ...formData,
+        restaurantInput: {
+          ...formData
+        },
         table: {
           capacity: formData.tableCapacity,
           count: formData.tableCount,
