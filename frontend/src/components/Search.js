@@ -1,113 +1,131 @@
-import React, {useState} from "react";
-import {Button, InputAdornment, MenuItem, Stack, TextField} from "@mui/material";
-
+import React, { useState } from "react";
+import {
+  Button, InputAdornment, MenuItem, Stack, TextField, useTheme, useMediaQuery
+} from "@mui/material";
+import {DateTimePicker} from "@mui/x-date-pickers"
 import RestaurantIcon from "@mui/icons-material/Restaurant";
-import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
-import AccessTimeIcon from "@mui/icons-material/AccessTime";
+import EventIcon from '@mui/icons-material/Event';
 import PeopleIcon from "@mui/icons-material/People";
 import SearchIcon from "@mui/icons-material/Search";
+// import { TimePicker } from "@mui/x-date-pickers/TimePicker";
+import dayjs from 'dayjs';
 
 const Search = ({ onSearch }) => {
-    const [restaurant, setRestaurant] = useState("");
-    const [date, setDate] = useState("");
-    const [time, setTime] = useState("");
-    const [partySize, setPartySize] = useState(2);
+  const [restaurant, setRestaurant] = useState("");
+  const [pickerValue, setPickerValue] = useState(dayjs());
+  const [date, setDate] = useState(dayjs().format("YYYY-MM-DD"));
+  const [time, setTime] = useState(dayjs().format("HH:mm:ss"));
+  const [partySize, setPartySize] = useState(2);
 
-    const handleSearch = () => {
-        const params = {};
-        if (restaurant) params.restaurant = restaurant;
-        if (date) params.date = date;
-        if (time) {
-            params.startTime = `${time}:00`;
-        }
-        if (partySize) params.partySize = partySize;
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
-        onSearch(params);
-    };
+  const handleSearch = () => {
+    const params = {};
+    if (restaurant) params.restaurant = restaurant;
+    if (date) params.date = date;
+    if (time) params.startTime = `${time}:00`;
+    if (partySize) params.partySize = partySize;
 
-    return (
-        <Stack
-            direction="row"
-            spacing={2}
-            sx={{
-                mb: 4,
-                p: 2,
-                borderRadius: 2,
-                backgroundColor: "#ffffff",
-                boxShadow: "0 2px 6px rgba(0,0,0,0.1)"
-            }}
-        >
-            <TextField
-                placeholder="Search restaurants"
-                value={restaurant}
-                onChange={(e) => setRestaurant(e.target.value)}
-                InputProps={{
-                    startAdornment: (
-                        <InputAdornment position="start">
-                            <RestaurantIcon />
-                        </InputAdornment>
-                    ),
-                }}
-                sx={{ flex: 1 }}
-            />
+    onSearch(params);
+  };
 
-            <TextField
-                type="date"
-                value={date}
-                onChange={(e) => setDate(e.target.value)}
-                InputProps={{
-                    startAdornment: (
-                        <InputAdornment position="start">
-                            <CalendarTodayIcon />
-                        </InputAdornment>
-                    ),
-                }}
-                sx={{ width: 180 }}
-            />
+  return (
+    <Stack
+      direction={{ xs: "column", sm: "row" }}
+      spacing={1.5}
+      alignItems="stretch"
+      sx={{
+        mb: 4,
+        p: 2,
+        borderRadius: 2,
+        backgroundColor: "#ffffff",
+        boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
+        maxWidth: "1000px",
+        mx: "auto",
+      }}
+    >
+      <TextField
+        placeholder="Search restaurants"
+        value={restaurant}
+        onChange={(e) => setRestaurant(e.target.value)}
+        InputProps={{
+          startAdornment: (
+            <InputAdornment position="start">
+              <RestaurantIcon />
+            </InputAdornment>
+          ),
+        }}
+        sx={{ flex: 2, minWidth: 150 }}
+      />
 
-            <TextField
-                type="time"
-                value={time}
-                onChange={(e) => setTime(e.target.value)}
-                InputProps={{
-                    startAdornment: (
-                        <InputAdornment position="start">
-                            <AccessTimeIcon />
-                        </InputAdornment>
-                    ),
-                }}
-                sx={{ width: 140 }}
-            />
 
-            <TextField
-                select
-                value={partySize}
-                onChange={(e) => setPartySize(parseInt(e.target.value))}
-                InputProps={{
-                    startAdornment: (
-                        <InputAdornment position="start">
-                            <PeopleIcon />
-                        </InputAdornment>
-                    ),
-                }}
-                sx={{ width: 140 }}
-            >
-                {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13,14,15,16,17,18,19,20].map((count) => (
-                    <MenuItem key={count} value={count}>
-                        {count} {count === 1 ? "Person" : "People"}
-                    </MenuItem>
-                ))}
-            </TextField>
+      <DateTimePicker
+        label="When"
+        ampm={false}
+        value={pickerValue}
+        onChange={newVal => {
+          if (newVal?.isValid()) {
+            setPickerValue(newVal);
+            setDate(newVal.format('YYYY-MM-DD'));
+            setTime(newVal.format('HH:mm:ss'));
+          }
+        }}
+        slotProps={{
+          textField: {
+            fullWidth: true,
+            InputProps: {
+              startAdornment: (
+                <InputAdornment position="start">
+                  <EventIcon />
+                </InputAdornment>
+              ),
+            },
+            sx: {
+              flex: 1,
+              minWidth: { xs: 140, sm: 200 },
+            },
+          },
+        }}
+      />
 
-            <Button
-                variant="contained"
-                onClick={handleSearch}
-                sx={{ minWidth: 48, px: 2 }}
-            >
-                <SearchIcon />
-            </Button>
-        </Stack>
-    );
+
+      <TextField
+        select
+        value={partySize}
+        onChange={(e) => setPartySize(parseInt(e.target.value))}
+        InputProps={{
+          startAdornment: (
+            <InputAdornment position="start">
+              <PeopleIcon />
+            </InputAdornment>
+          ),
+        }}
+        sx={{ flex: 1, minWidth: 120 }}
+      >
+        {[...Array(20)].map((_, i) => (
+          <MenuItem key={i + 1} value={i + 1}>
+            {i + 1} {i + 1 === 1 ? "Person" : "People"}
+          </MenuItem>
+        ))}
+      </TextField>
+
+      <Button
+        variant="contained"
+        onClick={handleSearch}
+        sx={{
+          flexShrink: 0,
+          minWidth: 48,
+          px: 2,
+          alignSelf: isMobile ? "stretch" : "center",
+          bgcolor: "#2DD4BF",
+          "&:hover": { bgcolor: "#14B8A6" }
+        }}
+      >
+        <SearchIcon />
+      </Button>
+    </Stack>
+  );
 };
 
 export default Search;
