@@ -1,4 +1,3 @@
-// src/components/layout/Footer.js
 import React from 'react';
 import { Box, Typography, Container } from '@mui/material';
 
