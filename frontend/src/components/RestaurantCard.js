@@ -117,6 +117,15 @@ const RestaurantCard = ({ restaurant, userRole, approveRestaurant, deleteRestaur
             >
               Edit Restaurant
             </Button>
+          ) : tableSlots && tableSlots.length <= 0 ? (
+            <Button
+              variant="outlined"
+              fullWidth
+              disabled // Disable the button
+              sx={{ borderRadius: "30px" }}
+            >
+              No tables available
+            </Button>
           ) : tableSlots && tableSlots.length > 0 ? (
           <Box>
             <Typography variant="subtitle2" sx={{ mb: 1 }}>
