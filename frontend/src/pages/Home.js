@@ -13,9 +13,10 @@ import {
 } from "@mui/material";
 import RestaurantCard from "../components/RestaurantCard";
 import Search from "../components/Search";
-import { searchRestaurant } from "../api/restaurant";
 import { Link } from "react-router-dom";
 import { RESTAURANTS_TO_DISPLAY_HOME_PAGE } from "../constants";
+import { searchRestaurant } from "../api/restaurant";
+import { useSelector as useReduxSelector } from "react-redux";
 
 const Home = () => {
   const dispatch = useDispatch();
@@ -33,12 +34,18 @@ const Home = () => {
     }
   }, [dispatch, reduxLoading]);
 
+  const location = useReduxSelector((state) => state.search.location);
   const handleSearch = async (params) => {
     setSearchLoading(true);
     setSearchError(null);
+    if (location) {
+      const [city, stateCode] = location.split(", ").map((loc) => loc.trim());
+      params.city = city;
+      params.state = stateCode;
+    }
     try {
       const results = await searchRestaurant(params);
-      navigate("/restaurants", { state: { searchResults: results } });
+      navigate("/restaurants", { state: { searchResults: results, searchParams: params } });
     } catch (err) {
       console.error("Search failed:", err);
       setSearchError("Could not load search results.");

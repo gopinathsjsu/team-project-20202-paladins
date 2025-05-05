@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import {
   AppBar, Toolbar, Typography, Button, Stack, Avatar, Box
 } from '@mui/material';
@@ -7,6 +7,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { logout } from '../../redux/slices/authSlice';
 import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
 import LocationSearch from './LocationSearch';
+import { setLocation } from '../../redux/slices/searchSlice';
 import StyledTooltip from '../common/StyledTooltip';
 
 const Header = () => {
@@ -14,7 +15,7 @@ const Header = () => {
   const navigate = useNavigate();
   const { token, email, role } = useSelector((state) => state.auth);
   // const [anchorEl, setAnchorEl] = useState(null);
-  const [location, setLocation] = useState('');
+  const location = useSelector((state) => state.search.location);
 
   const featuredCities = useMemo(() => [
     { name: 'New York, NY', featured: true },
@@ -71,7 +72,7 @@ const Header = () => {
             sx={{ width: { xs: '100%', sm: 'auto' } }}>
             <LocationSearch
               value={location}
-              onChange={(value) => setLocation(value)}
+              onChange={(value) => dispatch(setLocation(value))}
               featuredCities={featuredCities}
             />
           </Box>
@@ -123,22 +124,22 @@ const Header = () => {
               )}
 
               {/* Logout */}
-              <Button
-                variant="outlined"
-                onClick={handleLogout}
-                sx={{
-                  borderColor: '#2DD4BF',
-                  color: '#2DD4BF',
-                  '&:hover': {
-                    bgcolor: '#14B8A6',
-                    color: '#fff',
-                    borderColor: '#14B8A6'
-                  },
-                  width: { xs: '100%', sm: 'auto' }
-                }}
-              >
-                Logout
-              </Button>
+              {/*<Button*/}
+              {/*  variant="outlined"*/}
+              {/*  onClick={handleLogout}*/}
+              {/*  sx={{*/}
+              {/*    borderColor: '#2DD4BF',*/}
+              {/*    color: '#2DD4BF',*/}
+              {/*    '&:hover': {*/}
+              {/*      bgcolor: '#14B8A6',*/}
+              {/*      color: '#fff',*/}
+              {/*      borderColor: '#14B8A6'*/}
+              {/*    },*/}
+              {/*    width: { xs: '100%', sm: 'auto' }*/}
+              {/*  }}*/}
+              {/*>*/}
+              {/*  Logout*/}
+              {/*</Button>*/}
             </>
           )}
         </Stack>
