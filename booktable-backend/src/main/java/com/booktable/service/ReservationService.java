@@ -139,8 +139,8 @@ public class ReservationService {
                         return new ReservationNotFoundException("Reservation not found with ID: " + reservationId);
                     } else {
                         log.warn("Cancellation denied: Reservation {} does not belong to customer {}", reservationId, customerId);
-                        // Throw AccessDeniedException or a custom AuthorizationFailedException
-                        return new RuntimeException(new AccessDeniedException("You are not authorized to cancel this reservation.")); // Wrap standard exception
+                        // Throw AccessDeniedException directly
+                        return new AccessDeniedException("You are not authorized to cancel this reservation.");
                     }
                 });
 
