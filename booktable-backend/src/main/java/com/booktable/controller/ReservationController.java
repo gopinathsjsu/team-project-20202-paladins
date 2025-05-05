@@ -143,8 +143,6 @@ public class ReservationController {
             return ResponseEntity.notFound().build();
         } catch (CancellationNotAllowedException | AccessDeniedException e) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        } catch (AccessDeniedException e) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().build();
         }
