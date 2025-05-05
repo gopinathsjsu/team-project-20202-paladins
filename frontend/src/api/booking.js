@@ -16,3 +16,13 @@ export const bookRestaurant = async (bookingData) => {
     const response = await axios.post('/api/reservation/book', bookingData);
     return response.data;
 };
+
+export const getMyBookings = async () => {
+    const response = await axios.get('/api/reservation/my-bookings');
+    return response.data;
+}
+
+export const cancelBooking = async (bookingId) => {
+    const response = await axios.delete(`/api/reservation/${bookingId}`);
+    return response.data;
+}

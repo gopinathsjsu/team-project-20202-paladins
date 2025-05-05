@@ -47,4 +47,7 @@ public class Reservation {
 
     @CreatedDate
     private LocalDateTime createdAt;
+
+    public static final String STATUS_CONFIRMED = "CONFIRMED";
+    public static final String STATUS_CANCELLED = "CANCELLED";
 }

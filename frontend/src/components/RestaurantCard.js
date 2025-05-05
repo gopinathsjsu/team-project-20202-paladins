@@ -32,24 +32,24 @@ const RestaurantCard = ({ restaurant, userRole, approveRestaurant, deleteRestaur
       {/* Fixed size image container */}
       <Box
         sx={{
-          height: "250px", // Fixed height for uniformity
-          width: "100%", // Full width for consistency
-          overflow: "hidden", // Ensure content is cropped
+          height: "250px",
+          width: "100%",
+          overflow: "hidden",
           borderTopLeftRadius: 4,
           borderTopRightRadius: 4,
-          position: "relative", // For absolute positioning of image
+          position: "relative",
         }}
       >
         <img
           src={restaurant.imageUrl || "https://placekitten.com/586/788"}
           alt={restaurant.name}
           style={{
-            objectFit: "cover", // Ensures the image fills the container and crops excess
-            width: "100%", // Stretch to fill the width of the container
-            height: "100%", // Stretch to fill the height of the container
-            position: "absolute", // Position image absolutely within the container
-            top: "0", // Align top
-            left: "0", // Align left
+            objectFit: "cover",
+            width: "100%",
+            height: "100%",
+            position: "absolute",
+            top: "0",
+            left: "0",
           }}
         />
       </Box>
@@ -81,8 +81,8 @@ const RestaurantCard = ({ restaurant, userRole, approveRestaurant, deleteRestaur
               onClick={approveRestaurant}
               sx={{
                 borderRadius: "30px",
-                width: "48%", // Make the button width smaller
-                fontSize: "14px", // Smaller text size
+                width: "48%",
+                fontSize: "14px",
                 "&:hover": {
                   backgroundColor: "#2DD4BF",
                 },
