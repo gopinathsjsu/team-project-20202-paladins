@@ -2,7 +2,7 @@ import React from "react";
 import { Card, CardContent, Typography, Button, Box, Rating, Stack } from "@mui/material";
 import { Link } from "react-router-dom";
 
-const RestaurantCard = ({ restaurant, userRole, approveRestaurant, deleteRestaurant, onEdit, tableSlots }) => {
+const RestaurantCard = ({ restaurant, userRole, approveRestaurant, deleteRestaurant, onEdit, tableSlots, date }) => {
 
   const getEndTime = (startTime) => {
     const [hours, minutes, seconds] = startTime.split(":").map(Number);
@@ -148,7 +148,7 @@ const RestaurantCard = ({ restaurant, userRole, approveRestaurant, deleteRestaur
                           tableId: slotInfo.tableId,
                           startSlotTime: startTime,
                           endSlotTime: endTime,
-                          date: new Date().toISOString().split("T")[0], // today's date
+                          date: date,
                         },
                         restaurantDetails: {
                           id: restaurant.id,

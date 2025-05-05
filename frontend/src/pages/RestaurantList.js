@@ -7,6 +7,8 @@ import RestaurantCard from '../components/RestaurantCard';
 const RestaurantList = () => {
   const location = useLocation();
   const { searchResults = [] } = location.state || {};
+  const { searchParams } = location.state || {};
+  const { date, city, state } = searchParams || {};
 
   return (
     <Box sx={{ minHeight: '100vh', bgcolor: '#f8f9fa', py: 6 }}>
@@ -41,6 +43,7 @@ const RestaurantList = () => {
                 key={result.restaurant.id}
                 restaurant={result.restaurant}
                 tableSlots={result.tableSlots}
+                date={date}
               />
             ))}
           </Grid>
