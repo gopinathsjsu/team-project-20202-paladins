@@ -1,5 +1,6 @@
 package com.booktable.repository;
 
+import com.booktable.dto.BookedTimeSlotProjection;
 import com.booktable.model.Reservation;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.repository.MongoRepository;
@@ -11,7 +12,7 @@ import java.util.List;
 
 public interface ReservationRepository extends MongoRepository<Reservation, ObjectId> {
     @Query(value = "{ 'restaurantId': ?0, 'date': ?1 }", fields = "{ 'tableId': 1, 'startSlotTime': 1, 'endSlotTime': 1 }")
-    List<Object[]> findBookedTablesAndTimes(ObjectId restaurantId, LocalDate date);
+    List<BookedTimeSlotProjection> findBookedTablesAndTimes(ObjectId restaurantId, LocalDate date);
 
     List<Reservation> findByRestaurantIdAndTableIdAndDateAndStartSlotTimeAndEndSlotTime(
             ObjectId restaurantId, ObjectId tableId, LocalDate date, LocalTime startSlotTime, LocalTime endSlotTime);

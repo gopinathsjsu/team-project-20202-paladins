@@ -74,30 +74,24 @@ public class TableService {
         LocalTime openingHour = restaurant.getOpeningHour();
         LocalTime closingHour = restaurant.getClosingHour();
 
-        // Check if request is within operating hours
         if (requestStart.isBefore(openingHour) || requestStart.isAfter(closingHour.minusHours(1))) {
             log.warn("TableService: Requested time {} is outside operating hours ({}-{}) for Restaurant ID: {}", requestStart, openingHour, closingHour, restaurantId);
             return List.of();
         }
 
-        // Call the ReservationService method
         Set<List<Object>> bookedTables = reservationService.getBookedTablesAndTimes(restaurantId, date);
 
-        // --- Log Processed Booked Slots ---
         log.debug("TableService: Received {} processed booked slots from ReservationService", bookedTables.size());
         if (log.isTraceEnabled()) { // Use TRACE for potentially verbose output
             bookedTables.forEach(slot -> log.trace("  Booked slot received: {}", slot));
         }
-        // --- End Log Processed Booked Slots ---
 
-        // Get all tables for the restaurant
         List<Table> allTables = tableRepository.findByRestaurantId(restaurantId);
         Set<String> tableIds = allTables.stream()
                 .map(table -> table.getId().toString())
                 .collect(Collectors.toSet());
         log.debug("TableService: Found {} tables for Restaurant ID: {}", tableIds.size(), restaurantId);
 
-        // Call the TimeSlotFinder
         List<List<Object>> slots = findClosestSlots(openingHour, closingHour, bookedTables, requestStart, tableIds, resultCount);
 
         log.debug("TableService: Found {} available slots via TimeSlotFinder", slots.size());

@@ -1,5 +1,6 @@
 package com.booktable.service;
 
+import com.booktable.dto.BookedTimeSlotProjection;
 import com.booktable.model.Reservation;
 import com.booktable.model.Restaurant;
 import com.booktable.model.Table;
@@ -125,35 +126,58 @@ public class ReservationService {
     }
 
     public Set<List<Object>> getBookedTablesAndTimes(ObjectId restaurantId, LocalDate date) {
-        log.debug("ReservationService: Fetching booked tables for Restaurant ID: {} on Date: {}", restaurantId, date); // Log input
+        log.debug("ReservationService: Fetching booked tables using DTO projection for Restaurant ID: {} on Date: {}", restaurantId, date);
 
-        List<Object[]> rawResults = reservationRepository.findBookedTablesAndTimes(restaurantId, date); // <-- The actual repository call
+        List<BookedTimeSlotProjection> bookedSlots = reservationRepository.findBookedTablesAndTimes(restaurantId, date);
 
-        // --- Log Raw Results ---
-        if (log.isDebugEnabled()) {
-            log.debug("ReservationService: Raw results count from findBookedTablesAndTimes: {}", rawResults.size());
-            rawResults.forEach(record -> {
-                if (record != null) {
-                    log.debug("  Raw record: length={}, content={}", record.length, Arrays.toString(record));
-                } else {
-                    log.debug("  Raw record: null");
-                }
-            });
-        }
-        // --- End Log Raw Results ---
+        log.debug("ReservationService: Found {} booked slot projections from repository", bookedSlots.size());
 
-        // Continue with the existing processing logic
-        return rawResults.stream()
-                // Add the filter here as well for safety before mapping
-                .filter(record -> record != null && record.length >= 3 &&
-                        record[0] != null && record[1] != null && record[2] != null &&
-                        record[1] instanceof LocalTime && record[2] instanceof LocalTime)
-                .map(record -> List.of(
-                        String.valueOf(record[0]), // tableId
-                        List.of((LocalTime) record[1], (LocalTime) record[2])) // List<LocalTime>
-                )
+        return bookedSlots.stream()
+                .filter(dto -> dto != null && dto.getTableId() != null && dto.getStartSlotTime() != null && dto.getEndSlotTime() != null)
+                .map(dto -> {
+                    String tableIdStr = dto.getTableId().toHexString();
+                    LocalTime startTime = dto.getStartSlotTime();
+                    LocalTime endTime = dto.getEndSlotTime();
+                    log.trace("Mapping booked slot: Table={}, Start={}, End={}", tableIdStr, startTime, endTime); // Optional trace log
+                    return List.of(
+                            tableIdStr,
+                            List.of(startTime, endTime) // Create the inner list of LocalTime
+                    );
+                })
                 .collect(Collectors.toSet());
     }
+
+
+//    public Set<List<Object>> getBookedTablesAndTimes(ObjectId restaurantId, LocalDate date) {
+//        log.debug("ReservationService: Fetching booked tables for Restaurant ID: {} on Date: {}", restaurantId, date); // Log input
+//
+//        List<Object[]> rawResults = reservationRepository.findBookedTablesAndTimes(restaurantId, date); // <-- The actual repository call
+//
+//        // --- Log Raw Results ---
+//        if (log.isDebugEnabled()) {
+//            log.debug("ReservationService: Raw results count from findBookedTablesAndTimes: {}", rawResults.size());
+//            rawResults.forEach(record -> {
+//                if (record != null) {
+//                    log.debug("  Raw record: length={}, content={}", record.length, Arrays.toString(record));
+//                } else {
+//                    log.debug("  Raw record: null");
+//                }
+//            });
+//        }
+//        // --- End Log Raw Results ---
+//
+//        // Continue with the existing processing logic
+//        return rawResults.stream()
+//                // Add the filter here as well for safety before mapping
+//                .filter(record -> record != null && record.length >= 3 &&
+//                        record[0] != null && record[1] != null && record[2] != null &&
+//                        record[1] instanceof LocalTime && record[2] instanceof LocalTime)
+//                .map(record -> List.of(
+//                        String.valueOf(record[0]), // tableId
+//                        List.of((LocalTime) record[1], (LocalTime) record[2])) // List<LocalTime>
+//                )
+//                .collect(Collectors.toSet());
+//    }
 
     public int countReservationsForDate(ObjectId restaurantId, LocalDate date) {
         Long count = reservationRepository.countByRestaurantIdAndDate(restaurantId, date);
