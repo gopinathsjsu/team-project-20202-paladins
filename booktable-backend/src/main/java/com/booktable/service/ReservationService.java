@@ -140,7 +140,7 @@ public class ReservationService {
                     } else {
                         log.warn("Cancellation denied: Reservation {} does not belong to customer {}", reservationId, customerId);
                         // Throw AccessDeniedException directly
-                        return new AccessDeniedException("You are not authorized to cancel this reservation.");
+                        return new RuntimeException(new AccessDeniedException("You are not authorized to cancel this reservation."));
                     }
                 });
 

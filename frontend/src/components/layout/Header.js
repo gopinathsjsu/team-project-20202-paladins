@@ -12,7 +12,6 @@ import { setLocation } from '../../redux/slices/searchSlice';
 import StyledTooltip from '../common/StyledTooltip';
 // Import Icons for Menu Items (Optional but good UX)
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import SettingsIcon from '@mui/icons-material/Settings';
 import EventNoteIcon from '@mui/icons-material/EventNote';
 import LogoutIcon from '@mui/icons-material/Logout';
 
