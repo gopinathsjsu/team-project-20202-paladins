@@ -9,6 +9,11 @@ import com.booktable.repository.RestaurantRepository;
 import com.booktable.repository.TableRepository;
 import com.booktable.repository.UserRepository;
 import com.booktable.service.MailjetEmailService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.time.LocalTime;
+import java.util.Arrays;
 import java.util.Optional;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +32,7 @@ public class ReservationService {
     private final UserRepository userRepository; // Added
     private final TableRepository tableRepository;   // Added
     private final MailjetEmailService mailjetEmailService;
+    private static final Logger log = LoggerFactory.getLogger(ReservationService.class);
 
     @Autowired
     public ReservationService(ReservationRepository reservationRepository, RestaurantRepository restaurantRepository,UserRepository userRepository,
@@ -119,10 +125,32 @@ public class ReservationService {
     }
 
     public Set<List<Object>> getBookedTablesAndTimes(ObjectId restaurantId, LocalDate date) {
-        return reservationRepository.findBookedTablesAndTimes(restaurantId, date).stream()
+        log.debug("ReservationService: Fetching booked tables for Restaurant ID: {} on Date: {}", restaurantId, date); // Log input
+
+        List<Object[]> rawResults = reservationRepository.findBookedTablesAndTimes(restaurantId, date); // <-- The actual repository call
+
+        // --- Log Raw Results ---
+        if (log.isDebugEnabled()) {
+            log.debug("ReservationService: Raw results count from findBookedTablesAndTimes: {}", rawResults.size());
+            rawResults.forEach(record -> {
+                if (record != null) {
+                    log.debug("  Raw record: length={}, content={}", record.length, Arrays.toString(record));
+                } else {
+                    log.debug("  Raw record: null");
+                }
+            });
+        }
+        // --- End Log Raw Results ---
+
+        // Continue with the existing processing logic
+        return rawResults.stream()
+                // Add the filter here as well for safety before mapping
+                .filter(record -> record != null && record.length >= 3 &&
+                        record[0] != null && record[1] != null && record[2] != null &&
+                        record[1] instanceof LocalTime && record[2] instanceof LocalTime)
                 .map(record -> List.of(
                         String.valueOf(record[0]), // tableId
-                        List.of(record[1], record[2])) // (startTime, endTime)
+                        List.of((LocalTime) record[1], (LocalTime) record[2])) // List<LocalTime>
                 )
                 .collect(Collectors.toSet());
     }
