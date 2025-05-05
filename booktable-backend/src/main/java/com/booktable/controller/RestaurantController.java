@@ -13,6 +13,7 @@ import com.booktable.service.RestaurantService;
 import com.booktable.service.TableService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -53,10 +54,10 @@ public class RestaurantController {
             @RequestParam(required = false) String state,
             @RequestParam(required = false) String zip,
             @RequestParam(name = "partySize", required = false) String noOfPeople,
-            @RequestParam(required = false) LocalTime startTime
+            @RequestParam(required = false) LocalTime startTime,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date
     ) {
-
-        List<Restaurant> restaurants = restaurantService.searchRestaurants(name, city, state, zip, noOfPeople, startTime);
+        List<Restaurant> restaurants = restaurantService.searchRestaurants(name, city, state, zip, noOfPeople, startTime, date);
 
         List<RestaurantTableOutput> restaurantTableOutputs = new ArrayList<>();
         for (Restaurant restaurant : restaurants) {
@@ -64,7 +65,7 @@ public class RestaurantController {
 
             List<TableSlots> tableSlots = new ArrayList<>();
             for (List<Object> tableData : tableService.getBestAvailableTimeSlots(restaurant.getId(),
-                    startTime, LocalDate.now(), 3)) {
+                    startTime, date != null ? date : LocalDate.now(), 3)) {
                 TableSlots slot = new TableSlots();
                 slot.setTableId(String.valueOf(tableData.get(0)));
                 slot.setSlot((List<LocalTime>) tableData.get(1));
@@ -74,13 +75,12 @@ public class RestaurantController {
             restaurantTableOutput.setRestaurant(restaurant);
             restaurantTableOutput.setTableSlots(tableSlots);
             restaurantTableOutput.setNoOfTimesBookedToday(reservationService.countReservationsForDate(
-                    restaurant.getId(), LocalDate.now()
+                    restaurant.getId(), date != null ? date : LocalDate.now()
             ));
 
             restaurantTableOutputs.add(restaurantTableOutput);
         }
 
-        // todo #of times booked today
         return restaurantTableOutputs;
     }
 
