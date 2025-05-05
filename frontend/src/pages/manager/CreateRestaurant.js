@@ -248,17 +248,7 @@ const CreateRestaurantModal = ({ open, handleClose }) => {
                 />
               </Grid>
 
-              {/* Image URL */}
-              <Grid item xs={12} md={6}>
-                <TextField
-                  label="Restaurant Image URL"
-                  variant="outlined"
-                  fullWidth
-                  name="imageUrl"
-                  value={formData.imageUrl}
-                  onChange={handleChange}
-                />
-              </Grid>
+
 
               {/* Cuisines */}
               <Grid item xs={12} md={6}>
@@ -363,6 +353,42 @@ const CreateRestaurantModal = ({ open, handleClose }) => {
                   onChange={handleChange}
                   required
                 />
+              </Grid>
+              {/* Image URL */}
+              <Grid item xs={12} md={6}>
+                <Button
+                  variant="contained"
+                  component="label"
+                  fullWidth
+                  sx={{ marginBottom: 2 }}
+                >
+                  Upload Image
+                  <input
+                    type="file"
+                    accept="image/*"
+                    hidden
+                    onChange={(e) => {
+                      const file = e.target.files[0];
+                      if (file) {
+                        const reader = new FileReader();
+                        reader.onloadend = () => {
+                          setFormData((prevState) => ({
+                            ...prevState,
+                            imageUrl: reader.result, // Base64 string
+                          }));
+                        };
+                        reader.readAsDataURL(file);
+                      }
+                    }}
+                  />
+                </Button>
+                {formData.imageUrl && (
+                  <img
+                    src={formData.imageUrl}
+                    alt="Uploaded Preview"
+                    style={{ width: "100%", maxHeight: "200px", objectFit: "cover" }}
+                  />
+                )}
               </Grid>
 
               {/* Submit Button */}
