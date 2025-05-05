@@ -1,6 +1,8 @@
 package com.booktable.service;
 
 import com.booktable.dto.BookedTimeSlotProjection;
+import com.booktable.exception.CancellationNotAllowedException;
+import com.booktable.exception.ReservationNotFoundException;
 import com.booktable.model.Reservation;
 import com.booktable.model.Restaurant;
 import com.booktable.model.Table;
@@ -13,12 +15,14 @@ import com.booktable.service.MailjetEmailService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.Optional;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.nio.file.AccessDeniedException;
 import java.time.LocalDate;
@@ -34,6 +38,7 @@ public class ReservationService {
     private final TableRepository tableRepository;   // Added
     private final MailjetEmailService mailjetEmailService;
     private static final Logger log = LoggerFactory.getLogger(ReservationService.class);
+    private static final long CANCELLATION_WINDOW_HOURS = 2;
 
     @Autowired
     public ReservationService(ReservationRepository reservationRepository, RestaurantRepository restaurantRepository,UserRepository userRepository,
@@ -47,10 +52,20 @@ public class ReservationService {
     }
 
     public Reservation saveReservation(Reservation reservation) {
+
+        if (reservation.getStatus() == null) {
+            reservation.setStatus(Reservation.STATUS_CONFIRMED);
+            log.debug("Setting default status to CONFIRMED for reservation");
+        }
+
+        if (isDuplicateReservation(reservation)) {
+            log.warn("Attempt to save duplicate reservation: {}", reservation);
+            throw new IllegalArgumentException("Duplicate reservation: This reservation already exists.");
+        }
+
         // Save the reservation first
         Reservation savedReservation = reservationRepository.save(reservation);
 
-        // --- Send Confirmation Email ---
         try {
             // Fetch User details to get email
             Optional<User> userOpt = userRepository.findById(savedReservation.getCustomerId().toHexString()); //
@@ -68,7 +83,7 @@ public class ReservationService {
                 Table table = tableOpt.get();
 
                 String recipientEmail = user.getEmail(); //
-                String subject = "Your Booking Confirmation at " + restaurant.getName(); //
+                String subject = "Your Booking Confirmation at " + restaurant.getName();
 
                 // Compose a simple email body
                 String messageBody = String.format(
@@ -105,12 +120,55 @@ public class ReservationService {
             }
 
         } catch (Exception e) {
-            // Log the error, but don't necessarily fail the entire booking process
             log.error("Failed to send booking confirmation email: {}", e.getMessage(), e);
         }
-        // --- End of Email Sending Logic ---
 
-        return savedReservation; // Return the saved reservation object
+        return savedReservation;
+    }
+
+    @Transactional // Make cancellation transactional
+    public boolean cancelReservation(ObjectId reservationId, ObjectId customerId) throws AccessDeniedException {
+        log.info("Attempting to cancel reservation ID: {} for customer ID: {}", reservationId, customerId);
+
+        // Find reservation ensuring it belongs to the customer making the request
+        Reservation reservation = reservationRepository.findByIdAndCustomerId(reservationId, customerId)
+                .orElseThrow(() -> {
+                    // Check if reservation exists at all to differentiate errors
+                    if (!reservationRepository.existsById(reservationId)) {
+                        log.warn("Cancellation failed: Reservation not found with ID: {}", reservationId);
+                        return new ReservationNotFoundException("Reservation not found with ID: " + reservationId);
+                    } else {
+                        log.warn("Cancellation denied: Reservation {} does not belong to customer {}", reservationId, customerId);
+                        // Throw AccessDeniedException or a custom AuthorizationFailedException
+                        return new RuntimeException(new AccessDeniedException("You are not authorized to cancel this reservation.")); // Wrap standard exception
+                    }
+                });
+
+        // Check if already cancelled
+        if (Reservation.STATUS_CANCELLED.equals(reservation.getStatus())) {
+            log.info("Reservation {} already cancelled.", reservationId);
+            return true; // Or throw exception if desired: throw new IllegalStateException("Reservation is already cancelled.");
+        }
+
+        // Check if cancellation is allowed based on time
+        LocalDateTime reservationDateTime = LocalDateTime.of(reservation.getDate(), reservation.getStartSlotTime());
+        LocalDateTime now = LocalDateTime.now(); // Use current server time
+        LocalDateTime cancellationDeadline = reservationDateTime.minusHours(CANCELLATION_WINDOW_HOURS);
+
+        if (now.isAfter(cancellationDeadline)) {
+            log.warn("Cancellation failed: Reservation {} is within {} hours. Deadline was {}. Current time is {}",
+                    reservationId, CANCELLATION_WINDOW_HOURS, cancellationDeadline, now);
+            throw new CancellationNotAllowedException(
+                    "Cancellation is not allowed within " + CANCELLATION_WINDOW_HOURS + " hours of the reservation time."
+            );
+        }
+
+        // Perform the soft delete
+        reservation.setStatus(Reservation.STATUS_CANCELLED);
+        reservationRepository.save(reservation);
+        log.info("Successfully cancelled reservation ID: {}", reservationId);
+        // Optional: Send cancellation confirmation email here
+        return true;
     }
 
     public boolean isDuplicateReservation(Reservation reservation) {

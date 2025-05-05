@@ -1,6 +1,8 @@
 package com.booktable.controller;
 
 import com.booktable.dto.BookingDto;
+import com.booktable.exception.CancellationNotAllowedException;
+import com.booktable.exception.ReservationNotFoundException;
 import com.booktable.model.Reservation;
 import com.booktable.model.Restaurant;
 import com.booktable.model.Table;
@@ -14,6 +16,8 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -118,6 +122,35 @@ public class ReservationController {
         return getBookingDtos(reservations);
     }
 
+    @DeleteMapping("/{reservationId}")
+    @PreAuthorize("hasAuthority('CUSTOMER')")
+    public ResponseEntity<Void> cancelMyReservation(
+            @PathVariable String reservationId,
+            @AuthenticationPrincipal User currentUser) {
+
+        try {
+            ObjectId resId = new ObjectId(reservationId);
+            ObjectId custId = new ObjectId(currentUser.getId());
+
+            boolean cancelled = reservationService.cancelReservation(resId, custId);
+
+            if (cancelled) {
+                return ResponseEntity.noContent().build();
+            } else {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            }
+        } catch (ReservationNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        } catch (CancellationNotAllowedException | AccessDeniedException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        } catch (RuntimeException e) {
+            if (e.getCause() instanceof AccessDeniedException) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+            }
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
     @NotNull
     private List<BookingDto> getBookingDtos(List<Reservation> reservations) {
         List<BookingDto> bookingDtos = new ArrayList<>();
@@ -136,10 +169,9 @@ public class ReservationController {
             dto.setReservationId(res.getId());
             if (table != null) dto.setTableNumber(table.getTableNumber());
             if (restaurant != null) dto.setRestaurantName(restaurant.getName());
-
+            dto.setStatus(res.getStatus());
             bookingDtos.add(dto);
         }
-
         return bookingDtos;
     }
 

@@ -177,12 +177,6 @@ const Header = () => {
                   </ListItemIcon>
                   Profile
                 </MenuItem>
-                <MenuItem onClick={() => handleNavigate('/profile/update')}>
-                  <ListItemIcon>
-                    <SettingsIcon fontSize="small" />
-                  </ListItemIcon>
-                  Update Profile
-                </MenuItem>
                 <MenuItem onClick={() => handleNavigate('/bookings')}>
                   <ListItemIcon>
                     <EventNoteIcon fontSize="small" />
