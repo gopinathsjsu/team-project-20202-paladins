@@ -27,6 +27,7 @@ public class ReservationService {
 
     public Reservation saveReservation(Reservation reservation) {
         return reservationRepository.save(reservation);
+        // TODO: notification service
     }
 
     public boolean isDuplicateReservation(Reservation reservation) {
