@@ -2,7 +2,7 @@ import React from "react";
 import { Card, CardContent, Typography, Button, Box, Rating, Stack } from "@mui/material";
 import { Link } from "react-router-dom";
 
-const RestaurantCard = ({ restaurant, userRole, approveRestaurant, deleteRestaurant, onEdit, tableSlots, date }) => {
+const RestaurantCard = ({ restaurant, userRole, approveRestaurant, deleteRestaurant, onEdit, tableSlots, date, partySize }) => {
 
   const getEndTime = (startTime) => {
     const [hours, minutes, seconds] = startTime.split(":").map(Number);
@@ -165,6 +165,7 @@ const RestaurantCard = ({ restaurant, userRole, approveRestaurant, deleteRestaur
                           addressStreet: restaurant.addressStreet,
                           addressCity: restaurant.addressCity,
                         },
+                          partySize: partySize
                       }}
                       style={{ textDecoration: "none" }}
                     >
