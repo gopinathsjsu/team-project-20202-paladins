@@ -14,7 +14,7 @@ const Booking = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
-    const { selectedSlot, restaurantDetails } = location.state || {};
+    const { selectedSlot, restaurantDetails, partySize } = location.state || {};
 
     const customerId = useSelector((state) => state.auth.id) || "68129d333d1ddb0c27e83259";
     const bookingStatus = useSelector((state) => state.booking.status);
@@ -35,7 +35,7 @@ const Booking = () => {
     }, [dispatch]);
 
     const handleConfirmBooking = () => {
-        if (!selectedSlot || !customerId || !restaurantId) {
+        if (!selectedSlot || !customerId || !restaurantId || !partySize) {
             console.error("Cannot proceed: Missing required booking information.");
             return;
         }
@@ -46,7 +46,8 @@ const Booking = () => {
             tableId: selectedSlot.tableId,
             startSlotTime: selectedSlot.startSlotTime,
             endSlotTime: selectedSlot.endSlotTime,
-            date: selectedSlot.date
+            date: selectedSlot.date,
+            partySize: parseInt(partySize, 10) || 1
         };
 
         dispatch(createBookingThunk(bookingData));
@@ -86,22 +87,26 @@ const Booking = () => {
                 {bookingStatus === 'failed' && bookingError && <Alert severity="error" sx={{ my: 2 }}>{typeof bookingError === 'string' ? bookingError : 'Booking failed.'}</Alert>}
 
                 {bookingStatus === 'succeeded' && bookingConfirmation ? (
-                    <Alert severity="success" sx={{ my: 2 }}>
+                    <Alert severity="success" sx={{my: 2}}>
                         Booking Confirmed!
-                        <br />
+                        <br/>
                         Restaurant: {bookingConfirmation.restaurantName}
-                        <br />
+                        <br/>
                         Table: {bookingConfirmation.tableNumber}
-                        <br />
+                        <br/>
                         Time: {bookingConfirmation.startSlotTime} - {bookingConfirmation.endSlotTime}
-                        <br />
+                        <br/>
                         Date: {bookingConfirmation.date}
-                        <br />
+                        <br/>
+                        Party Size: {partySize} {/* <-- Add this line */}
+                        <br/>
+                        <br/>
                         Reservation ID: <strong>{bookingConfirmation.reservationId}</strong>
+
                     </Alert>
                 ) : (
                     // Show button only if not succeeded
-                    <Box sx={{ textAlign: 'center', mt: 3 }}>
+                    <Box sx={{textAlign: 'center', mt: 3}}>
                         <Button
                             variant="contained"
                             color="primary"
