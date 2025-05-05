@@ -99,15 +99,14 @@ public class ReservationService {
 
             } else {
                 // Log if user, restaurant, or table details are missing
-                if (!userOpt.isPresent()) System.err.println("Could not find user with ID: " + savedReservation.getCustomerId());
-                if (!restaurantOpt.isPresent()) System.err.println("Could not find restaurant with ID: " + savedReservation.getRestaurantId());
-                if (!tableOpt.isPresent()) System.err.println("Could not find table with ID: " + savedReservation.getTableId());
+                if (!userOpt.isPresent()) log.error("Could not find user with ID: {}", savedReservation.getCustomerId());
+                if (!restaurantOpt.isPresent()) log.error("Could not find restaurant with ID: {}", savedReservation.getRestaurantId());
+                if (!tableOpt.isPresent()) log.error("Could not find table with ID: {}", savedReservation.getTableId());
             }
 
         } catch (Exception e) {
             // Log the error, but don't necessarily fail the entire booking process
-            System.err.println("Failed to send booking confirmation email: " + e.getMessage());
-            e.printStackTrace(); // Consider using a proper logger
+            log.error("Failed to send booking confirmation email: {}", e.getMessage(), e);
         }
         // --- End of Email Sending Logic ---
 
