@@ -31,7 +31,7 @@ export const updateRestaurant = createAsyncThunk(
   'manager/updateRestaurant',
   async (restaurantData, { rejectWithValue }) => {
     try {
-      const response = await updateRestaurantApi(restaurantData.id, restaurantData);
+      const response = await updateRestaurantApi(restaurantData.restaurantInput.id, restaurantData);
       return response.data;
     } catch (err) {
       return rejectWithValue(err.response?.data || 'Failed to update restaurant');
