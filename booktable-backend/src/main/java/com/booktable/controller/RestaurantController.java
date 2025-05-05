@@ -71,6 +71,9 @@ public class RestaurantController {
                 slot.setSlot((List<LocalTime>) tableData.get(1));
                 tableSlots.add(slot);
             }
+            if (tableSlots.size() < 0) {
+                continue;
+            }
 
             restaurantTableOutput.setRestaurant(restaurant);
             restaurantTableOutput.setTableSlots(tableSlots);

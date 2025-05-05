@@ -7,6 +7,9 @@ import com.booktable.repository.TableRepository;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import java.util.Arrays;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -20,6 +23,7 @@ import static com.booktable.utils.TimeSlotFinder.findClosestSlots;
 
 @Service
 public class TableService {
+    private static final Logger log = LoggerFactory.getLogger(TableService.class);
     private final TableRepository tableRepository;
     private final ReservationService reservationService;
     private final RestaurantService restaurantService;
@@ -64,34 +68,34 @@ public class TableService {
     }
 
     public List<List<Object>> getBestAvailableTimeSlots(ObjectId restaurantId, LocalTime requestStart,LocalDate date, int resultCount) {
+        log.debug("TableService: Getting best available slots for Restaurant ID: {}, StartTime: {}, Date: {}", restaurantId, requestStart, date);
+
         Restaurant restaurant = restaurantService.getRestaurantById(restaurantId);
         LocalTime openingHour = restaurant.getOpeningHour();
         LocalTime closingHour = restaurant.getClosingHour();
 
-        // Check if request is within operating hours
         if (requestStart.isBefore(openingHour) || requestStart.isAfter(closingHour.minusHours(1))) {
+            log.warn("TableService: Requested time {} is outside operating hours ({}-{}) for Restaurant ID: {}", requestStart, openingHour, closingHour, restaurantId);
             return List.of();
         }
 
-        // Get all reservations for the restaurant on the given date
         Set<List<Object>> bookedTables = reservationService.getBookedTablesAndTimes(restaurantId, date);
 
-        // Get all tables for the restaurant
+        log.debug("TableService: Received {} processed booked slots from ReservationService", bookedTables.size());
+        if (log.isTraceEnabled()) { // Use TRACE for potentially verbose output
+            bookedTables.forEach(slot -> log.trace("  Booked slot received: {}", slot));
+        }
+
         List<Table> allTables = tableRepository.findByRestaurantId(restaurantId);
         Set<String> tableIds = allTables.stream()
                 .map(table -> table.getId().toString())
                 .collect(Collectors.toSet());
-
-//        List<List<Object>> availableSlots = new ArrayList<>();
+        log.debug("TableService: Found {} tables for Restaurant ID: {}", tableIds.size(), restaurantId);
 
         List<List<Object>> slots = findClosestSlots(openingHour, closingHour, bookedTables, requestStart, tableIds, resultCount);
 
-//        return slots;
-//        return availableSlots.stream()
-//                .sorted((a, b) -> ((LocalTime) ((List<?>) a.get(1)).get(0))
-//                        .compareTo((LocalTime) ((List<?>) b.get(1)).get(0)))
-//                .limit(3)
-//                .toList();
+        log.debug("TableService: Found {} available slots via TimeSlotFinder", slots.size());
+
         return slots;
     }
 

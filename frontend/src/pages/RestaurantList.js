@@ -8,7 +8,7 @@ const RestaurantList = () => {
   const location = useLocation();
   const { searchResults = [] } = location.state || {};
   const { searchParams } = location.state || {};
-  const { date, city, state } = searchParams || {};
+  const { date, partySize } = searchParams || {};
 
   return (
     <Box sx={{ minHeight: '100vh', bgcolor: '#f8f9fa', py: 6 }}>
@@ -44,6 +44,7 @@ const RestaurantList = () => {
                 restaurant={result.restaurant}
                 tableSlots={result.tableSlots}
                 date={date}
+                partySize={partySize}
               />
             ))}
           </Grid>
