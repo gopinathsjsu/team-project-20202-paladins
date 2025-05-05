@@ -2,8 +2,14 @@ package com.booktable.service;
 
 import com.booktable.model.Reservation;
 import com.booktable.model.Restaurant;
+import com.booktable.model.Table;
+import com.booktable.model.User;
 import com.booktable.repository.ReservationRepository;
 import com.booktable.repository.RestaurantRepository;
+import com.booktable.repository.TableRepository;
+import com.booktable.repository.UserRepository;
+import com.booktable.service.MailjetEmailService;
+import java.util.Optional;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,16 +24,87 @@ import java.util.stream.Collectors;
 public class ReservationService {
     private final ReservationRepository reservationRepository;
     private final RestaurantRepository restaurantRepository;
+    private final UserRepository userRepository; // Added
+    private final TableRepository tableRepository;   // Added
+    private final MailjetEmailService mailjetEmailService;
 
     @Autowired
-    public ReservationService(ReservationRepository reservationRepository, RestaurantRepository restaurantRepository) {
+    public ReservationService(ReservationRepository reservationRepository, RestaurantRepository restaurantRepository,UserRepository userRepository,
+                              TableRepository tableRepository,
+                              MailjetEmailService mailjetEmailService) {
         this.reservationRepository = reservationRepository;
         this.restaurantRepository = restaurantRepository;
+        this.userRepository = userRepository;
+        this.tableRepository = tableRepository;
+        this.mailjetEmailService = mailjetEmailService;
     }
 
     public Reservation saveReservation(Reservation reservation) {
-        return reservationRepository.save(reservation);
-        // TODO: notification service
+        // Save the reservation first
+        Reservation savedReservation = reservationRepository.save(reservation);
+
+        // --- Send Confirmation Email ---
+        try {
+            // Fetch User details to get email
+            Optional<User> userOpt = userRepository.findById(savedReservation.getCustomerId().toHexString()); //
+
+            // Fetch Restaurant details
+            Optional<Restaurant> restaurantOpt = restaurantRepository.findById(savedReservation.getRestaurantId().toHexString()); //
+
+            // Fetch Table details
+            Optional<Table> tableOpt = tableRepository.findById(savedReservation.getTableId().toHexString()); //
+
+
+            if (userOpt.isPresent() && restaurantOpt.isPresent() && tableOpt.isPresent()) {
+                User user = userOpt.get();
+                Restaurant restaurant = restaurantOpt.get();
+                Table table = tableOpt.get();
+
+                String recipientEmail = user.getEmail(); //
+                String subject = "Your Booking Confirmation at " + restaurant.getName(); //
+
+                // Compose a simple email body
+                String messageBody = String.format(
+                        "Dear %s,\n\n" +
+                                "Your booking is confirmed!\n\n" +
+                                "Restaurant: %s\n" +
+                                "Address: %s, %s\n" + //
+                                "Table Number: %s\n" + //
+                                "Date: %s\n" + //
+                                "Time: %s - %s\n" + //
+                                "Party Size: %d\n\n" + //
+                                "Reservation ID: %s\n\n" + //
+                                "Thank you for using BookTable!",
+                        user.getName(), //
+                        restaurant.getName(), //
+                        restaurant.getAddressStreet(), restaurant.getAddressCity(), //
+                        table.getTableNumber(), //
+                        savedReservation.getDate().toString(), //
+                        savedReservation.getStartSlotTime().toString(), //
+                        savedReservation.getEndSlotTime().toString(), //
+                        savedReservation.getPartySize(), //
+                        savedReservation.getId().toHexString() //
+                );
+
+                // Send the email using the injected service
+                mailjetEmailService.sendEmail(recipientEmail, subject, messageBody); //
+                System.out.println("Booking confirmation email sent to " + recipientEmail);
+
+            } else {
+                // Log if user, restaurant, or table details are missing
+                if (!userOpt.isPresent()) System.err.println("Could not find user with ID: " + savedReservation.getCustomerId());
+                if (!restaurantOpt.isPresent()) System.err.println("Could not find restaurant with ID: " + savedReservation.getRestaurantId());
+                if (!tableOpt.isPresent()) System.err.println("Could not find table with ID: " + savedReservation.getTableId());
+            }
+
+        } catch (Exception e) {
+            // Log the error, but don't necessarily fail the entire booking process
+            System.err.println("Failed to send booking confirmation email: " + e.getMessage());
+            e.printStackTrace(); // Consider using a proper logger
+        }
+        // --- End of Email Sending Logic ---
+
+        return savedReservation; // Return the saved reservation object
     }
 
     public boolean isDuplicateReservation(Reservation reservation) {
