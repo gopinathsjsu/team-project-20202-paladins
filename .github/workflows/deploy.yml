@@ -48,9 +48,11 @@ jobs:
         key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
         script: |
             cd ~
-            if [[ ! -d "team-project-20202-paladins" ]]; then
-
-                git clone https://github.com/gopinathsjsu/team-project-20202-paladins
+            if [ ! -d "team-project-20202-paladins" ]; then
+              echo "Cloning repo..."
+              git clone https://github.com/gopinathsjsu/team-project-20202-paladins || { echo "Git clone failed"; exit 1; }
+            else
+              echo "Repo already exists"
             fi
             cd team-project-20202-paladins
             git pull origin master
@@ -72,7 +74,6 @@ jobs:
             docker pull ${{ secrets.DOCKERHUB_USERNAME }}/booktable-backend:latest
             docker pull ${{ secrets.DOCKERHUB_USERNAME }}/booktable-frontend:latest
 
-            cd ~/team-project-20202-paladins/deployment
             docker compose -f docker-compose.prod.yml down
             docker compose -f docker-compose.prod.yml up -d --remove-orphans
       
