@@ -42,10 +42,13 @@ public class ReservationService {
 
     public Set<List<Object>> getBookedTablesAndTimes(ObjectId restaurantId, LocalDate date) {
         return reservationRepository.findBookedTablesAndTimes(restaurantId, date).stream()
-                .map(record -> List.of(
-                        String.valueOf(record[0]), // tableId
-                        List.of(record[1], record[2])) // (startTime, endTime)
-                )
+                .map(record -> {
+                    System.out.println("Record: " + record);
+                    return List.of(
+                            String.valueOf(record.getTableId()), // Assuming `record` has a `getTableId()` method
+                            List.of(record.getStartSlotTime(), record.getEndSlotTime()) // Assuming `record` has `getStartTime()` and `getEndTime()` methods
+                    );
+                })
                 .collect(Collectors.toSet());
     }
 

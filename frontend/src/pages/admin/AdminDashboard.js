@@ -8,7 +8,9 @@ import {
   Container, Typography, Grid
 } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
-import RestaurantCard from '../../components/RestaurantCard'; // Import the RestaurantCard
+import RestaurantCard from '../../components/RestaurantCard';
+import AnalyticsDashboard from "./AnalyticsDashboard"; // Import the RestaurantCard
+
 
 const AdminDashboard = () => {
   const dispatch = useDispatch();
@@ -33,9 +35,9 @@ const AdminDashboard = () => {
           {pendingRestaurants.map((res) => (
             <Grid item xs={12} md={6} lg={4} key={res.id}>
               {/* Use the RestaurantCard for each restaurant */}
-              <RestaurantCard 
-                restaurant={res} 
-                userRole="ADMIN" 
+              <RestaurantCard
+                restaurant={res}
+                userRole="ADMIN"
                 // Passing the admin specific buttons to RestaurantCard component
                 approveRestaurant={() => dispatch(approveRestaurantThunk(res.id))}
                 deleteRestaurant={() => dispatch(deleteRestaurantThunk(res.id))}
@@ -44,6 +46,8 @@ const AdminDashboard = () => {
           ))}
         </Grid>
       )}
+      <AnalyticsDashboard />
+
     </Container>
   );
 };

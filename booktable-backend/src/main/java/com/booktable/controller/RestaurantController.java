@@ -62,7 +62,7 @@ public class RestaurantController {
         List<RestaurantTableOutput> restaurantTableOutputs = new ArrayList<>();
         for (Restaurant restaurant : restaurants) {
             RestaurantTableOutput restaurantTableOutput = new RestaurantTableOutput();
-
+            System.out.println(restaurant.getId());
             List<TableSlots> tableSlots = new ArrayList<>();
             for (List<Object> tableData : tableService.getBestAvailableTimeSlots(restaurant.getId(),
                     startTime.minusMinutes(30), date != null ? date : LocalDate.now(), 3)) {
@@ -71,7 +71,7 @@ public class RestaurantController {
                 slot.setSlot((List<LocalTime>) tableData.get(1));
                 tableSlots.add(slot);
             }
-            if (tableSlots.size() == 0) {
+            if (tableSlots.isEmpty()) {
                 continue;
             }
 
