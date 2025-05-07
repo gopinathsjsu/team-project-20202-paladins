@@ -65,13 +65,13 @@ public class RestaurantController {
 
             List<TableSlots> tableSlots = new ArrayList<>();
             for (List<Object> tableData : tableService.getBestAvailableTimeSlots(restaurant.getId(),
-                    startTime, date != null ? date : LocalDate.now(), 3)) {
+                    startTime.minusMinutes(30), date != null ? date : LocalDate.now(), 3)) {
                 TableSlots slot = new TableSlots();
                 slot.setTableId(String.valueOf(tableData.get(0)));
                 slot.setSlot((List<LocalTime>) tableData.get(1));
                 tableSlots.add(slot);
             }
-            if (tableSlots.size() < 0) {
+            if (tableSlots.size() == 0) {
                 continue;
             }
 

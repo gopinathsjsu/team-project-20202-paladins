@@ -44,6 +44,8 @@ public class Restaurant {
 
     private List<String> cuisines;
 
+    private String cost = "$";
+
     @CreatedDate
     private LocalDateTime createdAt;
 
