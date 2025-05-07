@@ -29,4 +29,5 @@ public class BookingDto {
     private String restaurantName;
     @JsonSerialize(using = ObjectIdJsonSerializer.class)
     private ObjectId reservationId;
+    private String status;
 }

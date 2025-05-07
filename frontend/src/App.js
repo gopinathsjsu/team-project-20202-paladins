@@ -23,6 +23,8 @@ import OAuth2Success from "./pages/OAuth2Success";
 import Logout from "./pages/Logout";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import ManagerDashboard from "./pages/manager/ManagerDashboard";
+import UserProfile from './pages/UserProfile';
+import UserBookings from './pages/UserBookings';
 import NotFound from "./pages/NotFound";
 
 // Routes
@@ -47,6 +49,15 @@ function App() {
               <Route path="/oauth2/success" element={<OAuth2Success />} />
               <Route path="/logout" element={<Logout />} />
               <Route path="*" element={<NotFound />} />
+              <Route path="/profile" element={<UserProfile />} />
+              <Route element={<ProtectedRoute allowedRoles={['CUSTOMER']} />}> {/* Or adjust ProtectedRoute logic */}
+                <Route path="/bookings" element={<UserBookings />} />
+                <Route
+                  path="/booking/:restaurantId"
+                  element={<Booking />}
+                />
+              </Route>
+
               <Route element={<ProtectedRoute allowedRoles={['ADMIN']} />}>
                 <Route path="/admin/dashboard" element={<AdminDashboard />} />
                 <Route path="/admin/analytics" element={<AnalyticsDashboard />} />

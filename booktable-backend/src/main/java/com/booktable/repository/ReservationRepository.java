@@ -1,5 +1,6 @@
 package com.booktable.repository;
 
+import com.booktable.dto.BookedTimeSlotProjection;
 import com.booktable.model.Reservation;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.repository.MongoRepository;
@@ -8,10 +9,12 @@ import org.springframework.data.mongodb.repository.Query;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Optional;
 
 public interface ReservationRepository extends MongoRepository<Reservation, ObjectId> {
-    @Query(value = "{ 'restaurantId': ?0, 'date': ?1 }", fields = "{ 'tableId': 1, 'startSlotTime': 1, 'endSlotTime': 1 }")
-    List<Reservation> findBookedTablesAndTimes(ObjectId restaurantId, LocalDate date);
+    @Query(value = "{ 'restaurantId': ?0, 'date': ?1, 'status': 'CONFIRMED' }",
+            fields = "{ 'tableId': 1, 'startSlotTime': 1, 'endSlotTime': 1, '_id': 0 }")
+    List<BookedTimeSlotProjection> findBookedTablesAndTimes(ObjectId restaurantId, LocalDate date);
 
     List<Reservation> findByRestaurantIdAndTableIdAndDateAndStartSlotTimeAndEndSlotTime(
             ObjectId restaurantId, ObjectId tableId, LocalDate date, LocalTime startSlotTime, LocalTime endSlotTime);
@@ -39,6 +42,8 @@ public interface ReservationRepository extends MongoRepository<Reservation, Obje
 
     @Query(value = "{ 'date': { '$gte': ?0, '$lte': ?1 } }")
     List<Reservation> findByDateBetween(LocalDate startDate, LocalDate endDate);
+
+    Optional<Reservation> findByIdAndCustomerId(ObjectId id, ObjectId customerId);
 }
 
 
