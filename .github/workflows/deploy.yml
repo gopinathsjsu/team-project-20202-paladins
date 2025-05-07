@@ -72,6 +72,6 @@ jobs:
             docker pull ${{ secrets.DOCKERHUB_USERNAME }}/booktable-backend:latest
             docker pull ${{ secrets.DOCKERHUB_USERNAME }}/booktable-frontend:latest
         
-            docker-compose -f docker-compose.prod.yml down
-            docker-compose -f docker-compose.prod.yml up -d --remove-orphans
+            docker compose -f docker-compose.prod.yml down
+            docker compose -f docker-compose.prod.yml up -d --remove-orphans
       
