@@ -1,0 +1,16 @@
+services:
+  backend:
+    image: ${DOCKERHUB_USERNAME}/booktable-backend:latest
+    container_name: booktable-backend
+    restart: always
+    ports:
+      - "8080:8080"
+    env_file:
+      - .env.prod
+
+  frontend:
+    image: ${DOCKERHUB_USERNAME}/booktable-frontend:latest
+    container_name: booktable-frontend
+    restart: always
+    ports:
+      - "80:80"
