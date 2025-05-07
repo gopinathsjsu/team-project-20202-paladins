@@ -70,6 +70,7 @@ jobs:
             echo "AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}" >> .env.prod
             echo "AWS_REGION=${{ secrets.AWS_REGION }}" >> .env.prod
             echo "FRONTEND_URL=http://${{ secrets.EC2_HOST }}" >> .env.prod
+            echo "DOCKERHUB_USERNAME=${{ secrets.DOCKERHUB_USERNAME }}" >> .env.prod
         
             docker pull ${{ secrets.DOCKERHUB_USERNAME }}/booktable-backend:latest
             docker pull ${{ secrets.DOCKERHUB_USERNAME }}/booktable-frontend:latest
