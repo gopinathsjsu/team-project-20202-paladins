@@ -112,13 +112,23 @@ const Home = () => {
                     gap: "16px",
                   }}
                 >
-                  {restaurants
-                    .slice(0, RESTAURANTS_TO_DISPLAY_HOME_PAGE)
-                    .map((restaurant) => (
-                      <RestaurantCard key={restaurant.id} restaurant={restaurant} />
-                    ))}
+                   {Array.isArray(restaurants) && restaurants.length > 0 ? (
+                    <>
+                      {restaurants.slice(0, RESTAURANTS_TO_DISPLAY_HOME_PAGE).map((restaurant) => (
+                          <Grid item key={restaurant.id} xs={12} sm={6} md={4} lg={3}>
+                            <RestaurantCard
+                                restaurant={restaurant}
+                                onClick={() => navigate(`/restaurants/${restaurant.id}`)}
+                            />
+                          </Grid>
+                      ))}
+                    </>
+                  ) : (
+                    <Typography textAlign="center" sx={{ mt: 4 }}>
+                      No restaurants to display.
+                    </Typography>
+                  )}
                 </Grid>
-
 
                 <Box sx={{ textAlign: "center", mt: 4 }}>
                   <Link to="/restaurants">

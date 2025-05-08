@@ -43,6 +43,7 @@ const RestaurantList = () => {
                 key={result.restaurant.id}
                 restaurant={result.restaurant}
                 tableSlots={result.tableSlots}
+                noOfTimesBookedToday={result.noOfTimesBookedToday}
                 date={date}
                 partySize={partySize}
               />
