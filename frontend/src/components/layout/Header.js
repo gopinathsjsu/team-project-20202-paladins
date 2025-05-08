@@ -1,16 +1,18 @@
-import React, { useState, useMemo } from 'react'; // Import useState
+import React, { useState, useMemo, useEffect } from 'react'; // Added useEffect
 import {
   AppBar, Toolbar, Typography, Button, Stack, Avatar, Box,
-  Menu, MenuItem, ListItemIcon
+  Menu, MenuItem, ListItemIcon, TextField, InputAdornment
 } from '@mui/material';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { logout } from '../../redux/slices/authSlice';
-import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
-import LocationSearch from './LocationSearch';
-import { setLocation } from '../../redux/slices/searchSlice';
+import { setCity, setZip, setState } from '../../redux/slices/searchSlice';
 import StyledTooltip from '../common/StyledTooltip';
 // Import Icons for Menu Items (Optional but good UX)
+import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
+import LocationCityIcon from '@mui/icons-material/LocationCity';
+import PinDropIcon from '@mui/icons-material/PinDrop';
+import PublicIcon from '@mui/icons-material/Public'; // Icon for State
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import EventNoteIcon from '@mui/icons-material/EventNote';
 import LogoutIcon from '@mui/icons-material/Logout';
@@ -21,10 +23,22 @@ const Header = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { token, email, role } = useSelector((state) => state.auth);
-  const location = useSelector((state) => state.search.location);
+  const cityFromStore = useSelector((state) => state.search.city);
+  const zipFromStore = useSelector((state) => state.search.zip);
+  const stateFromStore = useSelector((state) => state.search.state);
 
   const [anchorEl, setAnchorEl] = useState(null);
   const isMenuOpen = Boolean(anchorEl);
+
+  const [headerCity, setHeaderCity] = useState(cityFromStore || '');
+  const [headerZip, setHeaderZip] = useState(zipFromStore || '');
+  const [headerState, setHeaderState] = useState(stateFromStore || '');
+
+  useEffect(() => {
+    setHeaderCity(cityFromStore || '');
+    setHeaderZip(zipFromStore || '');
+    setHeaderState(stateFromStore || '');
+  }, [cityFromStore, zipFromStore, stateFromStore]);
 
   const featuredCities = useMemo(() => [
     { name: 'New York, NY', featured: true },
@@ -52,6 +66,17 @@ const Header = () => {
     handleMenuClose();
   };
 
+  const handleCityBlur = () => {
+    dispatch(setCity(headerCity));
+  };
+
+  const handleZipBlur = () => {
+    dispatch(setZip(headerZip));
+  };
+
+  const handleStateBlur = () => {
+    dispatch(setState(headerState));
+  };
 
   return (
     <AppBar position="static" sx={{ bgcolor: '#0A1427' }}>
@@ -62,7 +87,7 @@ const Header = () => {
           justifyContent: 'space-between',
           px: 2,
           py: 1,
-          gap: { xs: 1, sm: 0 }
+          gap: { xs: 1, sm: 2 }
         }}
       >
         {/* Left: Logo */}
@@ -85,18 +110,90 @@ const Header = () => {
         {/* Right: Location + Auth */}
         <Stack
           direction={{ xs: 'column', sm: 'row' }}
-          spacing={1}
+          spacing={1.5}
           alignItems="center"
           sx={{ width: '100%', justifyContent: { sm: 'flex-end' } }}
         >
-          <Box
-            sx={{ width: { xs: '100%', sm: 'auto' } }}>
-            <LocationSearch
-              value={location}
-              onChange={(value) => dispatch(setLocation(value))}
-              featuredCities={featuredCities}
-            />
-          </Box>
+          <TextField
+            variant="outlined"
+            size="small"
+            placeholder="City"
+            value={headerCity}
+            onChange={(e) => setHeaderCity(e.target.value)}
+            onBlur={handleCityBlur}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <LocationCityIcon sx={{ color: 'grey.500' }} />
+                </InputAdornment>
+              ),
+            }}
+            sx={{
+              minWidth: 150,
+              backgroundColor: 'rgba(255, 255, 255, 0.1)',
+              borderRadius: 1,
+              '& .MuiOutlinedInput-root': {
+                '& fieldset': { borderColor: 'rgba(255, 255, 255, 0.3)', },
+                '&:hover fieldset': { borderColor: 'rgba(255, 255, 255, 0.5)', },
+                '&.Mui-focused fieldset': { borderColor: '#2DD4BF', },
+              },
+              '& .MuiInputBase-input': { color: 'white', },
+            }}
+          />
+          <TextField
+            variant="outlined"
+            size="small"
+            placeholder="State (e.g., NY)"
+            value={headerState}
+            onChange={(e) => setHeaderState(e.target.value)}
+            onBlur={handleStateBlur}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <PublicIcon sx={{ color: 'grey.500' }} />
+                </InputAdornment>
+              ),
+            }}
+            inputProps={{ maxLength: 2 }}
+            sx={{
+              minWidth: 100,
+              width: 100,
+              backgroundColor: 'rgba(255, 255, 255, 0.1)',
+              borderRadius: 1,
+              '& .MuiOutlinedInput-root': {
+                '& fieldset': { borderColor: 'rgba(255, 255, 255, 0.3)', },
+                '&:hover fieldset': { borderColor: 'rgba(255, 255, 255, 0.5)', },
+                '&.Mui-focused fieldset': { borderColor: '#2DD4BF', },
+              },
+              '& .MuiInputBase-input': { color: 'white', },
+            }}
+          />
+          <TextField
+            variant="outlined"
+            size="small"
+            placeholder="Zip Code"
+            value={headerZip}
+            onChange={(e) => setHeaderZip(e.target.value)}
+            onBlur={handleZipBlur}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <PinDropIcon sx={{ color: 'grey.500' }} />
+                </InputAdornment>
+              ),
+            }}
+            sx={{
+              minWidth: 120,
+              backgroundColor: 'rgba(255, 255, 255, 0.1)',
+              borderRadius: 1,
+              '& .MuiOutlinedInput-root': {
+                '& fieldset': { borderColor: 'rgba(255, 255, 255, 0.3)', },
+                '&:hover fieldset': { borderColor: 'rgba(255, 255, 255, 0.5)', },
+                '&.Mui-focused fieldset': { borderColor: '#2DD4BF', },
+              },
+              '& .MuiInputBase-input': { color: 'white', },
+            }}
+          />
 
           {/* Avatar or Sign In */}
           {!token ? (

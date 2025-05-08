@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { fetchRestaurants } from "../redux/slices/restaurantSlice";
+import { fetchRestaurants, resetRestaurants } from "../redux/slices/restaurantSlice";
 import {
   Box,
   Typography,
@@ -32,21 +32,17 @@ const Home = () => {
     error: reduxError,
   } = useReduxSelector((state) => state.restaurants);
   const { role } = useAuthSelector((state) => state.auth);
-  const locationFromSearch = useReduxSelector((state) => state.search.location);
-
+  const { city: cityFromStore, zip: zipFromStore, state: stateFromStore } = useReduxSelector((state) => state.search);
 
   const [searchLoading, setSearchLoading] = useState(false);
   const [searchError, setSearchError] = useState(null);
 
-
   // State for dialogs and snackbar
-
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [restaurantToDelete, setRestaurantToDelete] = useState(null);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [snackbarSeverity, setSnackbarSeverity] = useState("success");
-
 
   const [visibleRestaurantsCount, setVisibleRestaurantsCount] = useState(RESTAURANTS_TO_DISPLAY_HOME_PAGE);
 
@@ -68,22 +64,27 @@ const Home = () => {
     return allRestaurantsFromStore.filter(restaurant => restaurant.approved === true);
   }, [allRestaurantsFromStore, role]);
 
-
-  const handleSearch = async (params) => {
+  const handleSearch = async (paramsFromSearchBar) => {
     setSearchLoading(true);
     setSearchError(null);
-    if (locationFromSearch) {
-      try {
-        const [city, stateCode] = locationFromSearch.split(", ").map((loc) => loc.trim());
-        params.city = city;
-        params.state = stateCode;
-      } catch (e) {
-        console.error("Error parsing location string:", locationFromSearch, e);
-      }
+
+    const finalSearchParams = { ...paramsFromSearchBar }; 
+
+    // Add city, zip, AND state from Redux store if they exist
+    if (cityFromStore) {
+      finalSearchParams.city = cityFromStore;
     }
+    if (stateFromStore) {
+      finalSearchParams.state = stateFromStore;
+    }
+    if (zipFromStore) {
+      finalSearchParams.zip = zipFromStore;
+    }
+    
     try {
-      const results = await searchRestaurant(params);
-      navigate("/restaurants", { state: { searchResults: results, searchParams: params } });
+      console.log("Searching with combined params:", finalSearchParams); 
+      const results = await searchRestaurant(finalSearchParams);
+      navigate("/restaurants", { state: { searchResults: results, searchParams: finalSearchParams } });
     } catch (err) {
       console.error("Search failed:", err);
       setSearchError("Could not load search results.");
@@ -91,7 +92,6 @@ const Home = () => {
       setSearchLoading(false);
     }
   };
-
 
   // Renamed from handleDeleteRestaurant to initiate the confirm dialog
   const initiateDeleteRestaurant = (restaurantId, restaurantName) => {
@@ -135,7 +135,6 @@ const Home = () => {
   };
 
   const handleLoadMore = () => {
-
     setVisibleRestaurantsCount(prevCount => Math.min(prevCount + (RESTAURANTS_INCREMENT_COUNT || 4), approvedRestaurants.length));
   };
 
