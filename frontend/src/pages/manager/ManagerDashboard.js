@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchManagerRestaurants } from "../../redux/slices/managerSlice";
 import { Card, Typography, Button, Box, Grid, CircularProgress, Pagination } from "@mui/material";
 import RestaurantCard from "../../components/RestaurantCard";
-import { RESTAURANTS_PER_PAGE } from "../../constants";
+import { RESTAURANTS_TO_DISPLAY_HOME_PAGE } from "../../constants";
 import CreateRestaurantModal from "./CreateRestaurant";
 import EditRestaurantModal from "./EditRestaurantModal";
 
@@ -12,7 +12,7 @@ const ManagerDashboard = () => {
   const { restaurants, loading, error } = useSelector((state) => state.manager);
   
   const [page, setPage] = useState(1);
-  const restaurantsPerPage = RESTAURANTS_PER_PAGE;
+  const restaurantsPerPage = RESTAURANTS_TO_DISPLAY_HOME_PAGE;
 
   const [openModal, setOpenModal] = useState(false);
   const [openEditModal, setOpenEditModal] = useState(false);

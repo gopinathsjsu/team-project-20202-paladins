@@ -19,8 +19,7 @@ import {
 } from "@mui/material";
 import RestaurantCard from "../components/RestaurantCard";
 import Search from "../components/Search";
-import { Link } from "react-router-dom";
-import { RESTAURANTS_TO_DISPLAY_HOME_PAGE } from "../constants";
+import { RESTAURANTS_TO_DISPLAY_HOME_PAGE, RESTAURANTS_INCREMENT_COUNT } from "../constants";
 import { searchRestaurant, deleteRestaurantByIdApi } from "../api/restaurant";
 import { useSelector as useReduxSelector, useSelector as useAuthSelector } from "react-redux";
 
@@ -42,11 +41,14 @@ const Home = () => {
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [snackbarSeverity, setSnackbarSeverity] = useState("success");
 
+  // State for "Load More" functionality
+  const [visibleRestaurantsCount, setVisibleRestaurantsCount] = useState(RESTAURANTS_TO_DISPLAY_HOME_PAGE);
+
   useEffect(() => {
-    if (reduxLoading === "idle") {
+    if (reduxLoading === "idle" && restaurants.length === 0) { // Fetch only if not already loaded or loading
       dispatch(fetchRestaurants());
     }
-  }, [dispatch, reduxLoading]);
+  }, [dispatch, reduxLoading, restaurants.length]);
 
   const location = useReduxSelector((state) => state.search.location);
   const handleSearch = async (params) => {
@@ -82,6 +84,7 @@ const Home = () => {
       setSnackbarMessage(`Restaurant "${restaurantToDelete.name}" deleted successfully!`);
       setSnackbarSeverity("success");
       dispatch(fetchRestaurants());
+      setVisibleRestaurantsCount(RESTAURANTS_TO_DISPLAY_HOME_PAGE);
     } catch (error) {
       console.error('Failed to delete restaurant:', error);
       const errorMessage = error.response?.data?.message || error.message || 'Failed to delete restaurant.';
@@ -104,6 +107,10 @@ const Home = () => {
       return;
     }
     setSnackbarOpen(false);
+  };
+
+  const handleLoadMore = () => {
+    setVisibleRestaurantsCount(prevCount => prevCount + (RESTAURANTS_INCREMENT_COUNT || 4));
   };
 
   return (
@@ -144,7 +151,7 @@ const Home = () => {
             Available Restaurants
           </Typography>
 
-          {reduxLoading === "pending" ? (
+          {reduxLoading === "pending" && visibleRestaurantsCount === RESTAURANTS_TO_DISPLAY_HOME_PAGE ? (
               <Box sx={{ display: "flex", justifyContent: "center", mt: 4 }}>
                 <CircularProgress />
               </Box>
@@ -166,7 +173,7 @@ const Home = () => {
                 >
                    {Array.isArray(restaurants) && restaurants.length > 0 ? (
                     <>
-                      {restaurants.slice(0, RESTAURANTS_TO_DISPLAY_HOME_PAGE).map((restaurant) => (
+                      {restaurants.slice(0, visibleRestaurantsCount).map((restaurant) => (
                           <Grid item key={restaurant.id} xs={12} sm={6} md={4} lg={3}>
                             <RestaurantCard
                                 restaurant={restaurant}
@@ -186,11 +193,13 @@ const Home = () => {
                   )}
                 </Grid>
 
-                <Box sx={{ textAlign: "center", mt: 4 }}>
-                  <Link to="/restaurants">
+                {Array.isArray(restaurants) && visibleRestaurantsCount < restaurants.length && (
+                  <Box sx={{ textAlign: "center", mt: 4 }}>
                     <Button
                         variant="contained"
                         color="primary"
+                        onClick={handleLoadMore}
+                        disabled={reduxLoading === "pending"}
                         sx={{
                           borderRadius: "30px",
                           px: 4,
@@ -198,10 +207,11 @@ const Home = () => {
                           textTransform: "none",
                         }}
                     >
-                      View All
+                      {reduxLoading === "pending" && visibleRestaurantsCount > RESTAURANTS_TO_DISPLAY_HOME_PAGE ? <CircularProgress size={24} sx={{ color: 'white', mr: 1}} /> : null}
+                      Load More Restaurants
                     </Button>
-                  </Link>
-                </Box>
+                  </Box>
+                )}
               </>
           )}
         </Container>
