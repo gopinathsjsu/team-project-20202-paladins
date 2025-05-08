@@ -21,3 +21,8 @@ export const searchRestaurant = async ({ restaurant, city, state, partySize, zip
   const response = await axios.get(`/api/restaurant/search?${params.toString()}`);
   return response.data;
 };
+
+export const getRestaurantById = async (id) => {
+  const response = await axios.get(`/api/restaurant/${id}`);
+  return response.data;
+}
