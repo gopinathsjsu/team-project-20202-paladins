@@ -109,7 +109,6 @@ const Home = () => {
       dispatch(fetchRestaurants());
       
      
-restaurant-details
 
     } catch (error) {
       console.error('Failed to delete restaurant:', error);
