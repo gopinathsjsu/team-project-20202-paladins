@@ -26,7 +26,7 @@ const AnalyticsDashboard = () => {
     setStartStr(startStr);
     setEndStr(endStr);
 
-    API.get(`/api/book?restaurantId=${restaurantId}&startDate=${startStr}&endDate=${endStr}`)
+    API.get(`/api/reservation/?restaurantId=${restaurantId}&startDate=${startStr}&endDate=${endStr}`)
       .then((res) => {
         const grouped = res.data.reduce((acc, booking) => {
           const slot = `${booking.startSlotTime} - ${booking.endSlotTime}`;

@@ -2,7 +2,7 @@ import React from "react";
 import { Card, CardContent, Typography, Button, Box, Rating, Stack } from "@mui/material";
 import { Link } from "react-router-dom";
 
-const RestaurantCard = ({ restaurant, userRole, approveRestaurant, deleteRestaurant, onEdit, tableSlots, date, partySize }) => {
+const RestaurantCard = ({ restaurant, userRole, approveRestaurant, deleteRestaurant, onEdit, tableSlots,noOfTimesBookedToday, date,partySize }) => {
 
   const getEndTime = (startTime) => {
     const [hours, minutes, seconds] = startTime.split(":").map(Number);
@@ -67,8 +67,12 @@ const RestaurantCard = ({ restaurant, userRole, approveRestaurant, deleteRestaur
             ({restaurant.reviewCount} reviews)
           </Typography>
         </Stack>
-
-        
+        <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+          Cost: {restaurant.cost || "$$"}
+        </Typography>
+        <Typography variant="body2" color="text.secondary">
+          Booked Today: {noOfTimesBookedToday || 0} times
+        </Typography>
       </CardContent>
 
       {/* Dynamic Button Section */}
