@@ -13,7 +13,7 @@ public class SecurityConstants {
             "/swagger-ui.html",
             "/swagger-resources/**",
             "/webjars/**",
-            "/api/restaurant/",
+            "/api/restaurant/**",
             "/api/restaurant/search"
     );
 }

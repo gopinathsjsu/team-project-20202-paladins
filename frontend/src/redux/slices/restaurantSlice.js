@@ -10,8 +10,14 @@ const initialState = {
 export const fetchRestaurants = createAsyncThunk(
   'restaurants/fetchRestaurants',
   async () => {
-    const response = await getRestaurants();
-    return response.data;
+    try{
+      const response = await getRestaurants();
+      return response.data;
+    } catch (error) {
+      // If the API call fails, log the error and return an empty array
+      console.error('Failed to fetch restaurants:', error.response?.data || error.message);
+      return [];
+    }
   }
 );
 
