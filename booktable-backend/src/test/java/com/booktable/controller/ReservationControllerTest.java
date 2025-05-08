@@ -1,6 +1,5 @@
 package com.booktable.controller;
 
-import com.booktable.dto.BookingDto;
 import com.booktable.model.Reservation;
 import com.booktable.model.Restaurant;
 import com.booktable.model.Table;
@@ -16,12 +15,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import java.util.Collections;
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(MockitoExtension.class)
 class ReservationControllerTest {

@@ -1,13 +1,7 @@
 package com.booktable.controller;
 
-import com.booktable.dto.RestaurantInput;
-import com.booktable.dto.RestaurantTableInput;
-import com.booktable.dto.RestaurantTableOutput;
-import com.booktable.dto.TableSlots;
 import com.booktable.mapper.RestaurantMapper;
 import com.booktable.model.Restaurant;
-import com.booktable.model.Table;
-import com.booktable.model.User;
 import com.booktable.service.ReservationService;
 import com.booktable.service.RestaurantService;
 import com.booktable.service.TableService;
@@ -21,15 +15,13 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 class RestaurantControllerTest {
 

@@ -1,8 +1,9 @@
 package com.booktable.dto;
 
 import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.*;
 import org.springframework.data.domain.Sort;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class ReviewsByRestaurantRequestTest {
 
