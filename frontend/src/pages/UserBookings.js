@@ -176,7 +176,21 @@ const UserBookings = () => {
   const cancelledBookings = bookings.filter(b => b.status === "CANCELLED");
   const activeBookings = bookings.filter(b => b.status !== "CANCELLED");
 
-  const upcomingBookings = activeBookings.filter(b => getBookingStatus(b.date, b.startSlotTime) === 'Upcoming');
+  const upcomingBookings = activeBookings
+    .filter(b => getBookingStatus(b.date, b.startSlotTime) === 'Upcoming')
+    .sort((a, b) => {
+      const dateA = new Date(`${a.date}T${a.startSlotTime || '00:00:00'}`);
+      const dateB = new Date(`${b.date}T${b.startSlotTime || '00:00:00'}`);
+
+      const isValidA = !isNaN(dateA.valueOf());
+      const isValidB = !isNaN(dateB.valueOf());
+
+      if (!isValidA && !isValidB) return 0;
+      if (!isValidA) return 1; // Non-parsable dates go to the end for ascending
+      if (!isValidB) return -1;
+
+      return dateA - dateB; // Ascending sort for upcoming
+    });
   const pastBookings = activeBookings.filter(b => getBookingStatus(b.date, b.startSlotTime) === 'Past');
 
   const renderBookingList = (list, type) => {

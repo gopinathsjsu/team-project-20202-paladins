@@ -20,15 +20,6 @@ const RestaurantCard = ({
 
   const navigate = useNavigate();
 
-  const getEndTime = (startTime) => {
-    const [hours, minutes, seconds] = startTime.split(":").map(Number);
-    const dateInstance = new Date();
-    dateInstance.setHours(hours);
-    dateInstance.setMinutes(minutes + 60);
-    dateInstance.setSeconds(seconds || 0);
-    return dateInstance.toTimeString().split(" ")[0];
-  };
-
   const handleCardAreaClick = () => {
     if (onCardClick) {
       onCardClick();
@@ -178,36 +169,45 @@ const RestaurantCard = ({
                     gap: '8px',
                   }}
                 >
-                  {tableSlots.slice(0, 6).map((slotInfo) =>
-                    slotInfo.slot.map((startTime, i) => {
-                      const endTime = slotInfo.slot[i + 1] || getEndTime(startTime);
+                  {tableSlots.slice(0, 6).map((slotInfo) => {
+                    // Ensure slotInfo.slot is an array and has the expected [startTime, endTime]
+                    if (Array.isArray(slotInfo.slot) && slotInfo.slot.length === 2) {
+                      const startTime = slotInfo.slot[0];
+                      const endTime = slotInfo.slot[1];
+
                       return (
                         <Link
                           key={`${slotInfo.tableId}-${startTime}`}
                           to={`/booking/${restaurant.id}`}
                           state={{
-                            selectedSlot: { restaurantId: restaurant.id, tableId: slotInfo.tableId, startSlotTime: startTime, endSlotTime: endTime, date: date },
-                            restaurantDetails: { id: restaurant.id, name: restaurant.name, addressStreet: restaurant.addressStreet, addressCity: restaurant.addressCity },
+                            selectedSlot: {
+                              restaurantId: restaurant.id,
+                              tableId: slotInfo.tableId,
+                              startSlotTime: startTime,
+                              endSlotTime: endTime, // Use the endTime from the slot array
+                              date: date
+                            },
+                            restaurantDetails: {
+                              id: restaurant.id,
+                              name: restaurant.name,
+                              addressStreet: restaurant.addressStreet,
+                              addressCity: restaurant.addressCity
+                            },
                             partySize: partySize
                           }}
                           style={{ textDecoration: "none" }}
                         >
-                          <Button size="small" variant="outlined" sx={{ borderRadius: "20px", textTransform: "none", width: "100%" }}>
+                          <Button size="small" variant="outlined" sx={{ borderRadius: "20px", textTransform: "none", width: "100%", py: 0.5, fontSize: '0.75rem' }}>
                             {startTime}
                           </Button>
                         </Link>
                       );
-                    })
-                  )}
+                    }
+                    return null; // Skip if slot format is not as expected
+                  })}
                 </Box>
               </Box>
-            ) : (
-              <Link to={`/booking/${restaurant.id}`} style={{ width: "100%", textDecoration: 'none' }}>
-                <Button variant="contained" fullWidth color="primary" sx={{ borderRadius: "30px" }}>
-                  Book a Table
-                </Button>
-              </Link>
-            )}
+            ) : null}
           </>
         )}
       </Box>
