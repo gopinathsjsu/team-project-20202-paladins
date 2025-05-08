@@ -42,6 +42,22 @@ public class RestaurantService {
         this.restaurantTableManager = restaurantTableManager;
     }
 
+    @NotNull
+    private static Restaurant getRestaurant(Optional<Restaurant> restaurantOpt, Optional<RatingStats> statsOpt) {
+        Restaurant restaurant = restaurantOpt.get();
+
+        if (statsOpt.isPresent()) {
+            RatingStats stats = statsOpt.get();
+            restaurant.setAverageRating(stats.getAverageRating());
+            restaurant.setReviewCount(stats.getCount());
+        } else {
+            // No reviews found, reset stats
+            restaurant.setAverageRating(0.0);
+            restaurant.setReviewCount(0);
+        }
+        return restaurant;
+    }
+
     // Get restaurants by managerId
     public List<Restaurant> getRestaurantsByManagerId(String managerId) {
         return restaurantRepository.findByManagerId(managerId);
@@ -51,22 +67,22 @@ public class RestaurantService {
         return restaurantRepository.findById(String.valueOf(id)).orElseThrow(() -> new RuntimeException("Restaurant not found"));
     }
 
-public List<Restaurant> searchRestaurants(String name, String city, String state, String zip, String noOfPeople,
-                                          LocalTime startTime, LocalDate date) {
-    return restaurantRepository.searchRestaurants(
-                    city != null ? city : "",
-                    state != null ? state : "",
-                    zip != null ? zip : "",
-                    noOfPeople != null ? Integer.parseInt(noOfPeople) : 0,
-                    date != null ? date : LocalDate.now(),
-                    startTime,
-                    name != null ? name : ""
-            ).stream()
-            .filter(restaurant ->
-                    restaurant.getOpeningHour().isBefore(startTime.plusMinutes(1)) &&
-                            restaurant.getClosingHour().isAfter(startTime))
-            .collect(Collectors.toList());
-}
+    public List<Restaurant> searchRestaurants(String name, String city, String state, String zip, String noOfPeople,
+                                              LocalTime startTime, LocalDate date) {
+        return restaurantRepository.searchRestaurants(
+                        city != null ? city : "",
+                        state != null ? state : "",
+                        zip != null ? zip : "",
+                        noOfPeople != null ? Integer.parseInt(noOfPeople) : 0,
+                        date != null ? date : LocalDate.now(),
+                        startTime,
+                        name != null ? name : ""
+                ).stream()
+                .filter(restaurant ->
+                        restaurant.getOpeningHour().isBefore(startTime.plusMinutes(1)) &&
+                                restaurant.getClosingHour().isAfter(startTime))
+                .collect(Collectors.toList());
+    }
 
     public List<Restaurant> listRestaurants(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
@@ -116,21 +132,5 @@ public List<Restaurant> searchRestaurants(String name, String city, String state
         } catch (Exception e) {
             System.err.println("Error updating restaurant rating stats: " + e.getMessage());
         }
-    }
-
-    @NotNull
-    private static Restaurant getRestaurant(Optional<Restaurant> restaurantOpt, Optional<RatingStats> statsOpt) {
-        Restaurant restaurant = restaurantOpt.get();
-
-        if (statsOpt.isPresent()) {
-            RatingStats stats = statsOpt.get();
-            restaurant.setAverageRating(stats.getAverageRating());
-            restaurant.setReviewCount(stats.getCount());
-        } else {
-            // No reviews found, reset stats
-            restaurant.setAverageRating(0.0);
-            restaurant.setReviewCount(0);
-        }
-        return restaurant;
     }
 }

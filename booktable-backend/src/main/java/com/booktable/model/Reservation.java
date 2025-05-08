@@ -3,7 +3,7 @@ package com.booktable.model;
 
 import com.booktable.utils.ObjectIdJsonSerializer;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
- import lombok.*;
+import lombok.*;
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
@@ -13,8 +13,6 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.List;
-import java.util.UUID;
 
 @Data
 @AllArgsConstructor
@@ -22,6 +20,8 @@ import java.util.UUID;
 @Builder
 @Document(collection = "reservations")
 public class Reservation {
+    public static final String STATUS_CONFIRMED = "CONFIRMED";
+    public static final String STATUS_CANCELLED = "CANCELLED";
     @Id
     @JsonSerialize(using = ObjectIdJsonSerializer.class)
     private ObjectId id;
@@ -31,23 +31,14 @@ public class Reservation {
     private ObjectId restaurantId;
     @JsonSerialize(using = ObjectIdJsonSerializer.class)
     private ObjectId tableId;
-
-
     private LocalDate date;
-
     @NonNull
     private LocalTime startSlotTime;
     @NonNull
     private LocalTime endSlotTime;
-
     private int partySize;
     private String status;
-
     private BigDecimal totalAmount;
-
     @CreatedDate
     private LocalDateTime createdAt;
-
-    public static final String STATUS_CONFIRMED = "CONFIRMED";
-    public static final String STATUS_CANCELLED = "CANCELLED";
 }

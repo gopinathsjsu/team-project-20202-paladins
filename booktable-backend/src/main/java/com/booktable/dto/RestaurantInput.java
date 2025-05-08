@@ -5,7 +5,6 @@ import lombok.Data;
 import java.math.BigDecimal;
 import java.time.LocalTime;
 import java.util.List;
-import java.util.UUID;
 
 @Data
 public class RestaurantInput {

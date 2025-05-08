@@ -15,9 +15,13 @@ import java.util.Optional;
 @Repository
 public interface ReviewRepository extends MongoRepository<Review, ObjectId> {
     @NotNull Optional<Review> findById(@NotNull ObjectId id);
+
     Optional<Review> findByIdAndCustomerId(ObjectId id, ObjectId customerId);
+
     void deleteById(@NotNull ObjectId id);
+
     Page<Review> findByRestaurantId(ObjectId restaurantId, Pageable pageable);
+
     boolean existsById(@NotNull ObjectId objectId);
 
     // A pipeline to get the average rating and count of reviews for a specific restaurant

@@ -4,6 +4,7 @@ import com.booktable.model.Restaurant;
 import com.booktable.repository.RestaurantRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 
 @Service

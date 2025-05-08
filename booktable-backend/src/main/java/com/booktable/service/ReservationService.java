@@ -11,37 +11,34 @@ import com.booktable.repository.ReservationRepository;
 import com.booktable.repository.RestaurantRepository;
 import com.booktable.repository.TableRepository;
 import com.booktable.repository.UserRepository;
-import com.booktable.service.MailjetEmailService;
+import org.bson.types.ObjectId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.util.Arrays;
-import java.util.Optional;
-import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.nio.file.AccessDeniedException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
 public class ReservationService {
+    private static final Logger log = LoggerFactory.getLogger(ReservationService.class);
+    private static final long CANCELLATION_WINDOW_HOURS = 2;
     private final ReservationRepository reservationRepository;
     private final RestaurantRepository restaurantRepository;
     private final UserRepository userRepository; // Added
     private final TableRepository tableRepository;   // Added
     private final MailjetEmailService mailjetEmailService;
-    private static final Logger log = LoggerFactory.getLogger(ReservationService.class);
-    private static final long CANCELLATION_WINDOW_HOURS = 2;
 
     @Autowired
-    public ReservationService(ReservationRepository reservationRepository, RestaurantRepository restaurantRepository,UserRepository userRepository,
+    public ReservationService(ReservationRepository reservationRepository, RestaurantRepository restaurantRepository, UserRepository userRepository,
                               TableRepository tableRepository,
                               MailjetEmailService mailjetEmailService) {
         this.reservationRepository = reservationRepository;
@@ -114,8 +111,10 @@ public class ReservationService {
 
             } else {
                 // Log if user, restaurant, or table details are missing
-                if (!userOpt.isPresent()) log.error("Could not find user with ID: {}", savedReservation.getCustomerId());
-                if (!restaurantOpt.isPresent()) log.error("Could not find restaurant with ID: {}", savedReservation.getRestaurantId());
+                if (!userOpt.isPresent())
+                    log.error("Could not find user with ID: {}", savedReservation.getCustomerId());
+                if (!restaurantOpt.isPresent())
+                    log.error("Could not find restaurant with ID: {}", savedReservation.getRestaurantId());
                 if (!tableOpt.isPresent()) log.error("Could not find table with ID: {}", savedReservation.getTableId());
             }
 
