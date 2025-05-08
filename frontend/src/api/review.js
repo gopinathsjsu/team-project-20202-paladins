@@ -21,7 +21,7 @@ export const updateReviewsById = async (reviewId, reviewData) => {
   try {
     return await axios.put(`/api/review/${reviewId}`, reviewData);
   } catch (error) {
-    throw new Error(error.response?.data || 'Failed to fetch review');
+    throw new Error(error.response?.data || 'Failed to update review');
   }
 }
 
