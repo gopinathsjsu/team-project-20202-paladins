@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { fetchRestaurants, resetRestaurants } from "../redux/slices/restaurantSlice";
+import { fetchRestaurants } from "../redux/slices/restaurantSlice";
 import {
   Box,
   Typography,
@@ -70,17 +70,11 @@ const Home = () => {
 
     const finalSearchParams = { ...paramsFromSearchBar }; 
 
-    // Add city, zip, AND state from Redux store if they exist
-    if (cityFromStore) {
-      finalSearchParams.city = cityFromStore;
-    }
-    if (stateFromStore) {
-      finalSearchParams.state = stateFromStore;
-    }
-    if (zipFromStore) {
-      finalSearchParams.zip = zipFromStore;
-    }
-    
+    // Read city, zip, AND state from Redux store and add to params
+    if (cityFromStore) finalSearchParams.city = cityFromStore;
+    if (stateFromStore) finalSearchParams.state = stateFromStore;
+    if (zipFromStore) finalSearchParams.zip = zipFromStore;
+
     try {
       console.log("Searching with combined params:", finalSearchParams); 
       const results = await searchRestaurant(finalSearchParams);
