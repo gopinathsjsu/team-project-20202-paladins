@@ -2,7 +2,7 @@ import React from 'react';
 import { Button } from '@mui/material';
 import GoogleIcon from '@mui/icons-material/Google';
 
-const backendUrl = process.env.REACT_APP_API_BASE_URL;
+const backendUrl = process.env.REACT_APP_API_BASE_URL || '';
 
 const GoogleLoginButton = ({ label = 'Continue with Google' }) => {
   const handleClick = () => {

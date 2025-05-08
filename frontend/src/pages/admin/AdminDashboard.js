@@ -8,7 +8,9 @@ import {
   Container, Typography, Grid
 } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
-import RestaurantCard from '../../components/RestaurantCard'; // Import the RestaurantCard
+import RestaurantCard from '../../components/RestaurantCard';
+import AnalyticsDashboard from "./AnalyticsDashboard"; // Import the RestaurantCard
+
 
 const AdminDashboard = () => {
   const dispatch = useDispatch();
@@ -44,6 +46,8 @@ const AdminDashboard = () => {
           ))}
         </Grid>
       )}
+      <AnalyticsDashboard />
+
     </Container>
   );
 };
