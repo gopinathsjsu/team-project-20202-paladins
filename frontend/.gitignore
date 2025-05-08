@@ -30,3 +30,5 @@ yarn-error.log*
 .vscode/
 # Remove JetBrains IDEs 
 .idea/
+
+*.env

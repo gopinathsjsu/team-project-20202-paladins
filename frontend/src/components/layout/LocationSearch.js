@@ -1,88 +1,113 @@
-import React, { useState } from 'react';
-import { Autocomplete, TextField, InputAdornment } from '@mui/material';
+// src/components/layout/LocationSearch.js
+import React, { useEffect, useCallback, useRef } from 'react';
+import { TextField, InputAdornment } from '@mui/material';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
+import { usePlacesWidget } from 'react-google-autocomplete';
 
-const LocationSearch = ({ value, onChange, featuredCities }) => {
-  const [locationInput, setLocationInput] = useState('');
-  const [cities, setCities] = useState([]);
+const GOOGLE_PLACES_API_KEY = "AIzaSyDHvAT1cbsnyZKcSktuF-coSbs0Wkzo68Y";
 
-  const handleLocationInputChange = async (event, newValue) => {
-    // console.log("Handling: ", newValue);
-    setLocationInput(newValue);
+const LocationSearch = ({ value, onChange }) => {
 
-    // ZIP code detection
-    if (newValue?.match(/^\d{5}$/)) {
-      try {
-        const res = await fetch(`http://api.zippopotam.us/us/${newValue}`);
-        if (res.ok) {
-          const data = await res.json();
-          const place = data.places[0];
-          const cityName = `${place['place name']}, ${place['state abbreviation']}`;
-          setLocationInput(cityName);
-          onChange(cityName);
-        }
-      } catch (err) {
-        console.error('ZIP lookup failed:', err);
+  const extractCityState = (place) => {
+    let city = '';
+    let state = '';
+    if (!place || !place.address_components) {
+      return { city, state };
+    }
+    for (const component of place.address_components) {
+      const types = component.types;
+      if (types.includes('locality')) {
+        city = component.long_name;
       }
-    } else if (newValue && newValue.length >= 2) {
-      try {
-        const res = await fetch(`/api/cities?search=${newValue}`);
-        if (res.ok) {
-          const data = await res.json();
-          setCities(data.map(city => ({
-            name: `${city.city}, ${city.state}`,
-            featured: false,
-            raw: city
-          })));
+
+      if (types.includes('administrative_area_level_1')) {
+        state = component.short_name;
+      }
+      if (city && state) break;
+    }
+
+    if (!city && state) {
+      for (const component of place.address_components) {
+        if (component.types.includes('administrative_area_level_2') && !city) {
+          city = component.long_name;
         }
-      } catch (err) {
-        console.error('City search failed:', err);
+        if (component.types.includes('sublocality') && !city){
+          city = component.long_name;
+        }
       }
     }
+
+    if (!city && state && place.name && !place.name.includes(state)) {
+      city = place.name;
+    }
+
+    return { city, state };
   };
 
-  const allCities = [...featuredCities, ...cities];
+
+  // This callback is triggered by the hook when a user selects a place
+  const handlePlaceSelected = useCallback((place) => {
+    console.log('Raw Place Selected:', place);
+    const { city, state } = extractCityState(place);
+    let locationString = '';
+
+    if (city && state) {
+      locationString = `${city}, ${state}`;
+    } else {
+      locationString = place?.formatted_address || place?.name || '';
+      console.warn("Could not extract 'City, ST', using fallback:", locationString);
+    }
+
+    console.log('Place Selected -> Calling onChange with:', locationString);
+    onChange(locationString);
+  }, [onChange]);
+
+  // Initialize the Google Places Widget hook
+  const { ref: placesRef } = usePlacesWidget({
+    apiKey: GOOGLE_PLACES_API_KEY,
+    onPlaceSelected: handlePlaceSelected,
+    options: {
+      types: ["(regions)"],
+      componentRestrictions: { country: "us" },
+      fields: ["formatted_address", "address_components", "name", "geometry"],
+    },
+  });
+
+  useEffect(() => {
+    if (placesRef.current && value === '' && placesRef.current.value !== '') {
+      placesRef.current.value = '';
+    }
+  }, [value, placesRef]);
+
 
   return (
-    <Autocomplete
-      freeSolo
-      value={value}
-      inputValue={locationInput}
-      onInputChange={handleLocationInputChange}
-      onChange={(_, newValue) => {
-        const locationVal = typeof newValue === 'string' ? newValue : newValue?.name || '';
-        onChange(locationVal);
-        setLocationInput(locationVal);
-      }}
-      options={allCities}
-      getOptionLabel={(option) => typeof option === 'string' ? option : option.name || ''}
-      groupBy={(option) => typeof option === 'string' ? 'All Cities' : (option.featured ? 'Featured Cities' : 'All Cities')}
+    <TextField
+      defaultValue={value || ''}
+
+      inputRef={placesRef}
+
+      placeholder="Enter city, state or ZIP"
+      fullWidth
+      variant="outlined"
       sx={{
         minWidth: 250,
         '& .MuiOutlinedInput-root': {
           color: 'white',
-          bgcolor: 'rgba(255,255,255,0.08)',
+          backgroundColor: 'rgba(255,255,255,0.08)',
           borderRadius: '8px',
           '& .MuiOutlinedInput-notchedOutline': { border: 'none' },
+          '& input': { color: 'white' },
+          '& input::placeholder': { color: 'rgba(255, 255, 255, 0.7)', opacity: 1 }
         },
-        '& .MuiAutocomplete-input': { color: 'white' },
-        '& .MuiAutocomplete-popupIndicator': { color: 'white' },
-        '& .MuiAutocomplete-clearIndicator': { color: 'white' }
+        '& .MuiInputAdornment-root svg': { color: 'white' }
       }}
-      renderInput={(params) => (
-        <TextField
-          {...params}
-          placeholder="Enter city or ZIP code"
-          InputProps={{
-            ...params.InputProps,
-            startAdornment: (
-              <InputAdornment position="start">
-                <LocationOnIcon sx={{ color: 'white' }} />
-              </InputAdornment>
-            ),
-          }}
-        />
-      )}
+      InputProps={{
+        startAdornment: (
+          <InputAdornment position="start">
+            <LocationOnIcon />
+          </InputAdornment>
+        ),
+      }}
     />
   );
 };

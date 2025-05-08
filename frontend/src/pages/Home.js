@@ -64,21 +64,25 @@ const Home = () => {
     return allRestaurantsFromStore.filter(restaurant => restaurant.approved === true);
   }, [allRestaurantsFromStore, role]);
 
-  const handleSearch = async (paramsFromSearchBar) => {
+  const location = useReduxSelector((state) => state.search.location);
+  const handleSearch = async (params) => {
     setSearchLoading(true);
     setSearchError(null);
 
-    const finalSearchParams = { ...paramsFromSearchBar }; 
-
-    // Read city, zip, AND state from Redux store and add to params
-    if (cityFromStore) finalSearchParams.city = cityFromStore;
-    if (stateFromStore) finalSearchParams.state = stateFromStore;
-    if (zipFromStore) finalSearchParams.zip = zipFromStore;
+    if (location) {
+      // Splits "San Jose, CA" into ["San Jose", "CA"]
+      const [city, stateCode] = location.split(", ").map((loc) => loc.trim());
+      // Adds city and state to the params object
+      params.city = city;
+      params.state = stateCode;
+      console.log(`Using location for search: City='${city}', State='${stateCode}'`); // Added log
+    } else {
+      console.log('No location selected, searching without city/state.');
+    }
 
     try {
-      console.log("Searching with combined params:", finalSearchParams); 
-      const results = await searchRestaurant(finalSearchParams);
-      navigate("/restaurants", { state: { searchResults: results, searchParams: finalSearchParams } });
+      const results = await searchRestaurant(params);
+      navigate("/restaurants", { state: { searchResults: results, searchParams: params } });
     } catch (err) {
       console.error("Search failed:", err);
       setSearchError("Could not load search results.");
