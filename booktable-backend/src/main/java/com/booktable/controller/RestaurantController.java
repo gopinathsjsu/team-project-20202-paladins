@@ -116,6 +116,7 @@ public class RestaurantController {
         return restaurantTableOutput;
     }
 
+
     // List all restaurants
     @GetMapping
     public List<Restaurant> listRestaurants(
