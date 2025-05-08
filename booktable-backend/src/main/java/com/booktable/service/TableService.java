@@ -5,11 +5,10 @@ import com.booktable.model.Restaurant;
 import com.booktable.model.Table;
 import com.booktable.repository.TableRepository;
 import org.bson.types.ObjectId;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import java.util.Arrays;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalTime;

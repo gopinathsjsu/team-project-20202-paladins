@@ -4,8 +4,6 @@ import com.booktable.dto.RestaurantInput;
 import com.booktable.model.Restaurant;
 import org.springframework.stereotype.Component;
 
-import java.util.UUID;
-
 @Component
 public class RestaurantMapper {
 

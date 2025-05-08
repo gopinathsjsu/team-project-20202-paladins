@@ -1,4 +1,5 @@
 package com.booktable.model;
+
 import com.booktable.utils.ObjectIdJsonSerializer;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.AllArgsConstructor;
@@ -14,7 +15,6 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
-import java.util.UUID;
 
 @Data
 @AllArgsConstructor

@@ -1,13 +1,13 @@
 package com.booktable.controller;
 
-import com.booktable.dto.RestaurantTableOutput;
 import com.booktable.model.Restaurant;
 import com.booktable.service.AdminService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+
 import java.util.List;
 
 @SecurityRequirement(name = "bearerAuth")

@@ -3,7 +3,7 @@ package com.booktable.model;
 
 import com.booktable.utils.ObjectIdJsonSerializer;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
- import lombok.*;
+import lombok.*;
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
@@ -13,8 +13,6 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.List;
-import java.util.UUID;
 
 @Data
 @AllArgsConstructor

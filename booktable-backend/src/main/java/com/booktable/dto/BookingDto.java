@@ -7,9 +7,7 @@ import lombok.NonNull;
 import org.bson.types.ObjectId;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.List;
 
 @Data
 public class BookingDto {

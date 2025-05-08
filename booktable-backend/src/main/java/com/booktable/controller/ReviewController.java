@@ -3,7 +3,7 @@ package com.booktable.controller;
 import com.booktable.dto.CreateReviewRequest;
 import com.booktable.dto.ReviewsByRestaurantRequest;
 import com.booktable.model.Review;
-    import com.booktable.model.User;
+import com.booktable.model.User;
 import com.booktable.service.ReviewService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;

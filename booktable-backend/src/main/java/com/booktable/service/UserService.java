@@ -2,7 +2,6 @@ package com.booktable.service;
 
 import com.booktable.model.User;
 import com.booktable.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service

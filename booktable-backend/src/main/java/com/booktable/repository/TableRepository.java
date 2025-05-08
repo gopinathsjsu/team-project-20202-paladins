@@ -1,6 +1,5 @@
 package com.booktable.repository;
 
-import com.booktable.model.Restaurant;
 import com.booktable.model.Table;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.repository.MongoRepository;

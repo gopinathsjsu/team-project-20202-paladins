@@ -1,6 +1,5 @@
 package com.booktable.dto;
 
-import com.booktable.model.Restaurant;
 import lombok.Data;
 
 @Data
