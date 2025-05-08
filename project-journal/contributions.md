@@ -45,6 +45,8 @@ processes.
 - **Booking & Restaurant API Development**
   - Designed and implemented robust **RESTful APIs** for managing bookings (create, view, cancel) and restaurant data (
     listings, details, availability).
+  - Developed the core backend logic for the **booking engine**, including availability checks, reservation processing,
+        and confirmation workflows.
   - Ensured API scalability and proper data validation for core business logic.
 
 
@@ -66,8 +68,7 @@ Vatsal focused on the critical aspects of the booking system, user reviews, and 
 ### 🚀 Key Contributions
 
 - **Booking System Logic**
-  - Developed the core backend logic for the **booking engine**, including availability checks, reservation processing,
-    and confirmation workflows.
+  - Integrated booking logic in Frontend
   - Implemented features to manage booking modifications and cancellations.
 
 - **User Reviews & Ratings System**
