@@ -14,6 +14,8 @@ import StyledTooltip from '../common/StyledTooltip';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import EventNoteIcon from '@mui/icons-material/EventNote';
 import LogoutIcon from '@mui/icons-material/Logout';
+import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings'; // For Admin specific links
+import DashboardIcon from '@mui/icons-material/Dashboard'; // For Manager Dashboard
 
 const Header = () => {
   const dispatch = useDispatch();
@@ -119,26 +121,8 @@ const Header = () => {
             </Button>
           ) : (
             <>
-              {/* Role-based Dashboard (keep separate from user menu) */}
-              {(role === 'ADMIN' || role === 'RESTAURANT_MANAGER') && (
-                <Button
-                  variant="text"
-                  component={RouterLink}
-                  to={role === 'ADMIN' ? '/admin/dashboard' : '/manager/dashboard'}
-                  sx={{
-                    color: '#2DD4BF',
-                    textTransform: 'none',
-                    width: { xs: '100%', sm: 'auto' },
-                    order: { xs: 1, sm: 0 } // Adjust order if needed
-                  }}
-                >
-                  Dashboard
-                </Button>
-              )}
-
               {/* Avatar with Tooltip and Click Handler */}
               <StyledTooltip title={email ?? 'User Menu'}>
-                {/* Add id for accessibility */}
                 <Avatar
                   id="user-avatar-button"
                   sx={{ bgcolor: '#2DD4BF', cursor: 'pointer', order: { xs: 0, sm: 1 } }}
@@ -158,9 +142,8 @@ const Header = () => {
                 open={isMenuOpen}
                 onClose={handleMenuClose}
                 MenuListProps={{
-                  'aria-labelledby': 'user-avatar-button', // Referencing the Avatar button
+                  'aria-labelledby': 'user-avatar-button',
                 }}
-                // Position the menu below the avatar
                 anchorOrigin={{
                   vertical: 'bottom',
                   horizontal: 'right',
@@ -176,12 +159,37 @@ const Header = () => {
                   </ListItemIcon>
                   Profile
                 </MenuItem>
-                <MenuItem onClick={() => handleNavigate('/bookings')}>
-                  <ListItemIcon>
-                    <EventNoteIcon fontSize="small" />
-                  </ListItemIcon>
-                  My Bookings
-                </MenuItem>
+
+                {/* "My Bookings" for CUSTOMER only */}
+                {role === 'CUSTOMER' && (
+                  <MenuItem onClick={() => handleNavigate('/bookings')}>
+                    <ListItemIcon>
+                      <EventNoteIcon fontSize="small" />
+                    </ListItemIcon>
+                    My Bookings
+                  </MenuItem>
+                )}
+
+                {/* "Restaurant Requests" for ADMIN only */}
+                {role === 'ADMIN' && (
+                  <MenuItem onClick={() => handleNavigate('/admin/dashboard')}>
+                    <ListItemIcon>
+                      <AdminPanelSettingsIcon fontSize="small" />
+                    </ListItemIcon>
+                    Restaurant Requests
+                  </MenuItem>
+                )}
+                
+                {/* "My Dashboard" for RESTAURANT_MANAGER only */}
+                {role === 'RESTAURANT_MANAGER' && (
+                  <MenuItem onClick={() => handleNavigate('/manager/dashboard')}>
+                    <ListItemIcon>
+                      <DashboardIcon fontSize="small" />
+                    </ListItemIcon>
+                    My Dashboard
+                  </MenuItem>
+                )}
+
                 <MenuItem onClick={handleLogoutAndClose}>
                   <ListItemIcon>
                     <LogoutIcon fontSize="small" />
@@ -189,8 +197,6 @@ const Header = () => {
                   Logout
                 </MenuItem>
               </Menu>
-
-              {/* Removed the separate Logout Button */}
             </>
           )}
         </Stack>

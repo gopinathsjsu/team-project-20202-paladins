@@ -351,6 +351,27 @@ const EditRestaurantModal = ({ open, handleClose, restaurantData }) => {
                 />
               </Grid>
 
+              {/* Cost */}
+              <Grid item xs={12} md={6}>
+                <FormControl fullWidth>
+                  <InputLabel id="cost-label">Cost</InputLabel>
+                  <Select
+                    labelId="cost-label"
+                    value={formData.cost}
+                    onChange={handleChange}
+                    name="cost"
+                    label="Cost"
+                  >
+                    <MenuItem value=""><em>None</em></MenuItem>
+                    <MenuItem value="$">$</MenuItem>
+                    <MenuItem value="$$">$$</MenuItem>
+                    <MenuItem value="$$$">$$$</MenuItem>
+                    <MenuItem value="$$$$">$$$$</MenuItem>
+                  </Select>
+                  <FormHelperText>Select the cost level</FormHelperText>
+                </FormControl>
+              </Grid>
+
               {/* Image URL */}
               <Grid item xs={12} md={6}>
                 <Button

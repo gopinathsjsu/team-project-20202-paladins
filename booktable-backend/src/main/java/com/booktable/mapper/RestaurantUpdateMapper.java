@@ -23,6 +23,7 @@ public class RestaurantUpdateMapper {
         existingRestaurant.setCuisines(input.getCuisines());
         existingRestaurant.setOpeningHour(input.getOpeningHour());
         existingRestaurant.setClosingHour(input.getClosingHour());
+        existingRestaurant.setCost(input.getCost());
 
         return existingRestaurant;
     }

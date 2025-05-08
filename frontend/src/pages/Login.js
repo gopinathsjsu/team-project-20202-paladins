@@ -43,7 +43,7 @@ const Login = () => {
       dispatch(login({ token, role, email: userEmail }));
 
       // Redirect based on role
-      if (role === 'ADMIN') navigate('/admin/dashboard');
+      if (role === 'ADMIN') navigate('/');
       else if (role === 'RESTAURANT_MANAGER') navigate('/manager/dashboard');
       else navigate('/'); // default for CUSTOMER
 

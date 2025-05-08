@@ -12,7 +12,7 @@ const AnalyticsDashboard = () => {
   const [startStr, setStartStr] = useState('');
   const [endStr, setEndStr] = useState('');
   const [restaurants, setRestaurants] = useState([]);
-  const [selectedRestaurant, setSelectedRestaurant] = useState('');
+  const [selectedRestaurant, setSelectedRestaurant] = useState('all');
 
   useEffect(() => {
     API.get('/api/restaurant')
