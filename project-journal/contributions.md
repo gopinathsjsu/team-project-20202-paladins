@@ -101,4 +101,4 @@ administrative functionalities.
   - Developed APIs and UI components enabling restaurant admins to manage, approve, and delete restaurants.
   - Development of key user-facing sections, including the restaurant listing pages, detailed restaurant views,
  
-- **WireFranes**
+- **WireFrames**
