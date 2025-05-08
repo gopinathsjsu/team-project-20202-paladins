@@ -34,14 +34,19 @@ const Home = () => {
   const { role } = useAuthSelector((state) => state.auth);
   const locationFromSearch = useReduxSelector((state) => state.search.location);
 
+
   const [searchLoading, setSearchLoading] = useState(false);
   const [searchError, setSearchError] = useState(null);
+
+
+  // State for dialogs and snackbar
 
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [restaurantToDelete, setRestaurantToDelete] = useState(null);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [snackbarSeverity, setSnackbarSeverity] = useState("success");
+
 
   const [visibleRestaurantsCount, setVisibleRestaurantsCount] = useState(RESTAURANTS_TO_DISPLAY_HOME_PAGE);
 
@@ -62,6 +67,7 @@ const Home = () => {
     }
     return allRestaurantsFromStore.filter(restaurant => restaurant.approved === true);
   }, [allRestaurantsFromStore, role]);
+
 
   const handleSearch = async (params) => {
     setSearchLoading(true);
@@ -86,6 +92,8 @@ const Home = () => {
     }
   };
 
+
+  // Renamed from handleDeleteRestaurant to initiate the confirm dialog
   const initiateDeleteRestaurant = (restaurantId, restaurantName) => {
     setRestaurantToDelete({ id: restaurantId, name: restaurantName });
     setConfirmOpen(true);
@@ -93,11 +101,16 @@ const Home = () => {
 
   const handleConfirmDelete = async () => {
     if (!restaurantToDelete) return;
+
     try {
       await deleteRestaurantByIdApi(restaurantToDelete.id);
       setSnackbarMessage(`Restaurant "${restaurantToDelete.name}" deleted successfully!`);
       setSnackbarSeverity("success");
       dispatch(fetchRestaurants());
+      
+     
+restaurant-details
+
     } catch (error) {
       console.error('Failed to delete restaurant:', error);
       const errorMessage = error.response?.data?.message || error.message || 'Failed to delete restaurant.';
@@ -123,14 +136,11 @@ const Home = () => {
   };
 
   const handleLoadMore = () => {
+
     setVisibleRestaurantsCount(prevCount => Math.min(prevCount + (RESTAURANTS_INCREMENT_COUNT || 4), approvedRestaurants.length));
   };
 
   const initialLoading = reduxLoading === 'pending' && (!allRestaurantsFromStore || allRestaurantsFromStore.length === 0);
-
-  console.log('Fetched from store (allRestaurantsFromStore):', allRestaurantsFromStore?.length);
-  console.log('Filtered approved count (approvedRestaurants):', approvedRestaurants?.length);
-  console.log('Currently visible count (visibleRestaurantsCount):', visibleRestaurantsCount);
 
   return (
       <Box sx={{ minHeight: "100vh", bgcolor: "#f8f9fa" }}>
@@ -230,6 +240,7 @@ const Home = () => {
           )}
         </Container>
 
+        {/* Confirmation Dialog */}
         <Dialog
           open={confirmOpen}
           onClose={handleCloseConfirmDialog}
@@ -252,9 +263,11 @@ const Home = () => {
           </DialogActions>
         </Dialog>
 
+        {/* Status Snackbar */}
         <Snackbar
           open={snackbarOpen}
-          autoHideDuration={6000}
+          autoHideDuration={6000} // Hide after 6 seconds
+
           onClose={handleCloseSnackbar}
           anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
         >
