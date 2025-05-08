@@ -1,7 +1,7 @@
-import axios from './API'; // Axios instance with token pre-set
+import axios from "./API"; // Axios instance with token pre-set
 
 export const getPendingRestaurants = async () => {
-  const response = await axios.get('/api/admin/pending-restaurants');
+  const response = await axios.get("/api/admin/pending-restaurants");
   return response.data;
 };
 

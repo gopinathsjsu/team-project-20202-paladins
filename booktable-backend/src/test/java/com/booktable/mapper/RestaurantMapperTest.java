@@ -3,12 +3,12 @@ package com.booktable.mapper;
 import com.booktable.dto.RestaurantInput;
 import com.booktable.model.Restaurant;
 import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.*;
 
 import java.math.BigDecimal;
 import java.time.LocalTime;
 import java.util.Arrays;
-import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 class RestaurantMapperTest {
 
@@ -61,5 +61,4 @@ class RestaurantMapperTest {
     }
 
 
-
-} 
+}

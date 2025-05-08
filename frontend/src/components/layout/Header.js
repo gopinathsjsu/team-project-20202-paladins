@@ -1,12 +1,21 @@
-import React, { useState, useEffect } from 'react'; // Added useEffect
+import React, {useEffect, useState} from 'react'; // Added useEffect
 import {
-  AppBar, Toolbar, Typography, Button, Stack, Avatar,
-  Menu, MenuItem, ListItemIcon, TextField, InputAdornment
+  AppBar,
+  Avatar,
+  Button,
+  InputAdornment,
+  ListItemIcon,
+  Menu,
+  MenuItem,
+  Stack,
+  TextField,
+  Toolbar,
+  Typography
 } from '@mui/material';
-import { Link as RouterLink, useNavigate } from 'react-router-dom';
-import { useSelector, useDispatch } from 'react-redux';
-import { logout } from '../../redux/slices/authSlice';
-import { setCity, setZip, setState } from '../../redux/slices/searchSlice';
+import {Link as RouterLink, useNavigate} from 'react-router-dom';
+import {useDispatch, useSelector} from 'react-redux';
+import {logout} from '../../redux/slices/authSlice';
+import {setCity, setState, setZip} from '../../redux/slices/searchSlice';
 import StyledTooltip from '../common/StyledTooltip';
 // Import Icons for Menu Items (Optional but good UX)
 import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
@@ -22,7 +31,7 @@ import DashboardIcon from '@mui/icons-material/Dashboard'; // For Manager Dashbo
 const Header = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { token, email, role } = useSelector((state) => state.auth);
+  const {token, email, role} = useSelector((state) => state.auth);
   const cityFromStore = useSelector((state) => state.search.city);
   const zipFromStore = useSelector((state) => state.search.zip);
   const stateFromStore = useSelector((state) => state.search.state);
@@ -73,15 +82,15 @@ const Header = () => {
   };
 
   return (
-    <AppBar position="static" sx={{ bgcolor: '#0A1427' }}>
+    <AppBar position="static" sx={{bgcolor: '#0A1427'}}>
       <Toolbar
         sx={{
-          flexDirection: { xs: 'column', sm: 'row' },
+          flexDirection: {xs: 'column', sm: 'row'},
           alignItems: 'center',
           justifyContent: 'space-between',
           px: 2,
           py: 1,
-          gap: { xs: 1, sm: 2 }
+          gap: {xs: 1, sm: 2}
         }}
       >
         {/* Left: Logo */}
@@ -95,7 +104,7 @@ const Header = () => {
             fontWeight: 'bold',
             fontSize: '1.5rem',
             width: '100%',
-            textAlign: { xs: 'center', sm: 'left' }
+            textAlign: {xs: 'center', sm: 'left'}
           }}
         >
           BookTable
@@ -103,10 +112,10 @@ const Header = () => {
 
         {/* Right: Location + Auth */}
         <Stack
-          direction={{ xs: 'column', sm: 'row' }}
+          direction={{xs: 'column', sm: 'row'}}
           spacing={1.5}
           alignItems="center"
-          sx={{ width: '100%', justifyContent: { sm: 'flex-end' } }}
+          sx={{width: '100%', justifyContent: {sm: 'flex-end'}}}
         >
           <TextField
             variant="outlined"
@@ -118,7 +127,7 @@ const Header = () => {
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">
-                  <LocationCityIcon sx={{ color: 'grey.500' }} />
+                  <LocationCityIcon sx={{color: 'grey.500'}}/>
                 </InputAdornment>
               ),
             }}
@@ -127,11 +136,11 @@ const Header = () => {
               backgroundColor: 'rgba(255, 255, 255, 0.1)',
               borderRadius: 1,
               '& .MuiOutlinedInput-root': {
-                '& fieldset': { borderColor: 'rgba(255, 255, 255, 0.3)', },
-                '&:hover fieldset': { borderColor: 'rgba(255, 255, 255, 0.5)', },
-                '&.Mui-focused fieldset': { borderColor: '#2DD4BF', },
+                '& fieldset': {borderColor: 'rgba(255, 255, 255, 0.3)',},
+                '&:hover fieldset': {borderColor: 'rgba(255, 255, 255, 0.5)',},
+                '&.Mui-focused fieldset': {borderColor: '#2DD4BF',},
               },
-              '& .MuiInputBase-input': { color: 'white', },
+              '& .MuiInputBase-input': {color: 'white',},
             }}
           />
           <TextField
@@ -144,22 +153,22 @@ const Header = () => {
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">
-                  <PublicIcon sx={{ color: 'grey.500' }} />
+                  <PublicIcon sx={{color: 'grey.500'}}/>
                 </InputAdornment>
               ),
             }}
-            inputProps={{ maxLength: 2 }}
+            inputProps={{maxLength: 2}}
             sx={{
               minWidth: 100,
               width: 100,
               backgroundColor: 'rgba(255, 255, 255, 0.1)',
               borderRadius: 1,
               '& .MuiOutlinedInput-root': {
-                '& fieldset': { borderColor: 'rgba(255, 255, 255, 0.3)', },
-                '&:hover fieldset': { borderColor: 'rgba(255, 255, 255, 0.5)', },
-                '&.Mui-focused fieldset': { borderColor: '#2DD4BF', },
+                '& fieldset': {borderColor: 'rgba(255, 255, 255, 0.3)',},
+                '&:hover fieldset': {borderColor: 'rgba(255, 255, 255, 0.5)',},
+                '&.Mui-focused fieldset': {borderColor: '#2DD4BF',},
               },
-              '& .MuiInputBase-input': { color: 'white', },
+              '& .MuiInputBase-input': {color: 'white',},
             }}
           />
           <TextField
@@ -172,7 +181,7 @@ const Header = () => {
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">
-                  <PinDropIcon sx={{ color: 'grey.500' }} />
+                  <PinDropIcon sx={{color: 'grey.500'}}/>
                 </InputAdornment>
               ),
             }}
@@ -181,11 +190,11 @@ const Header = () => {
               backgroundColor: 'rgba(255, 255, 255, 0.1)',
               borderRadius: 1,
               '& .MuiOutlinedInput-root': {
-                '& fieldset': { borderColor: 'rgba(255, 255, 255, 0.3)', },
-                '&:hover fieldset': { borderColor: 'rgba(255, 255, 255, 0.5)', },
-                '&.Mui-focused fieldset': { borderColor: '#2DD4BF', },
+                '& fieldset': {borderColor: 'rgba(255, 255, 255, 0.3)',},
+                '&:hover fieldset': {borderColor: 'rgba(255, 255, 255, 0.5)',},
+                '&.Mui-focused fieldset': {borderColor: '#2DD4BF',},
               },
-              '& .MuiInputBase-input': { color: 'white', },
+              '& .MuiInputBase-input': {color: 'white',},
             }}
           />
 
@@ -204,10 +213,10 @@ const Header = () => {
                   color: '#fff',
                   borderColor: '#14B8A6'
                 },
-                width: { xs: '100%', sm: 'auto' }
+                width: {xs: '100%', sm: 'auto'}
               }}
             >
-              <PersonOutlineIcon sx={{ mr: 1 }} />
+              <PersonOutlineIcon sx={{mr: 1}}/>
               Sign In
             </Button>
           ) : (
@@ -216,7 +225,7 @@ const Header = () => {
               <StyledTooltip title={email ?? 'User Menu'}>
                 <Avatar
                   id="user-avatar-button"
-                  sx={{ bgcolor: '#2DD4BF', cursor: 'pointer', order: { xs: 0, sm: 1 } }}
+                  sx={{bgcolor: '#2DD4BF', cursor: 'pointer', order: {xs: 0, sm: 1}}}
                   onClick={handleMenuOpen}
                   aria-controls={isMenuOpen ? 'user-menu' : undefined}
                   aria-haspopup="true"
@@ -246,7 +255,7 @@ const Header = () => {
               >
                 <MenuItem onClick={() => handleNavigate('/profile')}>
                   <ListItemIcon>
-                    <AccountCircleIcon fontSize="small" />
+                    <AccountCircleIcon fontSize="small"/>
                   </ListItemIcon>
                   Profile
                 </MenuItem>
@@ -255,7 +264,7 @@ const Header = () => {
                 {role === 'CUSTOMER' && (
                   <MenuItem onClick={() => handleNavigate('/bookings')}>
                     <ListItemIcon>
-                      <EventNoteIcon fontSize="small" />
+                      <EventNoteIcon fontSize="small"/>
                     </ListItemIcon>
                     My Bookings
                   </MenuItem>
@@ -265,17 +274,17 @@ const Header = () => {
                 {role === 'ADMIN' && (
                   <MenuItem onClick={() => handleNavigate('/admin/dashboard')}>
                     <ListItemIcon>
-                      <AdminPanelSettingsIcon fontSize="small" />
+                      <AdminPanelSettingsIcon fontSize="small"/>
                     </ListItemIcon>
                     Restaurant Requests
                   </MenuItem>
                 )}
-                
+
                 {/* "My Dashboard" for RESTAURANT_MANAGER only */}
                 {role === 'RESTAURANT_MANAGER' && (
                   <MenuItem onClick={() => handleNavigate('/manager/dashboard')}>
                     <ListItemIcon>
-                      <DashboardIcon fontSize="small" />
+                      <DashboardIcon fontSize="small"/>
                     </ListItemIcon>
                     My Dashboard
                   </MenuItem>
@@ -283,7 +292,7 @@ const Header = () => {
 
                 <MenuItem onClick={handleLogoutAndClose}>
                   <ListItemIcon>
-                    <LogoutIcon fontSize="small" />
+                    <LogoutIcon fontSize="small"/>
                   </ListItemIcon>
                   Logout
                 </MenuItem>

@@ -12,7 +12,7 @@ class CreateReviewRequestTest {
     void testAllFields() {
         CreateReviewRequest request = new CreateReviewRequest();
         ObjectId restaurantId = new ObjectId();
-        
+
         request.setRestaurantId(restaurantId);
         request.setRating(4);
         request.setComment("Great experience!");
@@ -26,7 +26,7 @@ class CreateReviewRequestTest {
     void testEmptyComment() {
         CreateReviewRequest request = new CreateReviewRequest();
         ObjectId restaurantId = new ObjectId();
-        
+
         request.setRestaurantId(restaurantId);
         request.setRating(5);
         request.setComment("");

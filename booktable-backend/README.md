@@ -1,6 +1,8 @@
 # 📚 BookTable Backend
 
-BookTable is a full-stack restaurant reservation platform inspired by OpenTable. This is the backend service built with **Spring Boot**, using **MongoDB** for storage and providing **JWT + OAuth2 authentication**, **role-based access**, and REST APIs for frontend integration.
+BookTable is a full-stack restaurant reservation platform inspired by OpenTable. This is the backend service built with
+**Spring Boot**, using **MongoDB** for storage and providing **JWT + OAuth2 authentication**, **role-based access**, and
+REST APIs for frontend integration.
 
 ---
 
@@ -28,11 +30,11 @@ Supports two login methods:
 
 ### 📟 User Roles & Access
 
-| Role                | Permissions |
-|---------------------|-------------|
-| `CUSTOMER`          | Search, Book, Cancel reservations |
-| `RESTAURANT_MANAGER`| Add/Edit Restaurant Listings |
-| `ADMIN`             | Approve/Delete Listings, View Analytics |
+| Role                 | Permissions                             |
+|----------------------|-----------------------------------------|
+| `CUSTOMER`           | Search, Book, Cancel reservations       |
+| `RESTAURANT_MANAGER` | Add/Edit Restaurant Listings            |
+| `ADMIN`              | Approve/Delete Listings, View Analytics |
 
 ---
 
@@ -87,7 +89,6 @@ spring.security.oauth2.client.registration.google.client-secret=YOUR_GOOGLE_CLIE
 http://localhost:3000/oauth2/success?token=YOUR_JWT
 ```
 
-
 ---
 
 ## ❌ Unauthorized Requests
@@ -100,7 +101,6 @@ If you hit a protected API without a token, you'll receive:
   "message": "JWT token is missing or invalid"
 }
 ```
-
 
 ---
 
@@ -130,6 +130,7 @@ docker-compose up --build
 ```
 
 3. Access services:
+
 - Spring Boot backend: [http://localhost:8080](http://localhost:8080)
 - Mongo Express (GUI): [http://localhost:8081](http://localhost:8081)
 
@@ -142,6 +143,7 @@ MongoDB is automatically started in a container with user `root` and password `e
 ## 📚 Academic Note
 
 This project is developed as part of a team-based Software Engineering course with emphasis on:
+
 - Agile Scrum methodology
 - Clean architecture
 - End-to-end team collaboration

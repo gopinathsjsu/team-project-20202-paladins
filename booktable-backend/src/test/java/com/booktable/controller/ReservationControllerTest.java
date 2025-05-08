@@ -45,13 +45,6 @@ class ReservationControllerTest {
     private Restaurant mockRestaurant;
 
 
-
-
-
-
-
-
-
     @Test
     void cancelMyReservation_returnsBadRequestWhenInvalidReservationId() {
         ResponseEntity<Void> response = reservationController.cancelMyReservation("invalidId", mockUser);

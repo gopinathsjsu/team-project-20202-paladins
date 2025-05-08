@@ -1,22 +1,26 @@
 export const formatDate = (date) => {
-  return new Date(date).toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
+  return new Date(date).toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
   });
 };
 
 export const formatTime = (time) => {
-  return new Date(`2000-01-01T${time}`).toLocaleTimeString('en-US', {
-    hour: '2-digit',
-    minute: '2-digit',
+  return new Date(`2000-01-01T${time}`).toLocaleTimeString("en-US", {
+    hour: "2-digit",
+    minute: "2-digit",
   });
 };
 
-export const getAvailableTimeSlots = (openingTime, closingTime, interval = 30) => {
+export const getAvailableTimeSlots = (
+  openingTime,
+  closingTime,
+  interval = 30,
+) => {
   const slots = [];
-  const [openingHour, openingMinute] = openingTime.split(':').map(Number);
-  const [closingHour, closingMinute] = closingTime.split(':').map(Number);
+  const [openingHour, openingMinute] = openingTime.split(":").map(Number);
+  const [closingHour, closingMinute] = closingTime.split(":").map(Number);
 
   let currentHour = openingHour;
   let currentMinute = openingMinute;
@@ -26,9 +30,9 @@ export const getAvailableTimeSlots = (openingTime, closingTime, interval = 30) =
     (currentHour === closingHour && currentMinute <= closingMinute)
     ) {
     slots.push(
-      `${currentHour.toString().padStart(2, '0')}:${currentMinute
+      `${currentHour.toString().padStart(2, "0")}:${currentMinute
         .toString()
-        .padStart(2, '0')}`
+        .padStart(2, "0")}`,
     );
 
     currentMinute += interval;
@@ -39,4 +43,4 @@ export const getAvailableTimeSlots = (openingTime, closingTime, interval = 30) =
   }
 
   return slots;
-}; 
+};

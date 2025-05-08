@@ -1,4 +1,4 @@
-import axios from './API';
+import axios from "./API";
 
 /**
  * Creates a new review using the backend API.
@@ -11,32 +11,34 @@ import axios from './API';
  */
 export const createReviewApi = async (reviewData) => {
   try {
-    return await axios.post('/api/review', reviewData);
+    return await axios.post("/api/review", reviewData);
   } catch (error) {
-    throw new Error(error.response?.data || 'Failed to create review');
+    throw new Error(error.response?.data || "Failed to create review");
   }
-}
+};
 
 export const updateReviewsById = async (reviewId, reviewData) => {
   try {
     return await axios.put(`/api/review/${reviewId}`, reviewData);
   } catch (error) {
-    throw new Error(error.response?.data || 'Failed to update review');
+    throw new Error(error.response?.data || "Failed to update review");
   }
-}
+};
 
 export const deleteReviewById = async (reviewId) => {
   try {
     return await axios.delete(`/api/review/${reviewId}`);
   } catch (error) {
-    throw new Error(error.response?.data || 'Failed to delete review');
+    throw new Error(error.response?.data || "Failed to delete review");
   }
-}
+};
 
 export const getReviewsByRestaurantId = async (restaurantId, params) => {
   try {
-    return await axios.get(`/api/review/restaurant/${restaurantId}`, {params});
+    return await axios.get(`/api/review/restaurant/${restaurantId}`, {
+      params,
+    });
   } catch (error) {
-    throw new Error(error.response?.data || 'Failed to fetch reviews');
+    throw new Error(error.response?.data || "Failed to fetch reviews");
   }
-}
+};

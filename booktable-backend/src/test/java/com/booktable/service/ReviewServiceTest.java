@@ -41,7 +41,7 @@ class ReviewServiceTest {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        
+
         reviewId = new ObjectId();
         customerId = new ObjectId();
         restaurantId = new ObjectId();
@@ -91,7 +91,7 @@ class ReviewServiceTest {
         updatedReview.setComment("Updated review");
 
         when(reviewRepository.findByIdAndCustomerId(reviewId, customerId))
-            .thenReturn(Optional.of(mockReview));
+                .thenReturn(Optional.of(mockReview));
         when(reviewRepository.save(any(Review.class))).thenReturn(updatedReview);
         doNothing().when(restaurantService).updateRestaurantRatingStatsAsync(any(ObjectId.class));
 

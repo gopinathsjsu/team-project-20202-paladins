@@ -1,13 +1,13 @@
-import { createSlice } from '@reduxjs/toolkit';
+import {createSlice} from "@reduxjs/toolkit";
 
 const initialState = {
-  city: '',
-  zip: '',
-  state: '',
+  city: "",
+  zip: "",
+  state: "",
 };
 
 const searchSlice = createSlice({
-  name: 'search',
+  name: "search",
   initialState,
   reducers: {
     setCity(state, action) {
@@ -20,12 +20,12 @@ const searchSlice = createSlice({
       state.state = action.payload;
     },
     clearLocation(state) {
-      state.city = '';
-      state.zip = '';
-      state.state = '';
-    }
-  }
+      state.city = "";
+      state.zip = "";
+      state.state = "";
+    },
+  },
 });
 
-export const { setCity, setZip, setState, clearLocation } = searchSlice.actions;
+export const {setCity, setZip, setState, clearLocation} = searchSlice.actions;
 export default searchSlice.reducer;

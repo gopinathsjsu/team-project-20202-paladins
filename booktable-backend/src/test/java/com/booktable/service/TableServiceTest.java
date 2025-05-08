@@ -44,7 +44,7 @@ class TableServiceTest {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        
+
         restaurantId = new ObjectId();
         tableId = new ObjectId();
 
@@ -65,7 +65,7 @@ class TableServiceTest {
     void getTableById_ShouldReturnTable() {
         // Arrange
         when(tableRepository.findById(tableId.toString()))
-            .thenReturn(Optional.of(mockTable));
+                .thenReturn(Optional.of(mockTable));
 
         // Act
         Table result = tableService.getTableById(tableId);
@@ -82,8 +82,8 @@ class TableServiceTest {
         when(tableRepository.findById(any())).thenReturn(Optional.empty());
 
         // Act & Assert
-        assertThrows(RuntimeException.class, () -> 
-            tableService.getTableById(tableId)
+        assertThrows(RuntimeException.class, () ->
+                tableService.getTableById(tableId)
         );
     }
 

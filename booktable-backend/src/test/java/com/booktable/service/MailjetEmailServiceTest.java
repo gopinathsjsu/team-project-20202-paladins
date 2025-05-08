@@ -26,7 +26,7 @@ class MailjetEmailServiceTest {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        
+
         // Set required properties using reflection
         ReflectionTestUtils.setField(mailjetEmailService, "apiKey", "test-api-key");
         ReflectionTestUtils.setField(mailjetEmailService, "secretKey", "test-secret-key");
@@ -36,8 +36,6 @@ class MailjetEmailServiceTest {
         subject = "Test Subject";
         messageBody = "Test Message Body";
     }
-
-
 
 
 }

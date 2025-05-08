@@ -1,31 +1,32 @@
-import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
-import {bookRestaurant} from '../../api/booking';
+import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
+import {bookRestaurant} from "../../api/booking";
 
 const initialState = {
-  status: 'idle',
+  status: "idle",
   error: null,
   confirmation: null,
 };
 
 export const createBookingThunk = createAsyncThunk(
-  'booking/create',
+  "booking/create",
   async (bookingData, {rejectWithValue}) => {
-
     try {
       return await bookRestaurant(bookingData);
     } catch (error) {
       console.error("Thunk Error:", error);
-      return rejectWithValue(error.response?.data || error.message || 'Booking failed');
+      return rejectWithValue(
+        error.response?.data || error.message || "Booking failed",
+      );
     }
-  }
+  },
 );
 
 const bookingSlice = createSlice({
-  name: 'booking',
+  name: "booking",
   initialState,
   reducers: {
     resetBookingStatus: (state) => {
-      state.status = 'idle';
+      state.status = "idle";
       state.error = null;
       state.confirmation = null;
     },
@@ -33,16 +34,16 @@ const bookingSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(createBookingThunk.pending, (state) => {
-        state.status = 'loading';
+        state.status = "loading";
         state.error = null;
         state.confirmation = null;
       })
       .addCase(createBookingThunk.fulfilled, (state, action) => {
-        state.status = 'succeeded';
+        state.status = "succeeded";
         state.confirmation = action.payload; // Store the successful response data
       })
       .addCase(createBookingThunk.rejected, (state, action) => {
-        state.status = 'failed';
+        state.status = "failed";
         state.error = action.payload; // Store the error payload from rejectWithValue
       });
   },

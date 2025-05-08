@@ -1,16 +1,16 @@
-import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { fetchManagerRestaurants } from "../../redux/slices/managerSlice";
-import { Card, Typography, Button, Box, Grid, CircularProgress, Pagination } from "@mui/material";
+import React, {useEffect, useState} from "react";
+import {useDispatch, useSelector} from "react-redux";
+import {fetchManagerRestaurants} from "../../redux/slices/managerSlice";
+import {Box, Button, Card, CircularProgress, Grid, Pagination, Typography} from "@mui/material";
 import RestaurantCard from "../../components/RestaurantCard";
-import { RESTAURANTS_TO_DISPLAY_HOME_PAGE } from "../../constants";
+import {RESTAURANTS_TO_DISPLAY_HOME_PAGE} from "../../constants";
 import CreateRestaurantModal from "./CreateRestaurant";
 import EditRestaurantModal from "./EditRestaurantModal";
 
 const ManagerDashboard = () => {
   const dispatch = useDispatch();
-  const { restaurants, loading, error } = useSelector((state) => state.manager);
-  
+  const {restaurants, loading, error} = useSelector((state) => state.manager);
+
   const [page, setPage] = useState(1);
   const restaurantsPerPage = RESTAURANTS_TO_DISPLAY_HOME_PAGE;
 
@@ -50,16 +50,16 @@ const ManagerDashboard = () => {
   const endIndex = startIndex + restaurantsPerPage;
   const currentRestaurants = restaurants.slice(startIndex, endIndex);
 
-  if (loading) return <CircularProgress />;
+  if (loading) return <CircularProgress/>;
   if (error) return <Typography color="error">{error}</Typography>;
 
   return (
-    <Box sx={{ padding: "20px" }}>
+    <Box sx={{padding: "20px"}}>
       {/* My Restaurants Section */}
       <Typography variant="h5" gutterBottom>My Restaurants</Typography>
-      
+
       {/* Create New Restaurant Button */}
-      <Button variant="contained" color="primary" onClick={handleOpenModal} sx={{ marginBottom: 3 }}>
+      <Button variant="contained" color="primary" onClick={handleOpenModal} sx={{marginBottom: 3}}>
         Create New Restaurant
       </Button>
 
@@ -75,7 +75,8 @@ const ManagerDashboard = () => {
         }}
       >
         {currentRestaurants.length === 0 ? (
-          <Typography variant="body1">You haven't added any restaurants yet. Click the button above to create one.</Typography>
+          <Typography variant="body1">You haven't added any restaurants yet. Click the button above to create
+            one.</Typography>
         ) : (
           currentRestaurants.map((restaurant) => (
             <Grid item key={restaurant.id}>
@@ -90,7 +91,7 @@ const ManagerDashboard = () => {
       </Grid>
 
       {/* Pagination */}
-      <Box sx={{ display: "flex", justifyContent: "center", marginTop: 2 }}>
+      <Box sx={{display: "flex", justifyContent: "center", marginTop: 2}}>
         <Pagination
           count={Math.ceil(restaurants.length / restaurantsPerPage)}
           page={page}
@@ -101,29 +102,29 @@ const ManagerDashboard = () => {
       </Box>
 
       {/* Reservations Section */}
-      <Box sx={{ marginTop: 4 }}>
-        <Card sx={{ padding: 2 }}>
+      <Box sx={{marginTop: 4}}>
+        <Card sx={{padding: 2}}>
           <Typography variant="h6">Upcoming Reservations</Typography>
           {/* Display upcoming reservations */}
-          <Typography variant="body2" color="textSecondary" sx={{ marginTop: 1 }}>
+          <Typography variant="body2" color="textSecondary" sx={{marginTop: 1}}>
             No upcoming reservations yet.
           </Typography>
         </Card>
       </Box>
 
       {/* Recent Reviews Section */}
-      <Box sx={{ marginTop: 4 }}>
-        <Card sx={{ padding: 2 }}>
+      <Box sx={{marginTop: 4}}>
+        <Card sx={{padding: 2}}>
           <Typography variant="h6">Recent Reviews</Typography>
           {/* Display recent reviews */}
-          <Typography variant="body2" color="textSecondary" sx={{ marginTop: 1 }}>
+          <Typography variant="body2" color="textSecondary" sx={{marginTop: 1}}>
             No reviews available.
           </Typography>
         </Card>
       </Box>
 
       {/* Create Restaurant Modal */}
-      <CreateRestaurantModal open={openModal} handleClose={handleCloseModal} />
+      <CreateRestaurantModal open={openModal} handleClose={handleCloseModal}/>
 
       <EditRestaurantModal
         open={openEditModal}

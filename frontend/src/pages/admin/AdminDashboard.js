@@ -1,20 +1,14 @@
-import React, { useEffect } from 'react';
-import {
-  fetchPendingRestaurants,
-  approveRestaurantThunk,
-  deleteRestaurantThunk
-} from '../../redux/slices/adminSlice';
-import {
-  Container, Typography, Grid
-} from '@mui/material';
-import { useDispatch, useSelector } from 'react-redux';
+import React, {useEffect} from 'react';
+import {approveRestaurantThunk, deleteRestaurantThunk, fetchPendingRestaurants} from '../../redux/slices/adminSlice';
+import {Container, Grid, Typography} from '@mui/material';
+import {useDispatch, useSelector} from 'react-redux';
 import RestaurantCard from '../../components/RestaurantCard';
 import AnalyticsDashboard from "./AnalyticsDashboard"; // Import the RestaurantCard
 
 
 const AdminDashboard = () => {
   const dispatch = useDispatch();
-  const { pendingRestaurants, loading } = useSelector(state => state.admin);
+  const {pendingRestaurants, loading} = useSelector(state => state.admin);
 
   useEffect(() => {
     dispatch(fetchPendingRestaurants());
@@ -35,9 +29,9 @@ const AdminDashboard = () => {
           {pendingRestaurants.map((res) => (
             <Grid item xs={12} md={6} lg={4} key={res.id}>
               {/* Use the RestaurantCard for each restaurant */}
-              <RestaurantCard 
-                restaurant={res} 
-                userRole="ADMIN" 
+              <RestaurantCard
+                restaurant={res}
+                userRole="ADMIN"
                 // Passing the admin specific buttons to RestaurantCard component
                 approveRestaurant={() => dispatch(approveRestaurantThunk(res.id))}
                 deleteRestaurant={() => dispatch(deleteRestaurantThunk(res.id))}
@@ -46,7 +40,7 @@ const AdminDashboard = () => {
           ))}
         </Grid>
       )}
-      <AnalyticsDashboard />
+      <AnalyticsDashboard/>
 
     </Container>
   );

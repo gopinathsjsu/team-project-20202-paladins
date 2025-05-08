@@ -17,9 +17,9 @@ class BookedTimeSlotProjectionTest {
         LocalTime endTime = LocalTime.of(13, 0);
 
         BookedTimeSlotProjection projection = new BookedTimeSlotProjection(
-            tableId,
-            startTime,
-            endTime
+                tableId,
+                startTime,
+                endTime
         );
 
         assertEquals(tableId, projection.getTableId());
@@ -30,9 +30,9 @@ class BookedTimeSlotProjectionTest {
     @Test
     void testNullFields() {
         BookedTimeSlotProjection projection = new BookedTimeSlotProjection(
-            null,
-            null,
-            null
+                null,
+                null,
+                null
         );
 
         assertNull(projection.getTableId());

@@ -12,7 +12,7 @@ class RatingStatsTest {
     void testAllFields() {
         RatingStats stats = new RatingStats();
         ObjectId id = new ObjectId();
-        
+
         stats.setId(id);
         stats.setAverageRating(4.5);
         stats.setCount(10);

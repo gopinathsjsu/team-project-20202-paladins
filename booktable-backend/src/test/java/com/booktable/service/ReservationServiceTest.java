@@ -63,7 +63,7 @@ class ReservationServiceTest {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        
+
         reservationId = new ObjectId();
         customerId = new ObjectId();
         restaurantId = new ObjectId();
@@ -104,7 +104,7 @@ class ReservationServiceTest {
         when(restaurantRepository.findById(restaurantId.toHexString())).thenReturn(Optional.of(mockRestaurant));
         when(tableRepository.findById(tableId.toHexString())).thenReturn(Optional.of(mockTable));
         when(reservationRepository.findByRestaurantIdAndTableIdAndDateAndStartSlotTimeAndEndSlotTime(
-            any(), any(), any(), any(), any())).thenReturn(Collections.emptyList());
+                any(), any(), any(), any(), any())).thenReturn(Collections.emptyList());
         doNothing().when(mailjetEmailService).sendEmail(any(), any(), any());
 
         // Act
@@ -121,11 +121,11 @@ class ReservationServiceTest {
     void saveReservation_ShouldThrowException_WhenDuplicateReservation() {
         // Arrange
         when(reservationRepository.findByRestaurantIdAndTableIdAndDateAndStartSlotTimeAndEndSlotTime(
-            any(), any(), any(), any(), any())).thenReturn(Collections.singletonList(mockReservation));
+                any(), any(), any(), any(), any())).thenReturn(Collections.singletonList(mockReservation));
 
         // Act & Assert
-        assertThrows(IllegalArgumentException.class, () -> 
-            reservationService.saveReservation(mockReservation)
+        assertThrows(IllegalArgumentException.class, () ->
+                reservationService.saveReservation(mockReservation)
         );
     }
 
@@ -137,7 +137,7 @@ class ReservationServiceTest {
         mockReservation.setStartSlotTime(futureDateTime.toLocalTime());
 
         when(reservationRepository.findByIdAndCustomerId(reservationId, customerId))
-            .thenReturn(Optional.of(mockReservation));
+                .thenReturn(Optional.of(mockReservation));
         when(reservationRepository.save(any(Reservation.class))).thenReturn(mockReservation);
 
         // Act
@@ -156,8 +156,8 @@ class ReservationServiceTest {
         when(reservationRepository.existsById(any())).thenReturn(false);
 
         // Act & Assert
-        assertThrows(ReservationNotFoundException.class, () -> 
-            reservationService.cancelReservation(reservationId, customerId)
+        assertThrows(ReservationNotFoundException.class, () ->
+                reservationService.cancelReservation(reservationId, customerId)
         );
     }
 
@@ -168,8 +168,8 @@ class ReservationServiceTest {
         when(reservationRepository.existsById(any())).thenReturn(true);
 
         // Act & Assert
-        assertThrows(RuntimeException.class, () -> 
-            reservationService.cancelReservation(reservationId, customerId)
+        assertThrows(RuntimeException.class, () ->
+                reservationService.cancelReservation(reservationId, customerId)
         );
     }
 
@@ -181,11 +181,11 @@ class ReservationServiceTest {
         mockReservation.setStartSlotTime(now.toLocalTime().plusHours(1));
 
         when(reservationRepository.findByIdAndCustomerId(reservationId, customerId))
-            .thenReturn(Optional.of(mockReservation));
+                .thenReturn(Optional.of(mockReservation));
 
         // Act & Assert
-        assertThrows(CancellationNotAllowedException.class, () -> 
-            reservationService.cancelReservation(reservationId, customerId)
+        assertThrows(CancellationNotAllowedException.class, () ->
+                reservationService.cancelReservation(reservationId, customerId)
         );
     }
 
@@ -199,7 +199,7 @@ class ReservationServiceTest {
         when(mockProjection.getEndSlotTime()).thenReturn(LocalTime.of(13, 0));
 
         when(reservationRepository.findBookedTablesAndTimes(restaurantId, date))
-            .thenReturn(Collections.singletonList(mockProjection));
+                .thenReturn(Collections.singletonList(mockProjection));
 
         // Act
         Set<List<Object>> result = reservationService.getBookedTablesAndTimes(restaurantId, date);

@@ -21,11 +21,11 @@ class BookingDtoTest {
         LocalDate date = LocalDate.now();
 
         BookingDto dto = new BookingDto(
-            restaurantId,
-            tableId,
-            startTime,
-            endTime,
-            date
+                restaurantId,
+                tableId,
+                startTime,
+                endTime,
+                date
         );
         dto.setReservationId(reservationId);
         dto.setTableNumber("1");
@@ -52,11 +52,11 @@ class BookingDtoTest {
         LocalDate date = LocalDate.now();
 
         BookingDto dto = new BookingDto(
-            restaurantId,
-            tableId,
-            startTime,
-            endTime,
-            date
+                restaurantId,
+                tableId,
+                startTime,
+                endTime,
+                date
         );
         dto.setReservationId(null);
         dto.setTableNumber(null);

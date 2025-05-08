@@ -44,12 +44,9 @@ class ReviewControllerTest {
         mockCreateRequest.setRating(6); // Invalid rating
 
         assertThrows(IllegalArgumentException.class, () ->
-            reviewController.createReview(mockCreateRequest, mockUser)
+                reviewController.createReview(mockCreateRequest, mockUser)
         );
     }
-
-
-
 
 
 }

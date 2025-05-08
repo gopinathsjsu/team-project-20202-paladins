@@ -15,9 +15,9 @@ class TableSlotsTest {
         TableSlots slots = new TableSlots();
         slots.setTableId("1");
         slots.setSlot(Arrays.asList(
-            LocalTime.of(12, 0),
-            LocalTime.of(13, 0),
-            LocalTime.of(14, 0)
+                LocalTime.of(12, 0),
+                LocalTime.of(13, 0),
+                LocalTime.of(14, 0)
         ));
 
         assertEquals("1", slots.getTableId());

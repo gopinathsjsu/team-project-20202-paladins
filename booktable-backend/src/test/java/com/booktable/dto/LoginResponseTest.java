@@ -19,7 +19,7 @@ class LoginResponseTest {
     @Test
     void testSettersAndGetters() {
         LoginResponse response = new LoginResponse(null, null, null);
-        
+
         response.setToken("jwt.token");
         response.setEmail("user@example.com");
         response.setRole("CUSTOMER");

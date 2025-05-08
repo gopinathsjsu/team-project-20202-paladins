@@ -1,79 +1,86 @@
-import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
-import {getRestaurantById, getRestaurants} from '../../api/restaurant';
+import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
+import {getRestaurantById, getRestaurants} from "../../api/restaurant";
 
 const initialState = {
   restaurants: [],
-  loading: 'idle', // 'idle' | 'pending' | 'succeeded' | 'failed'
+  loading: "idle", // 'idle' | 'pending' | 'succeeded' | 'failed'
   error: null,
 
   selectedRestaurant: null,
-  loadingDetail: 'idle',
+  loadingDetail: "idle",
   errorDetail: null,
 };
 
 export const fetchRestaurants = createAsyncThunk(
-  'restaurants/fetchRestaurants',
+  "restaurants/fetchRestaurants",
   async () => {
-    try{
+    try {
       const response = await getRestaurants();
       return response.data;
     } catch (error) {
       // If the API call fails, log the error and return an empty array
-      console.error('Failed to fetch restaurants:', error.response?.data || error.message);
+      console.error(
+        "Failed to fetch restaurants:",
+        error.response?.data || error.message,
+      );
       return [];
     }
-  }
+  },
 );
 
 export const fetchRestaurantById = createAsyncThunk(
-  'restaurants/fetchRestaurantById',
-  async (id, { rejectWithValue }) => {
+  "restaurants/fetchRestaurantById",
+  async (id, {rejectWithValue}) => {
     try {
       return await getRestaurantById(id);
     } catch (error) {
-      return rejectWithValue(error.response?.data?.message || error.message || 'Failed to fetch restaurant details');
+      return rejectWithValue(
+        error.response?.data?.message ||
+        error.message ||
+        "Failed to fetch restaurant details",
+      );
     }
-  }
+  },
 );
 
 const restaurantSlice = createSlice({
-  name: 'restaurants',
+  name: "restaurants",
   initialState,
   reducers: {
     clearSelectedRestaurant: (state) => {
       state.selectedRestaurant = null;
-      state.loadingDetail = 'idle';
+      state.loadingDetail = "idle";
       state.errorDetail = null;
-    }
+    },
   },
   extraReducers: (builder) => {
     builder
       .addCase(fetchRestaurants.pending, (state) => {
-        state.loading = 'pending'; // Set loading state when fetching
+        state.loading = "pending"; // Set loading state when fetching
       })
       .addCase(fetchRestaurants.fulfilled, (state, action) => {
-        state.loading = 'succeeded';
+        state.loading = "succeeded";
         state.restaurants = action.payload;
       })
       .addCase(fetchRestaurants.rejected, (state, action) => {
-        state.loading = 'failed';
+        state.loading = "failed";
         state.error = action.error.message;
       })
       .addCase(fetchRestaurantById.pending, (state) => {
         state.selectedRestaurant = null; // Clear previous data on new fetch
-        state.loadingDetail = 'pending';
+        state.loadingDetail = "pending";
         state.errorDetail = null;
       })
       .addCase(fetchRestaurantById.fulfilled, (state, action) => {
-        state.loadingDetail = 'succeeded';
+        state.loadingDetail = "succeeded";
         state.selectedRestaurant = action.payload;
       })
       .addCase(fetchRestaurantById.rejected, (state, action) => {
-        state.loadingDetail = 'failed';
+        state.loadingDetail = "failed";
         state.errorDetail = action.payload;
       });
   },
 });
 
-export const { clearSelectedRestaurant } = restaurantSlice.actions;
+export const {clearSelectedRestaurant} = restaurantSlice.actions;
 export default restaurantSlice.reducer;

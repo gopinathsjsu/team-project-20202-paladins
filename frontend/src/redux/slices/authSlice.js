@@ -1,15 +1,14 @@
-import {createSlice} from '@reduxjs/toolkit';
-
+import {createSlice} from "@reduxjs/toolkit";
 
 const initialState = {
-  token: localStorage.getItem('token') || null,
-  email: localStorage.getItem('email') || null,
-  role: localStorage.getItem('role') || null,
-  isAuthenticated: !!localStorage.getItem('token'),
+  token: localStorage.getItem("token") || null,
+  email: localStorage.getItem("email") || null,
+  role: localStorage.getItem("role") || null,
+  isAuthenticated: !!localStorage.getItem("token"),
 };
 
 const authSlice = createSlice({
-  name: 'auth',
+  name: "auth",
   initialState,
   reducers: {
     login: (state, action) => {
@@ -19,9 +18,9 @@ const authSlice = createSlice({
       state.role = role;
       state.isAuthenticated = true;
 
-      localStorage.setItem('token', token);
-      localStorage.setItem('email', email);
-      localStorage.setItem('role', role);
+      localStorage.setItem("token", token);
+      localStorage.setItem("email", email);
+      localStorage.setItem("role", role);
     },
     logout: (state) => {
       state.token = null;
@@ -29,13 +28,12 @@ const authSlice = createSlice({
       state.role = null;
       state.isAuthenticated = false;
 
-      localStorage.removeItem('token');
-      localStorage.removeItem('email');
-      localStorage.removeItem('role');
+      localStorage.removeItem("token");
+      localStorage.removeItem("email");
+      localStorage.removeItem("role");
     },
   },
 });
-
 
 export const {login, logout} = authSlice.actions;
 export default authSlice.reducer;

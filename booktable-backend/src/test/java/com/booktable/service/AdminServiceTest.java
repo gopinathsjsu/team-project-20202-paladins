@@ -31,7 +31,7 @@ class AdminServiceTest {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        
+
         restaurantId = new ObjectId();
 
         mockRestaurant = new Restaurant();
@@ -44,7 +44,7 @@ class AdminServiceTest {
     void getPendingRestaurants_ShouldReturnPendingRestaurants() {
         // Arrange
         when(restaurantRepository.findByApprovedFalse())
-            .thenReturn(Collections.singletonList(mockRestaurant));
+                .thenReturn(Collections.singletonList(mockRestaurant));
 
         // Act
         List<Restaurant> result = adminService.getPendingRestaurants();
@@ -60,7 +60,7 @@ class AdminServiceTest {
     void getPendingRestaurants_ShouldReturnEmptyList_WhenNoPendingRestaurants() {
         // Arrange
         when(restaurantRepository.findByApprovedFalse())
-            .thenReturn(Collections.emptyList());
+                .thenReturn(Collections.emptyList());
 
         // Act
         List<Restaurant> result = adminService.getPendingRestaurants();
@@ -75,7 +75,7 @@ class AdminServiceTest {
     void approveRestaurant_ShouldApproveRestaurant() {
         // Arrange
         when(restaurantRepository.findById(restaurantId.toHexString()))
-            .thenReturn(Optional.of(mockRestaurant));
+                .thenReturn(Optional.of(mockRestaurant));
         when(restaurantRepository.save(any(Restaurant.class))).thenReturn(mockRestaurant);
 
         // Act

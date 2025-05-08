@@ -53,12 +53,12 @@ class ManagerControllerTest {
     void viewManagerListings_ShouldReturnManagerRestaurants() {
         // Arrange
         List<Restaurant> mockRestaurants = Arrays.asList(
-            new Restaurant(), new Restaurant()
+                new Restaurant(), new Restaurant()
         );
         when(securityContext.getAuthentication()).thenReturn(authentication);
         when(authentication.getPrincipal()).thenReturn(mockUser);
         when(restaurantService.getRestaurantsByManagerId(managerId.toHexString()))
-            .thenReturn(mockRestaurants);
+                .thenReturn(mockRestaurants);
 
         // Act
         List<Restaurant> result = managerController.viewManagerListings();
@@ -75,7 +75,7 @@ class ManagerControllerTest {
         when(securityContext.getAuthentication()).thenReturn(authentication);
         when(authentication.getPrincipal()).thenReturn(mockUser);
         when(restaurantService.getRestaurantsByManagerId(managerId.toHexString()))
-            .thenReturn(Collections.emptyList());
+                .thenReturn(Collections.emptyList());
 
         // Act
         List<Restaurant> result = managerController.viewManagerListings();

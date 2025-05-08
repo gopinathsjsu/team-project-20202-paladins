@@ -1,47 +1,54 @@
-import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
-import {createRestaurantApi, getManagerRestaurants, updateRestaurantApi} from '../../api/manager';
+import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
+import {createRestaurantApi, getManagerRestaurants, updateRestaurantApi,} from "../../api/manager";
 
 // Thunk to fetch manager's restaurants
 export const fetchManagerRestaurants = createAsyncThunk(
-  'manager/fetchManagerRestaurants',
+  "manager/fetchManagerRestaurants",
   async (_, {rejectWithValue}) => {
     try {
       const response = await getManagerRestaurants();
       return response.data;
     } catch (err) {
-      return rejectWithValue(err.response?.data || 'Failed to fetch');
+      return rejectWithValue(err.response?.data || "Failed to fetch");
     }
-  }
+  },
 );
 
 // Thunk to create a new restaurant
 export const createRestaurant = createAsyncThunk(
-  'manager/createRestaurant',
+  "manager/createRestaurant",
   async (restaurantData, {rejectWithValue}) => {
     try {
       const response = await createRestaurantApi(restaurantData);
       return response.data;
     } catch (err) {
-      return rejectWithValue(err.response?.data || 'Failed to create restaurant');
+      return rejectWithValue(
+        err.response?.data || "Failed to create restaurant",
+      );
     }
-  }
+  },
 );
 
 export const updateRestaurant = createAsyncThunk(
-  'manager/updateRestaurant',
+  "manager/updateRestaurant",
   async (restaurantData, {rejectWithValue}) => {
     try {
-      const response = await updateRestaurantApi(restaurantData.restaurantInput.id, restaurantData);
+      const response = await updateRestaurantApi(
+        restaurantData.restaurantInput.id,
+        restaurantData,
+      );
       return response.data;
     } catch (err) {
-      return rejectWithValue(err.response?.data || 'Failed to update restaurant');
+      return rejectWithValue(
+        err.response?.data || "Failed to update restaurant",
+      );
     }
-  }
+  },
 );
 
 // Manager slice
 const managerSlice = createSlice({
-  name: 'manager',
+  name: "manager",
   initialState: {
     restaurants: [],
     loading: false,
@@ -87,7 +94,9 @@ const managerSlice = createSlice({
         state.loading = false;
         const updatedRestaurant = action.payload;
         state.restaurants = state.restaurants.map((restaurant) =>
-          restaurant.id === updatedRestaurant.id ? updatedRestaurant : restaurant
+          restaurant.id === updatedRestaurant.id
+            ? updatedRestaurant
+            : restaurant,
         );
       })
       .addCase(updateRestaurant.rejected, (state, action) => {

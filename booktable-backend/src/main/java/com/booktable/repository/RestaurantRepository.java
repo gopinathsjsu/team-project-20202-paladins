@@ -13,9 +13,13 @@ import java.util.List;
 @Repository
 public interface RestaurantRepository extends MongoRepository<Restaurant, String>, CustomRestaurantRepository {
     List<Restaurant> findByApprovedFalse();
+
     List<Restaurant> findByManagerId(String managerId);
+
     List<Restaurant> findByManagerIdAndApprovedTrue(String managerId);
+
     Page<Restaurant> findAllByApprovedTrue(Pageable pageable);
+
     List<Restaurant> searchRestaurants(String city, String state, String zip,
                                        int noOfPeople, LocalDate date, LocalTime startTime, String name);
 }

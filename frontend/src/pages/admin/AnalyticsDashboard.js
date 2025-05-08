@@ -87,18 +87,18 @@ const AnalyticsDashboard = () => {
         Booking Analytics
       </Typography>
 
-    <Select
-      value={selectedRestaurant || ""}
-      onChange={(e) => setSelectedRestaurant(e.target.value)}
-      sx={{ my: 2, minWidth: 200 }}
-    >
-      <MenuItem value="all">All Restaurants</MenuItem>
-      {restaurants.map((restaurant) => (
-        <MenuItem key={restaurant.id} value={restaurant.id}>
-          {restaurant.name}
-        </MenuItem>
-      ))}
-    </Select>
+      <Select
+        value={selectedRestaurant || ""}
+        onChange={(e) => setSelectedRestaurant(e.target.value)}
+        sx={{my: 2, minWidth: 200}}
+      >
+        <MenuItem value="all">All Restaurants</MenuItem>
+        {restaurants.map((restaurant) => (
+          <MenuItem key={restaurant.id} value={restaurant.id}>
+            {restaurant.name}
+          </MenuItem>
+        ))}
+      </Select>
 
       <Select
         value={viewMode}

@@ -48,7 +48,7 @@ class AuthServiceTest {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        
+
         userId = new ObjectId();
 
         mockUser = new User();

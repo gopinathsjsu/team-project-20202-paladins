@@ -53,14 +53,13 @@ class RestaurantControllerTest {
     }
 
 
-
     @Test
     void listRestaurants_ShouldReturnPaginatedRestaurants() {
         // Arrange
         int page = 0;
         int size = 10;
         List<Restaurant> mockRestaurants = Arrays.asList(
-            new Restaurant(), new Restaurant()
+                new Restaurant(), new Restaurant()
         );
 
         when(restaurantService.listRestaurants(page, size)).thenReturn(mockRestaurants);
@@ -73,7 +72,6 @@ class RestaurantControllerTest {
         assertEquals(2, result.size());
         verify(restaurantService).listRestaurants(page, size);
     }
-
 
 
     @Test

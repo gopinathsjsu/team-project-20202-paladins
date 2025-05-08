@@ -43,6 +43,22 @@ public class RestaurantService {
         this.restaurantTableManager = restaurantTableManager;
     }
 
+    @NotNull
+    private static Restaurant getRestaurant(Optional<Restaurant> restaurantOpt, Optional<RatingStats> statsOpt) {
+        Restaurant restaurant = restaurantOpt.get();
+
+        if (statsOpt.isPresent()) {
+            RatingStats stats = statsOpt.get();
+            restaurant.setAverageRating(stats.getAverageRating());
+            restaurant.setReviewCount(stats.getCount());
+        } else {
+            // No reviews found, reset stats
+            restaurant.setAverageRating(0.0);
+            restaurant.setReviewCount(0);
+        }
+        return restaurant;
+    }
+
     // Get restaurants by managerId
     public List<Restaurant> getRestaurantsByManagerId(String managerId) {
         return restaurantRepository.findByManagerIdAndApprovedTrue(managerId);
@@ -54,16 +70,16 @@ public class RestaurantService {
     }
 
     public List<Restaurant> searchRestaurants(String name, String city, String state, String zip, String noOfPeople,
-                                          LocalTime startTime, LocalDate date) {
+                                              LocalTime startTime, LocalDate date) {
         List<Restaurant> results = restaurantRepository.searchRestaurants(
-                        city != null ? city : "",
-                        state != null ? state : "",
-                        zip != null ? zip : "",
-                        noOfPeople != null ? Integer.parseInt(noOfPeople) : 0,
-                        date != null ? date : LocalDate.now(),
-                        startTime,
-                        name != null ? name : ""
-                );
+                city != null ? city : "",
+                state != null ? state : "",
+                zip != null ? zip : "",
+                noOfPeople != null ? Integer.parseInt(noOfPeople) : 0,
+                date != null ? date : LocalDate.now(),
+                startTime,
+                name != null ? name : ""
+        );
 
         return results.stream()
                 .filter(restaurant ->
@@ -125,22 +141,6 @@ public class RestaurantService {
         } catch (Exception e) {
             System.err.println("Error updating restaurant rating stats: " + e.getMessage());
         }
-    }
-
-    @NotNull
-    private static Restaurant getRestaurant(Optional<Restaurant> restaurantOpt, Optional<RatingStats> statsOpt) {
-        Restaurant restaurant = restaurantOpt.get();
-
-        if (statsOpt.isPresent()) {
-            RatingStats stats = statsOpt.get();
-            restaurant.setAverageRating(stats.getAverageRating());
-            restaurant.setReviewCount(stats.getCount());
-        } else {
-            // No reviews found, reset stats
-            restaurant.setAverageRating(0.0);
-            restaurant.setReviewCount(0);
-        }
-        return restaurant;
     }
 
     @Transactional

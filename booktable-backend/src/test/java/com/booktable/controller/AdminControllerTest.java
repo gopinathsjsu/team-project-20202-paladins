@@ -48,7 +48,7 @@ class AdminControllerTest {
     void getPendingRestaurants_ShouldReturnPendingRestaurants() {
         // Arrange
         List<Restaurant> mockRestaurants = Arrays.asList(
-            new Restaurant(), new Restaurant()
+                new Restaurant(), new Restaurant()
         );
         when(adminService.getPendingRestaurants()).thenReturn(mockRestaurants);
 
