@@ -1,5 +1,7 @@
-import React, {useState} from "react";
-import {Button, InputAdornment, MenuItem, Stack, TextField, useMediaQuery, useTheme} from "@mui/material";
+import React, { useState } from "react";
+import {
+  Button, InputAdornment, MenuItem, Stack, TextField, useTheme, useMediaQuery
+} from "@mui/material";
 import {DateTimePicker} from "@mui/x-date-pickers"
 import RestaurantIcon from "@mui/icons-material/Restaurant";
 import EventIcon from '@mui/icons-material/Event';
@@ -7,7 +9,7 @@ import PeopleIcon from "@mui/icons-material/People";
 import SearchIcon from "@mui/icons-material/Search";
 import dayjs from 'dayjs';
 
-const Search = ({onSearch}) => {
+const Search = ({ onSearch }) => {
   const [restaurant, setRestaurant] = useState("");
   const [pickerValue, setPickerValue] = useState(dayjs());
   const [date, setDate] = useState(dayjs().format("YYYY-MM-DD"));
@@ -29,7 +31,7 @@ const Search = ({onSearch}) => {
 
   return (
     <Stack
-      direction={{xs: "column", sm: "row"}}
+      direction={{ xs: "column", sm: "row" }}
       spacing={1.5}
       alignItems="stretch"
       sx={{
@@ -38,24 +40,23 @@ const Search = ({onSearch}) => {
         borderRadius: 2,
         backgroundColor: "#ffffff",
         boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
-        maxWidth: "1000px",
+        maxWidth: "850px",
         mx: "auto",
       }}
     >
       <TextField
-        placeholder="Search restaurants"
+        placeholder="Restaurant Name (Optional)"
         value={restaurant}
         onChange={(e) => setRestaurant(e.target.value)}
         InputProps={{
           startAdornment: (
             <InputAdornment position="start">
-              <RestaurantIcon/>
+              <RestaurantIcon />
             </InputAdornment>
           ),
         }}
-        sx={{flex: 2, minWidth: 150}}
+        sx={{ flexGrow: 1, minWidth: 150 }}
       />
-
 
       <DateTimePicker
         label="When"
@@ -74,18 +75,17 @@ const Search = ({onSearch}) => {
             InputProps: {
               startAdornment: (
                 <InputAdornment position="start">
-                  <EventIcon/>
+                  <EventIcon />
                 </InputAdornment>
               ),
             },
             sx: {
-              flex: 1,
-              minWidth: {xs: 140, sm: 200},
+              flex: 1.5,
+              minWidth: { xs: 140, sm: 200 },
             },
           },
         }}
       />
-
 
       <TextField
         select
@@ -94,11 +94,11 @@ const Search = ({onSearch}) => {
         InputProps={{
           startAdornment: (
             <InputAdornment position="start">
-              <PeopleIcon/>
+              <PeopleIcon />
             </InputAdornment>
           ),
         }}
-        sx={{flex: 1, minWidth: 120}}
+        sx={{ flex: 0.5, minWidth: 120 }}
       >
         {[...Array(20)].map((_, i) => (
           <MenuItem key={i + 1} value={i + 1}>
@@ -116,10 +116,10 @@ const Search = ({onSearch}) => {
           px: 2,
           alignSelf: isMobile ? "stretch" : "center",
           bgcolor: "#2DD4BF",
-          "&:hover": {bgcolor: "#14B8A6"}
+          "&:hover": { bgcolor: "#14B8A6" }
         }}
       >
-        <SearchIcon/>
+        <SearchIcon />
       </Button>
     </Stack>
   );

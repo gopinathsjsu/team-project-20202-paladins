@@ -24,8 +24,10 @@ public class RestaurantMapper {
         restaurant.setOpeningHour(input.getOpeningHour());
         restaurant.setClosingHour(input.getClosingHour());
 
+
         restaurant.setManagerId(managerId);
         restaurant.setApproved(false); // always default to false
+        restaurant.setCost(input.getCost());
 
         return restaurant;
     }

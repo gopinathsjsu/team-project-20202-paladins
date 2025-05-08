@@ -27,4 +27,6 @@ public class RestaurantInput {
 
     private LocalTime openingHour;
     private LocalTime closingHour;
+
+    private String cost;
 }

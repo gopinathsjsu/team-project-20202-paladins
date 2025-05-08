@@ -1,0 +1,86 @@
+name: Deploy to EC2
+
+on:
+  push:
+    branches: [ master ]
+    paths:
+      - 'booktable-backend/**'
+      - 'frontend/**'
+      - '.github/workflows/deploy.yml'
+      - 'deployment/**'
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    env:
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+      EC2_HOST: ${{ secrets.EC2_HOST }}
+      EC2_USER: ${{ secrets.EC2_USER }}
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v3
+
+    - name: Log in to Docker Hub
+      run: echo "${DOCKERHUB_TOKEN}" | docker login -u "${DOCKERHUB_USERNAME}" --password-stdin
+
+    - name: Build and Push Backend Image
+      working-directory: ./booktable-backend
+      run: |
+        docker build -t ${DOCKERHUB_USERNAME}/booktable-backend:latest .
+        docker push ${DOCKERHUB_USERNAME}/booktable-backend:latest
+
+    - name: Build and Push Frontend Image
+      working-directory: ./frontend
+      run: |
+        docker build \
+        --build-arg REACT_APP_API_BASE_URL=http://${{ secrets.EC2_HOST }}:8080 \
+        -t ${DOCKERHUB_USERNAME}/booktable-frontend:latest .
+        docker push ${DOCKERHUB_USERNAME}/booktable-frontend:latest
+
+    - name: Deploy to EC2
+      uses: appleboy/ssh-action@v0.1.10
+      with:
+        host: ${{ secrets.EC2_HOST }}
+        username: ${{ secrets.EC2_USER }}
+        key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
+        script: |
+            cd ~
+            if [ ! -d "team-project-20202-paladins" ]; then
+              echo "Cloning repo..."
+              git clone https://github.com/gopinathsjsu/team-project-20202-paladins || { echo "Git clone failed"; exit 1; }
+            else
+              echo "Repo already exists"
+            fi
+            cd team-project-20202-paladins
+            git pull origin master
+            cd ~/team-project-20202-paladins/deployment
+        
+            echo "SPRING_PROFILES_ACTIVE=prod" > .env.prod
+            echo "SPRING_DATA_MONGODB_URI=${{ secrets.MONGODB_URI }}" >> .env.prod
+            echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> .env.prod
+            echo "SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}" >> .env.prod
+            echo "SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}" >> .env.prod
+            echo "MAILJET_API_KEY=${{ secrets.MAILJET_API_KEY }}" >> .env.prod
+            echo "MAILJET_SECRET_KEY=${{ secrets.MAILJET_SECRET_KEY }}" >> .env.prod
+            echo "MAILJET_SENDER_EMAIL=${{ secrets.MAILJET_SENDER_EMAIL }}" >> .env.prod
+            echo "AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}" >> .env.prod
+            echo "AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}" >> .env.prod
+            echo "AWS_REGION=${{ secrets.AWS_REGION }}" >> .env.prod
+            echo "FRONTEND_URL=http://${{ secrets.EC2_HOST_DOMAIN }}" >> .env.prod
+            echo "DOCKERHUB_USERNAME=${{ secrets.DOCKERHUB_USERNAME }}" >> .env.prod
+            echo "REACT_APP_API_BASE_URL=http://${{ secrets.EC2_HOST_DOMAIN }}:8080" >> .env.prod
+
+            # For debugging
+            cat .env.prod
+
+        
+            docker pull ${{ secrets.DOCKERHUB_USERNAME }}/booktable-backend:latest
+            docker pull ${{ secrets.DOCKERHUB_USERNAME }}/booktable-frontend:latest
+
+            docker compose -f docker-compose.prod.yml down
+            docker compose -f docker-compose.prod.yml up -d --remove-orphans
+      

@@ -1,32 +1,45 @@
-import React, {useMemo, useState} from 'react'; // Import useState
-import {AppBar, Avatar, Box, Button, ListItemIcon, Menu, MenuItem, Stack, Toolbar, Typography} from '@mui/material';
-import {Link as RouterLink, useNavigate} from 'react-router-dom';
-import {useDispatch, useSelector} from 'react-redux';
-import {logout} from '../../redux/slices/authSlice';
-import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
-import LocationSearch from './LocationSearch';
-import {setLocation} from '../../redux/slices/searchSlice';
+import React, { useState, useEffect } from 'react'; // Added useEffect
+import {
+  AppBar, Toolbar, Typography, Button, Stack, Avatar,
+  Menu, MenuItem, ListItemIcon, TextField, InputAdornment
+} from '@mui/material';
+import { Link as RouterLink, useNavigate } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
+import { logout } from '../../redux/slices/authSlice';
+import { setCity, setZip, setState } from '../../redux/slices/searchSlice';
 import StyledTooltip from '../common/StyledTooltip';
 // Import Icons for Menu Items (Optional but good UX)
+import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
+import LocationCityIcon from '@mui/icons-material/LocationCity';
+import PinDropIcon from '@mui/icons-material/PinDrop';
+import PublicIcon from '@mui/icons-material/Public'; // Icon for State
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import EventNoteIcon from '@mui/icons-material/EventNote';
 import LogoutIcon from '@mui/icons-material/Logout';
+import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings'; // For Admin specific links
+import DashboardIcon from '@mui/icons-material/Dashboard'; // For Manager Dashboard
 
 const Header = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const {token, email, role} = useSelector((state) => state.auth);
-  const location = useSelector((state) => state.search.location);
+  const { token, email, role } = useSelector((state) => state.auth);
+  const cityFromStore = useSelector((state) => state.search.city);
+  const zipFromStore = useSelector((state) => state.search.zip);
+  const stateFromStore = useSelector((state) => state.search.state);
 
   const [anchorEl, setAnchorEl] = useState(null);
   const isMenuOpen = Boolean(anchorEl);
 
-  const featuredCities = useMemo(() => [
-    {name: 'New York, NY', featured: true},
-    {name: 'Los Angeles, CA', featured: true},
-    {name: 'San Francisco, CA', featured: true},
-    {name: 'Chicago, IL', featured: true},
-  ], []);
+  const [headerCity, setHeaderCity] = useState(cityFromStore || '');
+  const [headerZip, setHeaderZip] = useState(zipFromStore || '');
+  const [headerState, setHeaderState] = useState(stateFromStore || '');
+
+  useEffect(() => {
+    setHeaderCity(cityFromStore || '');
+    setHeaderZip(zipFromStore || '');
+    setHeaderState(stateFromStore || '');
+  }, [cityFromStore, zipFromStore, stateFromStore]);
+
 
   const handleMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
@@ -47,17 +60,28 @@ const Header = () => {
     handleMenuClose();
   };
 
+  const handleCityBlur = () => {
+    dispatch(setCity(headerCity));
+  };
+
+  const handleZipBlur = () => {
+    dispatch(setZip(headerZip));
+  };
+
+  const handleStateBlur = () => {
+    dispatch(setState(headerState));
+  };
 
   return (
-    <AppBar position="static" sx={{bgcolor: '#0A1427'}}>
+    <AppBar position="static" sx={{ bgcolor: '#0A1427' }}>
       <Toolbar
         sx={{
-          flexDirection: {xs: 'column', sm: 'row'},
+          flexDirection: { xs: 'column', sm: 'row' },
           alignItems: 'center',
           justifyContent: 'space-between',
           px: 2,
           py: 1,
-          gap: {xs: 1, sm: 0}
+          gap: { xs: 1, sm: 2 }
         }}
       >
         {/* Left: Logo */}
@@ -71,7 +95,7 @@ const Header = () => {
             fontWeight: 'bold',
             fontSize: '1.5rem',
             width: '100%',
-            textAlign: {xs: 'center', sm: 'left'}
+            textAlign: { xs: 'center', sm: 'left' }
           }}
         >
           BookTable
@@ -79,19 +103,91 @@ const Header = () => {
 
         {/* Right: Location + Auth */}
         <Stack
-          direction={{xs: 'column', sm: 'row'}}
-          spacing={1}
+          direction={{ xs: 'column', sm: 'row' }}
+          spacing={1.5}
           alignItems="center"
-          sx={{width: '100%', justifyContent: {sm: 'flex-end'}}}
+          sx={{ width: '100%', justifyContent: { sm: 'flex-end' } }}
         >
-          <Box
-            sx={{width: {xs: '100%', sm: 'auto'}}}>
-            <LocationSearch
-              value={location}
-              onChange={(value) => dispatch(setLocation(value))}
-              featuredCities={featuredCities}
-            />
-          </Box>
+          <TextField
+            variant="outlined"
+            size="small"
+            placeholder="City"
+            value={headerCity}
+            onChange={(e) => setHeaderCity(e.target.value)}
+            onBlur={handleCityBlur}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <LocationCityIcon sx={{ color: 'grey.500' }} />
+                </InputAdornment>
+              ),
+            }}
+            sx={{
+              minWidth: 150,
+              backgroundColor: 'rgba(255, 255, 255, 0.1)',
+              borderRadius: 1,
+              '& .MuiOutlinedInput-root': {
+                '& fieldset': { borderColor: 'rgba(255, 255, 255, 0.3)', },
+                '&:hover fieldset': { borderColor: 'rgba(255, 255, 255, 0.5)', },
+                '&.Mui-focused fieldset': { borderColor: '#2DD4BF', },
+              },
+              '& .MuiInputBase-input': { color: 'white', },
+            }}
+          />
+          <TextField
+            variant="outlined"
+            size="small"
+            placeholder="State (e.g., NY)"
+            value={headerState}
+            onChange={(e) => setHeaderState(e.target.value)}
+            onBlur={handleStateBlur}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <PublicIcon sx={{ color: 'grey.500' }} />
+                </InputAdornment>
+              ),
+            }}
+            inputProps={{ maxLength: 2 }}
+            sx={{
+              minWidth: 100,
+              width: 100,
+              backgroundColor: 'rgba(255, 255, 255, 0.1)',
+              borderRadius: 1,
+              '& .MuiOutlinedInput-root': {
+                '& fieldset': { borderColor: 'rgba(255, 255, 255, 0.3)', },
+                '&:hover fieldset': { borderColor: 'rgba(255, 255, 255, 0.5)', },
+                '&.Mui-focused fieldset': { borderColor: '#2DD4BF', },
+              },
+              '& .MuiInputBase-input': { color: 'white', },
+            }}
+          />
+          <TextField
+            variant="outlined"
+            size="small"
+            placeholder="Zip Code"
+            value={headerZip}
+            onChange={(e) => setHeaderZip(e.target.value)}
+            onBlur={handleZipBlur}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <PinDropIcon sx={{ color: 'grey.500' }} />
+                </InputAdornment>
+              ),
+            }}
+            sx={{
+              minWidth: 120,
+              backgroundColor: 'rgba(255, 255, 255, 0.1)',
+              borderRadius: 1,
+              '& .MuiOutlinedInput-root': {
+                '& fieldset': { borderColor: 'rgba(255, 255, 255, 0.3)', },
+                '&:hover fieldset': { borderColor: 'rgba(255, 255, 255, 0.5)', },
+                '&.Mui-focused fieldset': { borderColor: '#2DD4BF', },
+              },
+              '& .MuiInputBase-input': { color: 'white', },
+            }}
+          />
 
           {/* Avatar or Sign In */}
           {!token ? (
@@ -108,37 +204,19 @@ const Header = () => {
                   color: '#fff',
                   borderColor: '#14B8A6'
                 },
-                width: {xs: '100%', sm: 'auto'}
+                width: { xs: '100%', sm: 'auto' }
               }}
             >
-              <PersonOutlineIcon sx={{mr: 1}}/>
+              <PersonOutlineIcon sx={{ mr: 1 }} />
               Sign In
             </Button>
           ) : (
             <>
-              {/* Role-based Dashboard (keep separate from user menu) */}
-              {(role === 'ADMIN' || role === 'RESTAURANT_MANAGER') && (
-                <Button
-                  variant="text"
-                  component={RouterLink}
-                  to={role === 'ADMIN' ? '/admin/dashboard' : '/manager/dashboard'}
-                  sx={{
-                    color: '#2DD4BF',
-                    textTransform: 'none',
-                    width: {xs: '100%', sm: 'auto'},
-                    order: {xs: 1, sm: 0} // Adjust order if needed
-                  }}
-                >
-                  Dashboard
-                </Button>
-              )}
-
               {/* Avatar with Tooltip and Click Handler */}
               <StyledTooltip title={email ?? 'User Menu'}>
-                {/* Add id for accessibility */}
                 <Avatar
                   id="user-avatar-button"
-                  sx={{bgcolor: '#2DD4BF', cursor: 'pointer', order: {xs: 0, sm: 1}}}
+                  sx={{ bgcolor: '#2DD4BF', cursor: 'pointer', order: { xs: 0, sm: 1 } }}
                   onClick={handleMenuOpen}
                   aria-controls={isMenuOpen ? 'user-menu' : undefined}
                   aria-haspopup="true"
@@ -155,9 +233,8 @@ const Header = () => {
                 open={isMenuOpen}
                 onClose={handleMenuClose}
                 MenuListProps={{
-                  'aria-labelledby': 'user-avatar-button', // Referencing the Avatar button
+                  'aria-labelledby': 'user-avatar-button',
                 }}
-                // Position the menu below the avatar
                 anchorOrigin={{
                   vertical: 'bottom',
                   horizontal: 'right',
@@ -169,25 +246,48 @@ const Header = () => {
               >
                 <MenuItem onClick={() => handleNavigate('/profile')}>
                   <ListItemIcon>
-                    <AccountCircleIcon fontSize="small"/>
+                    <AccountCircleIcon fontSize="small" />
                   </ListItemIcon>
                   Profile
                 </MenuItem>
-                <MenuItem onClick={() => handleNavigate('/bookings')}>
-                  <ListItemIcon>
-                    <EventNoteIcon fontSize="small"/>
-                  </ListItemIcon>
-                  My Bookings
-                </MenuItem>
+
+                {/* "My Bookings" for CUSTOMER only */}
+                {role === 'CUSTOMER' && (
+                  <MenuItem onClick={() => handleNavigate('/bookings')}>
+                    <ListItemIcon>
+                      <EventNoteIcon fontSize="small" />
+                    </ListItemIcon>
+                    My Bookings
+                  </MenuItem>
+                )}
+
+                {/* "Restaurant Requests" for ADMIN only */}
+                {role === 'ADMIN' && (
+                  <MenuItem onClick={() => handleNavigate('/admin/dashboard')}>
+                    <ListItemIcon>
+                      <AdminPanelSettingsIcon fontSize="small" />
+                    </ListItemIcon>
+                    Restaurant Requests
+                  </MenuItem>
+                )}
+                
+                {/* "My Dashboard" for RESTAURANT_MANAGER only */}
+                {role === 'RESTAURANT_MANAGER' && (
+                  <MenuItem onClick={() => handleNavigate('/manager/dashboard')}>
+                    <ListItemIcon>
+                      <DashboardIcon fontSize="small" />
+                    </ListItemIcon>
+                    My Dashboard
+                  </MenuItem>
+                )}
+
                 <MenuItem onClick={handleLogoutAndClose}>
                   <ListItemIcon>
-                    <LogoutIcon fontSize="small"/>
+                    <LogoutIcon fontSize="small" />
                   </ListItemIcon>
                   Logout
                 </MenuItem>
               </Menu>
-
-              {/* Removed the separate Logout Button */}
             </>
           )}
         </Stack>

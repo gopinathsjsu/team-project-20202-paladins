@@ -40,6 +40,7 @@ const CreateRestaurantModal = ({open, handleClose}) => {
     longitude: "",
     tableCapacity: 4,
     tableCount: 10,
+    cost: "",
   });
 
   const [loading, setLoading] = useState(false);
@@ -353,6 +354,28 @@ const CreateRestaurantModal = ({open, handleClose}) => {
                   required
                 />
               </Grid>
+
+              {/* Cost */}
+              <Grid item xs={12} md={6}>
+                <FormControl fullWidth>
+                  <InputLabel id="cost-label">Cost</InputLabel>
+                  <Select
+                    labelId="cost-label"
+                    value={formData.cost}
+                    onChange={handleChange}
+                    name="cost"
+                    label="Cost"
+                  >
+                    <MenuItem value=""><em>None</em></MenuItem>
+                    <MenuItem value="1">$</MenuItem>
+                    <MenuItem value="2">$$</MenuItem>
+                    <MenuItem value="3">$$$</MenuItem>
+                    <MenuItem value="4">$$$$</MenuItem>
+                  </Select>
+                  <FormHelperText>Select the cost level</FormHelperText>
+                </FormControl>
+              </Grid>
+
               {/* Image URL */}
               <Grid item xs={12} md={6}>
                 <Button

@@ -11,6 +11,7 @@ import com.booktable.repository.ReviewRepository;
 import org.bson.types.ObjectId;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Async;
@@ -42,34 +43,19 @@ public class RestaurantService {
         this.restaurantTableManager = restaurantTableManager;
     }
 
-    @NotNull
-    private static Restaurant getRestaurant(Optional<Restaurant> restaurantOpt, Optional<RatingStats> statsOpt) {
-        Restaurant restaurant = restaurantOpt.get();
-
-        if (statsOpt.isPresent()) {
-            RatingStats stats = statsOpt.get();
-            restaurant.setAverageRating(stats.getAverageRating());
-            restaurant.setReviewCount(stats.getCount());
-        } else {
-            // No reviews found, reset stats
-            restaurant.setAverageRating(0.0);
-            restaurant.setReviewCount(0);
-        }
-        return restaurant;
-    }
-
     // Get restaurants by managerId
     public List<Restaurant> getRestaurantsByManagerId(String managerId) {
-        return restaurantRepository.findByManagerId(managerId);
+        return restaurantRepository.findByManagerIdAndApprovedTrue(managerId);
     }
 
     public Restaurant getRestaurantById(Object id) {
-        return restaurantRepository.findById(String.valueOf(id)).orElseThrow(() -> new RuntimeException("Restaurant not found"));
+        Restaurant restaurant = restaurantRepository.findById(String.valueOf(id)).orElseThrow(() -> new RuntimeException("Restaurant not found"));
+        return restaurant;
     }
 
     public List<Restaurant> searchRestaurants(String name, String city, String state, String zip, String noOfPeople,
-                                              LocalTime startTime, LocalDate date) {
-        return restaurantRepository.searchRestaurants(
+                                          LocalTime startTime, LocalDate date) {
+        List<Restaurant> results = restaurantRepository.searchRestaurants(
                         city != null ? city : "",
                         state != null ? state : "",
                         zip != null ? zip : "",
@@ -77,7 +63,9 @@ public class RestaurantService {
                         date != null ? date : LocalDate.now(),
                         startTime,
                         name != null ? name : ""
-                ).stream()
+                );
+
+        return results.stream()
                 .filter(restaurant ->
                         restaurant.getOpeningHour().isBefore(startTime.plusMinutes(1)) &&
                                 restaurant.getClosingHour().isAfter(startTime))
@@ -86,7 +74,8 @@ public class RestaurantService {
 
     public List<Restaurant> listRestaurants(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
-        return restaurantRepository.findAll(pageable).getContent();
+        Page<Restaurant> restaurantPage = restaurantRepository.findAllByApprovedTrue(pageable);
+        return restaurantPage.getContent();
     }
 
     public Restaurant saveRestaurant(Restaurant restaurant) {
@@ -113,8 +102,12 @@ public class RestaurantService {
         return restaurantRepository.save(existingRestaurant);
     }
 
-    public void deleteRestaurant(String id) {
-        restaurantRepository.deleteById(id);
+    public boolean deleteRestaurant(String id) {
+        if (restaurantRepository.existsById(id)) {
+            restaurantRepository.deleteById(id);
+            return true;
+        }
+        return false;
     }
 
     @Async
@@ -132,5 +125,29 @@ public class RestaurantService {
         } catch (Exception e) {
             System.err.println("Error updating restaurant rating stats: " + e.getMessage());
         }
+    }
+
+    @NotNull
+    private static Restaurant getRestaurant(Optional<Restaurant> restaurantOpt, Optional<RatingStats> statsOpt) {
+        Restaurant restaurant = restaurantOpt.get();
+
+        if (statsOpt.isPresent()) {
+            RatingStats stats = statsOpt.get();
+            restaurant.setAverageRating(stats.getAverageRating());
+            restaurant.setReviewCount(stats.getCount());
+        } else {
+            // No reviews found, reset stats
+            restaurant.setAverageRating(0.0);
+            restaurant.setReviewCount(0);
+        }
+        return restaurant;
+    }
+
+    @Transactional
+    public Restaurant setRestaurantApprovalStatus(String restaurantId, boolean isApproved) {
+        Restaurant restaurant = restaurantRepository.findById(restaurantId)
+                .orElseThrow(() -> new RuntimeException("Restaurant not found with ID: " + restaurantId));
+        restaurant.setApproved(isApproved);
+        return restaurantRepository.save(restaurant);
     }
 }

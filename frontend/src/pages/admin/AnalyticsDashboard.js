@@ -11,10 +11,22 @@ const AnalyticsDashboard = () => {
   const [viewMode, setViewMode] = useState('daily');
   const [startStr, setStartStr] = useState('');
   const [endStr, setEndStr] = useState('');
+  const [restaurants, setRestaurants] = useState([]);
+  const [selectedRestaurant, setSelectedRestaurant] = useState('all');
+
+  useEffect(() => {
+    API.get('/api/restaurant')
+      .then((res) => {
+        setRestaurants(res.data);
+        if (res.data.length > 0 && selectedRestaurant === '') {
+          setSelectedRestaurant(''); // Ensure "All Restaurants" is selected by default
+        }
+      })
+      .catch((err) => console.error(err));
+  }, [selectedRestaurant]);
 
   useEffect(() => {
     const today = new Date();
-    const restaurantId = "6812ad84ca189206978c56d5";
     let startDate = new Date(today);
     if (viewMode === 'weekly') {
       startDate.setDate(today.getDate() - 6);
@@ -26,7 +38,12 @@ const AnalyticsDashboard = () => {
     setStartStr(startStr);
     setEndStr(endStr);
 
-    API.get(`/api/reservation/?restaurantId=${restaurantId}&startDate=${startStr}&endDate=${endStr}`)
+    let url = `/api/reservation/?startDate=${startStr}&endDate=${endStr}`;
+    if (selectedRestaurant && selectedRestaurant !== 'all') {
+      url += `&restaurantId=${selectedRestaurant}`;
+    }
+
+    API.get(url)
       .then((res) => {
         const grouped = res.data.reduce((acc, booking) => {
           const slot = `${booking.startSlotTime} - ${booking.endSlotTime}`;
@@ -38,7 +55,7 @@ const AnalyticsDashboard = () => {
         setBookingData({labels: chartLabels, values: chartValues});
       })
       .catch((err) => console.error(err));
-  }, [viewMode]);
+  }, [viewMode, selectedRestaurant]);
 
   const chartData = {
     labels: bookingData.labels,
@@ -66,20 +83,31 @@ const AnalyticsDashboard = () => {
 
   return (
     <Container sx={{mt: 4}}>
-      <Typography variant="h4" gutterBottom>
-        Admin Dashboard
+      <Typography variant="h5" gutterBottom>
+        Booking Analytics
       </Typography>
-      <Typography>
-        Welcome, Admin. This is your dashboard.
-      </Typography>
+
+    <Select
+      value={selectedRestaurant || ""}
+      onChange={(e) => setSelectedRestaurant(e.target.value)}
+      sx={{ my: 2, minWidth: 200 }}
+    >
+      <MenuItem value="all">All Restaurants</MenuItem>
+      {restaurants.map((restaurant) => (
+        <MenuItem key={restaurant.id} value={restaurant.id}>
+          {restaurant.name}
+        </MenuItem>
+      ))}
+    </Select>
+
       <Select
         value={viewMode}
         onChange={(e) => setViewMode(e.target.value)}
         sx={{my: 2, minWidth: 120}}
       >
-        <MenuItem value="daily">Daily</MenuItem>
-        <MenuItem value="weekly">Weekly</MenuItem>
-        <MenuItem value="monthly">Monthly</MenuItem>
+        <MenuItem value="daily">Today's</MenuItem>
+        <MenuItem value="weekly">Last Week</MenuItem>
+        <MenuItem value="monthly">Last Month</MenuItem>
       </Select>
       <Typography variant="subtitle1" sx={{mb: 2}}>
         Showing bookings from {startStr} to {endStr}

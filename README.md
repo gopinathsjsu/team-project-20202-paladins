@@ -9,6 +9,8 @@ Team: The Paladins
 - Nishan Paudel
 - Ashish Bhusal
 
+### Live Website http://ec2-54-151-32-141.us-west-1.compute.amazonaws.com/
+
 
 # 🍽️ BookTable - Restaurant Table Reservation System
 
