@@ -40,12 +40,12 @@ const Search = ({ onSearch }) => {
         borderRadius: 2,
         backgroundColor: "#ffffff",
         boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
-        maxWidth: "1000px",
+        maxWidth: "850px",
         mx: "auto",
       }}
     >
       <TextField
-        placeholder="Search restaurants"
+        placeholder="Restaurant Name (Optional)"
         value={restaurant}
         onChange={(e) => setRestaurant(e.target.value)}
         InputProps={{
@@ -55,9 +55,8 @@ const Search = ({ onSearch }) => {
             </InputAdornment>
           ),
         }}
-        sx={{ flex: 2, minWidth: 150 }}
+        sx={{ flexGrow: 1, minWidth: 150 }}
       />
-
 
       <DateTimePicker
         label="When"
@@ -81,13 +80,12 @@ const Search = ({ onSearch }) => {
               ),
             },
             sx: {
-              flex: 1,
+              flex: 1.5,
               minWidth: { xs: 140, sm: 200 },
             },
           },
         }}
       />
-
 
       <TextField
         select
@@ -100,7 +98,7 @@ const Search = ({ onSearch }) => {
             </InputAdornment>
           ),
         }}
-        sx={{ flex: 1, minWidth: 120 }}
+        sx={{ flex: 0.5, minWidth: 120 }}
       >
         {[...Array(20)].map((_, i) => (
           <MenuItem key={i + 1} value={i + 1}>
