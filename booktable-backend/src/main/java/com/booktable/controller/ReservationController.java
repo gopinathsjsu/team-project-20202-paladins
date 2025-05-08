@@ -153,21 +153,24 @@ public class ReservationController {
         List<BookingDto> bookingDtos = new ArrayList<>();
 
         for (Reservation res : reservations) {
-            Table table = tableService.getTableById(res.getTableId());
-            Restaurant restaurant = restaurantService.getRestaurantById(res.getRestaurantId());
+            try {
+                Table table = tableService.getTableById(res.getTableId());
+                Restaurant restaurant = restaurantService.getRestaurantById(res.getRestaurantId());
 
-            BookingDto dto = new BookingDto(
-                    res.getRestaurantId(),
-                    res.getTableId(),
-                    res.getStartSlotTime(),
-                    res.getEndSlotTime(),
-                    res.getDate()
-            );
-            dto.setReservationId(res.getId());
-            if (table != null) dto.setTableNumber(table.getTableNumber());
-            if (restaurant != null) dto.setRestaurantName(restaurant.getName());
-            dto.setStatus(res.getStatus());
-            bookingDtos.add(dto);
+                BookingDto dto = new BookingDto(
+                        res.getRestaurantId(),
+                        res.getTableId(),
+                        res.getStartSlotTime(),
+                        res.getEndSlotTime(),
+                        res.getDate()
+                );
+                dto.setReservationId(res.getId());
+                if (table != null) dto.setTableNumber(table.getTableNumber());
+                if (restaurant != null) dto.setRestaurantName(restaurant.getName());
+                dto.setStatus(res.getStatus());
+                bookingDtos.add(dto);
+            } catch (Exception e) {
+            }
         }
         return bookingDtos;
     }
