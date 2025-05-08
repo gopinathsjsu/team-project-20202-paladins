@@ -102,3 +102,4 @@ administrative functionalities.
   - Development of key user-facing sections, including the restaurant listing pages, detailed restaurant views,
  
 - **WireFrames**
+  - Built wireframes for the application.
