@@ -120,7 +120,7 @@ public class RestaurantController {
     @GetMapping
     public List<Restaurant> listRestaurants(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
+            @RequestParam(defaultValue = "50") int size) {
         return restaurantService.listRestaurants(page, size);
     }
 

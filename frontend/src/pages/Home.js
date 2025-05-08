@@ -26,10 +26,13 @@ import { useSelector as useReduxSelector, useSelector as useAuthSelector } from 
 const Home = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { restaurants, loading: reduxLoading, error: reduxError } = useReduxSelector(
-      (state) => state.restaurants
-  );
+  const { 
+    restaurants: allRestaurantsFromStore,
+    loading: reduxLoading,
+    error: reduxError,
+  } = useReduxSelector((state) => state.restaurants);
   const { role } = useAuthSelector((state) => state.auth);
+  const { city: cityFromStore, zip: zipFromStore, state: stateFromStore } = useReduxSelector((state) => state.search);
 
   const [searchLoading, setSearchLoading] = useState(false);
   const [searchError, setSearchError] = useState(null);
@@ -41,27 +44,41 @@ const Home = () => {
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [snackbarSeverity, setSnackbarSeverity] = useState("success");
 
-  // State for "Load More" functionality
   const [visibleRestaurantsCount, setVisibleRestaurantsCount] = useState(RESTAURANTS_TO_DISPLAY_HOME_PAGE);
 
   useEffect(() => {
-    if (reduxLoading === "idle" && restaurants.length === 0) { // Fetch only if not already loaded or loading
+    if (reduxLoading === "idle" && (!allRestaurantsFromStore || allRestaurantsFromStore.length === 0)) {
       dispatch(fetchRestaurants());
     }
-  }, [dispatch, reduxLoading, restaurants.length]);
+  }, [dispatch, reduxLoading, allRestaurantsFromStore]);
 
-  const location = useReduxSelector((state) => state.search.location);
-  const handleSearch = async (params) => {
+  useEffect(() => {
+    setVisibleRestaurantsCount(RESTAURANTS_TO_DISPLAY_HOME_PAGE);
+  }, [allRestaurantsFromStore]);
+
+  const approvedRestaurants = React.useMemo(() => {
+    if (!Array.isArray(allRestaurantsFromStore)) return [];
+    if (role === 'ADMIN') {
+        return allRestaurantsFromStore;
+    }
+    return allRestaurantsFromStore.filter(restaurant => restaurant.approved === true);
+  }, [allRestaurantsFromStore, role]);
+
+  const handleSearch = async (paramsFromSearchBar) => {
     setSearchLoading(true);
     setSearchError(null);
-    if (location) {
-      const [city, stateCode] = location.split(", ").map((loc) => loc.trim());
-      params.city = city;
-      params.state = stateCode;
-    }
+
+    const finalSearchParams = { ...paramsFromSearchBar }; 
+
+    // Read city, zip, AND state from Redux store and add to params
+    if (cityFromStore) finalSearchParams.city = cityFromStore;
+    if (stateFromStore) finalSearchParams.state = stateFromStore;
+    if (zipFromStore) finalSearchParams.zip = zipFromStore;
+
     try {
-      const results = await searchRestaurant(params);
-      navigate("/restaurants", { state: { searchResults: results, searchParams: params } });
+      console.log("Searching with combined params:", finalSearchParams); 
+      const results = await searchRestaurant(finalSearchParams);
+      navigate("/restaurants", { state: { searchResults: results, searchParams: finalSearchParams } });
     } catch (err) {
       console.error("Search failed:", err);
       setSearchError("Could not load search results.");
@@ -84,7 +101,9 @@ const Home = () => {
       setSnackbarMessage(`Restaurant "${restaurantToDelete.name}" deleted successfully!`);
       setSnackbarSeverity("success");
       dispatch(fetchRestaurants());
-      setVisibleRestaurantsCount(RESTAURANTS_TO_DISPLAY_HOME_PAGE);
+      
+     
+
     } catch (error) {
       console.error('Failed to delete restaurant:', error);
       const errorMessage = error.response?.data?.message || error.message || 'Failed to delete restaurant.';
@@ -110,8 +129,10 @@ const Home = () => {
   };
 
   const handleLoadMore = () => {
-    setVisibleRestaurantsCount(prevCount => prevCount + (RESTAURANTS_INCREMENT_COUNT || 4));
+    setVisibleRestaurantsCount(prevCount => Math.min(prevCount + (RESTAURANTS_INCREMENT_COUNT || 4), approvedRestaurants.length));
   };
+
+  const initialLoading = reduxLoading === 'pending' && (!allRestaurantsFromStore || allRestaurantsFromStore.length === 0);
 
   return (
       <Box sx={{ minHeight: "100vh", bgcolor: "#f8f9fa" }}>
@@ -151,11 +172,11 @@ const Home = () => {
             Available Restaurants
           </Typography>
 
-          {reduxLoading === "pending" && visibleRestaurantsCount === RESTAURANTS_TO_DISPLAY_HOME_PAGE ? (
+          {initialLoading ? (
               <Box sx={{ display: "flex", justifyContent: "center", mt: 4 }}>
                 <CircularProgress />
               </Box>
-          ) : reduxLoading === "failed" ? (
+          ) : reduxLoading === 'failed' && (!allRestaurantsFromStore || allRestaurantsFromStore.length === 0) ? (
               <Alert severity="error" sx={{ mt: 4, textAlign: "center" }}>
                 {reduxError}
               </Alert>
@@ -171,35 +192,31 @@ const Home = () => {
                     gap: "16px",
                   }}
                 >
-                   {Array.isArray(restaurants) && restaurants.length > 0 ? (
-                    <>
-                      {restaurants.slice(0, visibleRestaurantsCount).map((restaurant) => (
+                   {Array.isArray(approvedRestaurants) && approvedRestaurants.length > 0 ? (
+                    approvedRestaurants.slice(0, visibleRestaurantsCount).map((restaurant) => (
                           <Grid item key={restaurant.id} xs={12} sm={6} md={4} lg={3}>
                             <RestaurantCard
                                 restaurant={restaurant}
                                 isAdmin={role === 'ADMIN'}
-                                // Pass the function to initiate delete dialog
                                 onGenericDeleteClick={() => initiateDeleteRestaurant(restaurant.id, restaurant.name)} 
                                 onCardClick={() => navigate(`/restaurants/${restaurant.id}`)}
-                                userRole={role} // Pass role for other card logic
+                                userRole={role}
                             />
                           </Grid>
-                      ))}
-                    </>
-                  ) : (
+                      ))
+                  ) : reduxLoading !== 'pending' && (
                     <Typography textAlign="center" sx={{ mt: 4 }}>
-                      No restaurants to display.
+                      No approved restaurants to display.
                     </Typography>
                   )}
                 </Grid>
 
-                {Array.isArray(restaurants) && visibleRestaurantsCount < restaurants.length && (
+                {Array.isArray(approvedRestaurants) && visibleRestaurantsCount < approvedRestaurants.length && (
                   <Box sx={{ textAlign: "center", mt: 4 }}>
                     <Button
                         variant="contained"
                         color="primary"
                         onClick={handleLoadMore}
-                        disabled={reduxLoading === "pending"}
                         sx={{
                           borderRadius: "30px",
                           px: 4,
@@ -207,7 +224,6 @@ const Home = () => {
                           textTransform: "none",
                         }}
                     >
-                      {reduxLoading === "pending" && visibleRestaurantsCount > RESTAURANTS_TO_DISPLAY_HOME_PAGE ? <CircularProgress size={24} sx={{ color: 'white', mr: 1}} /> : null}
                       Load More Restaurants
                     </Button>
                   </Box>
@@ -243,6 +259,7 @@ const Home = () => {
         <Snackbar
           open={snackbarOpen}
           autoHideDuration={6000} // Hide after 6 seconds
+
           onClose={handleCloseSnackbar}
           anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
         >
