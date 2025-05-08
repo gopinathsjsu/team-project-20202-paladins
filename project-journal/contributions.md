@@ -90,4 +90,15 @@ administrative functionalities.
 ### 🚀 Key Contributions
 
 - **Search Functionality**
-  - Implemented a comprehensive **search feature** allowing users to find restaurants based on
+  - Implemented a comprehensive search feature allowing users to find restaurants based on various criteria such as name, location (city, state, zip), cuisine type, and availability.
+  - Optimized search queries on the backend and refined frontend display logic for performance and enhanced user experience.
+
+- **Email Notification System**
+  - Designed and integrated an email notification system (e.g., using Mailjet or similar services) for critical user interactions.
+  - Developed email templates and backend triggers for booking confirmations, cancellations, account verifications, and password resets.
+
+- **Admin Restaurant Management**
+  - Developed APIs and UI components enabling restaurant admins to manage, approve, and delete restaurants.
+  - Development of key user-facing sections, including the restaurant listing pages, detailed restaurant views,
+ 
+- **WireFranes**
