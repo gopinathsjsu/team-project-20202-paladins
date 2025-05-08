@@ -72,6 +72,7 @@ jobs:
             echo "AWS_REGION=${{ secrets.AWS_REGION }}" >> .env.prod
             echo "FRONTEND_URL=http://${{ secrets.EC2_HOST }}" >> .env.prod
             echo "DOCKERHUB_USERNAME=${{ secrets.DOCKERHUB_USERNAME }}" >> .env.prod
+            echo "REACT_APP_API_BASE_URL=http://${{ secrets.EC2_HOST }}:8080" >> .env.prod
 
             # For debugging
             cat .env.prod
