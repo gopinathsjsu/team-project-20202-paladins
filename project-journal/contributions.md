@@ -11,23 +11,24 @@ including approval workflows, CI/CD, and cloud automation.
 
 ### 🚀 Key Contributions
 
-- **Authentication & Authorization**
+**Authentication & Authorization**
   - Implemented end-to-end **login/signup** functionality using **JWT** and **Google OAuth2**.
   - Enabled **role-based access control** across both frontend and backend (Customer, Manager, Admin).
   - Ensured secure token handling, protected routes, and proper redirect behavior for authenticated users.
 
-- **Admin & Manager Features**
+**Admin & Manager Features**
   - Designed and implemented **Admin APIs** for managing restaurants, including **approval and disapproval workflows** for
     restaurant submissions or changes.
   - Developed **Manager Dashboard** with integrated frontend views and backend support for creating, updating, and
     managing restaurant status (e.g., pending approval, approved, rejected).
 
-- **DevOps & Deployment Automation**
+**DevOps & Deployment Automation**
 - **Dockerized** both frontend (React + Nginx) and backend (Spring Boot).
 - Built a **CI/CD pipeline** using **GitHub Actions** to:
   - Build and push Docker images to Docker Hub.
   - Inject secrets dynamically using GitHub Secrets.
   - SSH into EC2 and deploy using Docker Compose.
+  - Set up MongoDB Atlas and prepare seed scripts
 
 - **Infrastructure Provisioning**
   - Used **Terraform** to provision EC2 instances and set up deployment-ready infrastructure.
