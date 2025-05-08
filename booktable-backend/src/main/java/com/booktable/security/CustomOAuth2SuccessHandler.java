@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 import jakarta.servlet.http.*;
 import java.io.IOException;
 import java.util.Collections;
+import org.springframework.beans.factory.annotation.Value;
 
 import static com.booktable.model.AuthProvider.GOOGLE;
 
@@ -22,6 +23,9 @@ public class CustomOAuth2SuccessHandler implements AuthenticationSuccessHandler 
 
     private final UserRepository userRepository;
     private final JwtUtil jwtUtil;
+
+    @Value("${frontend.url}")
+    private String frontendUrl;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request,
@@ -48,6 +52,7 @@ public class CustomOAuth2SuccessHandler implements AuthenticationSuccessHandler 
         String token = jwtUtil.generateToken(user.getEmail(), "CUSTOMER");
 
         // Redirect to frontend with token
-        response.sendRedirect("http://localhost:3000/oauth2/success?token=" + token);
+        response.sendRedirect(frontendUrl + "/oauth2/success?token=" + token);
+
     }
 }
