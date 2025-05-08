@@ -10,23 +10,37 @@ import {
   Button,
   CircularProgress,
   Alert,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Snackbar,
 } from "@mui/material";
 import RestaurantCard from "../components/RestaurantCard";
 import Search from "../components/Search";
 import { Link } from "react-router-dom";
 import { RESTAURANTS_TO_DISPLAY_HOME_PAGE } from "../constants";
-import { searchRestaurant } from "../api/restaurant";
-import { useSelector as useReduxSelector } from "react-redux";
+import { searchRestaurant, deleteRestaurantByIdApi } from "../api/restaurant";
+import { useSelector as useReduxSelector, useSelector as useAuthSelector } from "react-redux";
 
 const Home = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { restaurants, loading: reduxLoading, error: reduxError } = useSelector(
+  const { restaurants, loading: reduxLoading, error: reduxError } = useReduxSelector(
       (state) => state.restaurants
   );
+  const { role } = useAuthSelector((state) => state.auth);
 
   const [searchLoading, setSearchLoading] = useState(false);
   const [searchError, setSearchError] = useState(null);
+
+  // State for dialogs and snackbar
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [restaurantToDelete, setRestaurantToDelete] = useState(null);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [snackbarSeverity, setSnackbarSeverity] = useState("success");
 
   useEffect(() => {
     if (reduxLoading === "idle") {
@@ -52,6 +66,44 @@ const Home = () => {
     } finally {
       setSearchLoading(false);
     }
+  };
+
+  // Renamed from handleDeleteRestaurant to initiate the confirm dialog
+  const initiateDeleteRestaurant = (restaurantId, restaurantName) => {
+    setRestaurantToDelete({ id: restaurantId, name: restaurantName });
+    setConfirmOpen(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!restaurantToDelete) return;
+
+    try {
+      await deleteRestaurantByIdApi(restaurantToDelete.id);
+      setSnackbarMessage(`Restaurant "${restaurantToDelete.name}" deleted successfully!`);
+      setSnackbarSeverity("success");
+      dispatch(fetchRestaurants());
+    } catch (error) {
+      console.error('Failed to delete restaurant:', error);
+      const errorMessage = error.response?.data?.message || error.message || 'Failed to delete restaurant.';
+      setSnackbarMessage(errorMessage);
+      setSnackbarSeverity("error");
+    } finally {
+      setConfirmOpen(false);
+      setSnackbarOpen(true);
+      setRestaurantToDelete(null);
+    }
+  };
+
+  const handleCloseConfirmDialog = () => {
+    setConfirmOpen(false);
+    setRestaurantToDelete(null);
+  };
+
+  const handleCloseSnackbar = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setSnackbarOpen(false);
   };
 
   return (
@@ -118,7 +170,11 @@ const Home = () => {
                           <Grid item key={restaurant.id} xs={12} sm={6} md={4} lg={3}>
                             <RestaurantCard
                                 restaurant={restaurant}
-                                onClick={() => navigate(`/restaurants/${restaurant.id}`)}
+                                isAdmin={role === 'ADMIN'}
+                                // Pass the function to initiate delete dialog
+                                onGenericDeleteClick={() => initiateDeleteRestaurant(restaurant.id, restaurant.name)} 
+                                onCardClick={() => navigate(`/restaurants/${restaurant.id}`)}
+                                userRole={role} // Pass role for other card logic
                             />
                           </Grid>
                       ))}
@@ -149,6 +205,41 @@ const Home = () => {
               </>
           )}
         </Container>
+
+        {/* Confirmation Dialog */}
+        <Dialog
+          open={confirmOpen}
+          onClose={handleCloseConfirmDialog}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogTitle id="alert-dialog-title">Confirm Deletion</DialogTitle>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+              Are you sure you want to delete the restaurant "{restaurantToDelete?.name}"? This action cannot be undone.
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleCloseConfirmDialog} color="primary">
+              Cancel
+            </Button>
+            <Button onClick={handleConfirmDelete} color="error" autoFocus>
+              Delete
+            </Button>
+          </DialogActions>
+        </Dialog>
+
+        {/* Status Snackbar */}
+        <Snackbar
+          open={snackbarOpen}
+          autoHideDuration={6000} // Hide after 6 seconds
+          onClose={handleCloseSnackbar}
+          anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+        >
+          <Alert onClose={handleCloseSnackbar} severity={snackbarSeverity} sx={{ width: '100%' }}>
+            {snackbarMessage}
+          </Alert>
+        </Snackbar>
       </Box>
   );
 };
