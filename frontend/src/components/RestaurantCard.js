@@ -1,16 +1,16 @@
 import React from "react";
-import { Card, CardContent, Typography, Button, Box, Rating, Stack } from "@mui/material";
+import { Card, CardContent, Typography, Button, Box, Rating, Stack, CardActionArea } from "@mui/material";
 import { Link } from "react-router-dom";
 
 const RestaurantCard = ({ restaurant, userRole, approveRestaurant, deleteRestaurant, onEdit, tableSlots,noOfTimesBookedToday, date,partySize }) => {
 
   const getEndTime = (startTime) => {
     const [hours, minutes, seconds] = startTime.split(":").map(Number);
-    const date = new Date();
-    date.setHours(hours);
-    date.setMinutes(minutes + 60);
-    date.setSeconds(seconds || 0);
-    return date.toTimeString().split(" ")[0];
+    const dateInstance = new Date();
+    dateInstance.setHours(hours);
+    dateInstance.setMinutes(minutes + 60);
+    dateInstance.setSeconds(seconds || 0);
+    return dateInstance.toTimeString().split(" ")[0];
   };
 
   return (
@@ -24,9 +24,20 @@ const RestaurantCard = ({ restaurant, userRole, approveRestaurant, deleteRestaur
         overflow: "hidden",
         "&:hover": {
           boxShadow: 10,
-          transform: "scale(1.05)",
+          transform: "scale(1.02)",
           transition: "all 0.3s ease-in-out",
         },
+      }}
+    >
+      <CardActionArea
+      component={Link}
+      to={`/restaurants/${restaurant.id}`}
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        flexGrow: 1,
+        textDecoration: "none",
+        color: "inherit",
       }}
     >
       {/* Fixed size image container */}
@@ -74,6 +85,7 @@ const RestaurantCard = ({ restaurant, userRole, approveRestaurant, deleteRestaur
           Booked Today: {noOfTimesBookedToday || 0} times
         </Typography>
       </CardContent>
+      </CardActionArea>
 
       {/* Dynamic Button Section */}
       <Box sx={{ padding: "16px", display: "flex", justifyContent: "center", gap: 1 }}>
