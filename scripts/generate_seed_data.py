@@ -42,6 +42,15 @@ for role in roles:
 # Opening hours group
 opening_hours = [time(10, 0), time(9, 0), time(8, 0)]
 
+image_urls = [
+    "https://images.unsplash.com/photo-1595917248955-a96ace4780b6?q=80&w=2938&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    "https://images.unsplash.com/photo-1687068328974-13261a846e58?q=80&w=3087&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    "https://images.unsplash.com/photo-1533777857889-4be7c70b33f7?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    "https://images.unsplash.com/photo-1466978913421-dad2ebd01d17?q=80&w=2874&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    "https://plus.unsplash.com/premium_photo-1681841594224-ad729a249113?q=80&w=2854&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    "https://plus.unsplash.com/premium_photo-1673108852141-e8c3c22a4a22?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MjF8fHJlc3RhdXJhbnR8ZW58MHx8MHx8fDA%3D"
+]
+
 # Restaurants & Tables
 restaurants = []
 tables_by_restaurant = {}
@@ -61,7 +70,7 @@ for idx in range(30):
         "addressZip": fake.zipcode(),
         "phone": fake.phone_number(),
         "email": fake.company_email(),
-        "imageUrl": fake.image_url(),
+        "imageUrl": random.choice(image_urls),
         "managerId": str(manager["_id"]),
         "coordinatesLatitude": float(fake.latitude()),
         "coordinatesLongitude": float(fake.longitude()),
