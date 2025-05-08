@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react'; // Import useState
+import React, { useState } from 'react'; // Import useState
 import {
   AppBar, Toolbar, Typography, Button, Stack, Avatar, Box,
   Menu, MenuItem, ListItemIcon
@@ -25,13 +25,6 @@ const Header = () => {
 
   const [anchorEl, setAnchorEl] = useState(null);
   const isMenuOpen = Boolean(anchorEl);
-
-  const featuredCities = useMemo(() => [
-    { name: 'New York, NY', featured: true },
-    { name: 'Los Angeles, CA', featured: true },
-    { name: 'San Francisco, CA', featured: true },
-    { name: 'Chicago, IL', featured: true },
-  ], []);
 
   const handleMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
@@ -94,7 +87,6 @@ const Header = () => {
             <LocationSearch
               value={location}
               onChange={(value) => dispatch(setLocation(value))}
-              featuredCities={featuredCities}
             />
           </Box>
 

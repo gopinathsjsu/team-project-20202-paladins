@@ -1,61 +1,91 @@
-import React, { useEffect, useCallback, useRef } from 'react'; // Added useRef
+// src/components/layout/LocationSearch.js
+import React, { useEffect, useCallback, useRef } from 'react';
 import { TextField, InputAdornment } from '@mui/material';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import { usePlacesWidget } from 'react-google-autocomplete';
 
-const GOOGLE_PLACES_API_KEY = process.env.REACT_APP_GOOGLE_PLACES_API_KEY;
-console.log('GOOGLE_PLACES_API_KEY', "AIzaSyDHvAT1cbsnyZKcSktuF-coSbs0Wkzo68Y");
+const GOOGLE_PLACES_API_KEY = "AIzaSyDHvAT1cbsnyZKcSktuF-coSbs0Wkzo68Y";
 
 const LocationSearch = ({ value, onChange }) => {
 
+  const extractCityState = (place) => {
+    let city = '';
+    let state = '';
+    if (!place || !place.address_components) {
+      return { city, state };
+    }
+    for (const component of place.address_components) {
+      const types = component.types;
+      if (types.includes('locality')) {
+        city = component.long_name;
+      }
+
+      if (types.includes('administrative_area_level_1')) {
+        state = component.short_name;
+      }
+      if (city && state) break;
+    }
+
+    if (!city && state) {
+      for (const component of place.address_components) {
+        if (component.types.includes('administrative_area_level_2') && !city) {
+          city = component.long_name;
+        }
+        if (component.types.includes('sublocality') && !city){
+          city = component.long_name;
+        }
+      }
+    }
+
+    if (!city && state && place.name && !place.name.includes(state)) {
+      city = place.name;
+    }
+
+    return { city, state };
+  };
+
+
+  // This callback is triggered by the hook when a user selects a place
   const handlePlaceSelected = useCallback((place) => {
-    const locationString = place?.formatted_address || '';
-    console.log('Place Selected -> Updating State:', locationString);
+    console.log('Raw Place Selected:', place);
+    const { city, state } = extractCityState(place);
+    let locationString = '';
+
+    if (city && state) {
+      locationString = `${city}, ${state}`;
+    } else {
+      locationString = place?.formatted_address || place?.name || '';
+      console.warn("Could not extract 'City, ST', using fallback:", locationString);
+    }
+
+    console.log('Place Selected -> Calling onChange with:', locationString);
     onChange(locationString);
   }, [onChange]);
 
+  // Initialize the Google Places Widget hook
   const { ref: placesRef } = usePlacesWidget({
     apiKey: GOOGLE_PLACES_API_KEY,
     onPlaceSelected: handlePlaceSelected,
     options: {
-      types: ["(regions)"], // Use (regions) for City, State level usually
+      types: ["(regions)"],
       componentRestrictions: { country: "us" },
-      fields: ["formatted_address", "address_components", "geometry", "name"],
+      fields: ["formatted_address", "address_components", "name", "geometry"],
     },
-    // If using libraries that conflict, you might need this, but try without first
-    // dangerously_use_strict_mode: true
   });
 
-  // Use a separate ref to potentially manage clearing if needed
-  // const inputRef = useRef(); // You already have placesRef from the hook
-
-  // Effect to clear the input visually if the external value prop is cleared
   useEffect(() => {
-    // Check if the external value is empty and the ref is attached
-    if (value === '' && placesRef.current && placesRef.current.value !== '') {
-      console.log("External value cleared, clearing input ref.");
-      placesRef.current.value = ''; // Directly clear the input via ref
+    if (placesRef.current && value === '' && placesRef.current.value !== '') {
+      placesRef.current.value = '';
     }
-    // DO NOT set placesRef.current.value = value here; let defaultValue handle initial
   }, [value, placesRef]);
 
 
   return (
     <TextField
-      // --- Use defaultValue for initial value ---
-      // This sets the value when the component first renders based on Redux state,
-      // but then allows the Google widget (via the ref) to control it without
-      // React constantly overriding it via the `value` prop.
-      defaultValue={value || ''} // Set initial value
+      defaultValue={value || ''}
 
-      // --- REMOVE value and onChange ---
-      // value={value || ''} // REMOVED - Conflicts with ref control
-      // onChange={(e) => onChange(e.target.value)} // REMOVED - State update only happens on selection
+      inputRef={placesRef}
 
-      // --- Attach Google Places Hook Ref ---
-      inputRef={placesRef} // Attach the ref here
-
-      // --- Styling and Appearance (Keep as is) ---
       placeholder="Enter city, state or ZIP"
       fullWidth
       variant="outlined"
