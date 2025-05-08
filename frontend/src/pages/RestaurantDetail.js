@@ -7,7 +7,6 @@ import {
   createReview,
   updateReview,
   deleteReview,
-  resetMutationStatus,
   clearReviews,
 } from '../redux/slices/reviewSlice';
 import {
@@ -41,7 +40,6 @@ function TabPanel(props) {
   );
 }
 
-// Custom Alert for Snackbar
 const SnackbarAlert = React.forwardRef(function SnackbarAlert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
@@ -63,7 +61,6 @@ const RestaurantDetail = () => {
     loadingState: reviewsLoading,
     error: reviewsError,
     mutationStatus,
-    mutationError,
   } = useSelector((state) => state.reviews);
 
   const { isAuthenticated, id: currentUserId, role: currentUserRole } = useSelector((state) => state.auth);
@@ -71,7 +68,7 @@ const RestaurantDetail = () => {
   const [currentTab, setCurrentTab] = React.useState(0);
   const [newReviewRating, setNewReviewRating] = useState(0);
   const [newReviewComment, setNewReviewComment] = useState('');
-  const [editingReview, setEditingReview] = useState(null); // { id, rating, comment }
+  const [editingReview, setEditingReview] = useState(null);
   const [showConfirmDeleteDialog, setShowConfirmDeleteDialog] = useState(false);
   const [reviewToDeleteId, setReviewToDeleteId] = useState(null);
 
@@ -94,7 +91,7 @@ const RestaurantDetail = () => {
   }, [dispatch, restaurantId]);
 
   useEffect(() => {
-    if (restaurantId && currentTab === 1) { // Only fetch if Reviews tab is active
+    if (restaurantId && currentTab === 1) {
       const params = { page: pagination.currentPage, size: pagination.size };
       dispatch(fetchReviewsForRestaurant({ restaurantId, params }));
     }
@@ -120,12 +117,12 @@ const RestaurantDetail = () => {
       return;
     }
     dispatch(createReview({ restaurantId, rating: newReviewRating, comment: newReviewComment }))
-      .unwrap() // unwrap to catch promise rejection here for specific component logic
+      .unwrap()
       .then(() => {
         setNewReviewRating(0);
         setNewReviewComment('');
-        // Re-fetch reviews to see the new one (and ensure correct pagination/sorting)
-        const params = { page: 0, size: pagination.size }; // Go to first page to see newest
+
+        const params = { page: 0, size: pagination.size };
         dispatch(fetchReviewsForRestaurant({ restaurantId, params }));
       })
       .catch((err) => { /* Snackbar will show error from useEffect above */ });
@@ -133,7 +130,6 @@ const RestaurantDetail = () => {
 
   const handleEditReview = (review) => {
     setEditingReview({ id: review.id, rating: review.rating, comment: review.comment, restaurantId: review.restaurantId });
-    // Scroll to edit form or open modal (for simplicity, inline edit below)
   };
 
   const handleUpdateReviewSubmit = (e) => {
@@ -153,9 +149,6 @@ const RestaurantDetail = () => {
       .unwrap()
       .then(() => {
         setEditingReview(null);
-        // Note: Reducer already optimistically updates, re-fetch might not be needed if sorting isn't affected.
-        // If sorting IS affected by rating change, re-fetch might be better.
-        // For now, rely on optimistic update.
       })
       .catch((err) => { /* Snackbar handles error */ });
   };
@@ -423,7 +416,7 @@ const RestaurantDetail = () => {
                     <Box sx={{ display: 'flex', justifyContent: 'center', mt: 3 }}>
                       <Pagination
                         count={pagination.totalPages}
-                        page={pagination.currentPage + 1} // MUI Pagination is 1-indexed
+                        page={pagination.currentPage + 1}
                         onChange={handlePageChange}
                         color="primary"
                       />
