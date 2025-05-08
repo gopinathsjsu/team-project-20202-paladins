@@ -26,3 +26,13 @@ export const getRestaurantById = async (id) => {
   const response = await axios.get(`/api/restaurant/${id}`);
   return response.data;
 }
+
+export const deleteRestaurantByIdApi = async (restaurantId) => {
+  try {
+    const response = await axios.delete(`/api/restaurant/${restaurantId}`);
+    return response.data;
+  } catch (error) {
+    console.error(`Error deleting restaurant ${restaurantId}:`, error.response || error);
+    throw error;
+  }
+};
