@@ -8,7 +8,7 @@ export const getRestaurants = async () => {
   }
 };
 
-export const searchRestaurant = async ({ restaurant, city, state, partySize, zip, startTime }) => {
+export const searchRestaurant = async ({ restaurant, city, state, partySize, zip, startTime , date}) => {
   const params = new URLSearchParams();
 
   if (restaurant) params.append("restaurant", restaurant);
@@ -17,6 +17,7 @@ export const searchRestaurant = async ({ restaurant, city, state, partySize, zip
   if (zip) params.append("zip", zip);
   if (startTime) params.append("startTime", startTime);
   if (partySize) params.append("partySize", partySize);
+  if (date) params.append("date", date);
 
   const response = await axios.get(`/api/restaurant/search?${params.toString()}`);
   return response.data;
