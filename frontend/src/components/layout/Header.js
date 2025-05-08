@@ -1,6 +1,6 @@
-import React, { useState, useMemo, useEffect } from 'react'; // Added useEffect
+import React, { useState, useEffect } from 'react'; // Added useEffect
 import {
-  AppBar, Toolbar, Typography, Button, Stack, Avatar, Box,
+  AppBar, Toolbar, Typography, Button, Stack, Avatar,
   Menu, MenuItem, ListItemIcon, TextField, InputAdornment
 } from '@mui/material';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
@@ -40,12 +40,6 @@ const Header = () => {
     setHeaderState(stateFromStore || '');
   }, [cityFromStore, zipFromStore, stateFromStore]);
 
-  const featuredCities = useMemo(() => [
-    { name: 'New York, NY', featured: true },
-    { name: 'Los Angeles, CA', featured: true },
-    { name: 'San Francisco, CA', featured: true },
-    { name: 'Chicago, IL', featured: true },
-  ], []);
 
   const handleMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
