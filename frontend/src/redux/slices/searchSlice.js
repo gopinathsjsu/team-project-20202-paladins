@@ -1,4 +1,4 @@
-import { createSlice } from '@reduxjs/toolkit';
+import {createSlice} from '@reduxjs/toolkit';
 
 const initialState = {
   location: ''
@@ -17,5 +17,5 @@ const searchSlice = createSlice({
   }
 });
 
-export const { setLocation, clearLocation } = searchSlice.actions;
+export const {setLocation, clearLocation} = searchSlice.actions;
 export default searchSlice.reducer;

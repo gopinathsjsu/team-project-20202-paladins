@@ -1,26 +1,26 @@
-import React, { useState, useEffect } from "react";
+import React, {useEffect, useState} from "react";
 import {
-  Box,
-  TextField,
-  Button,
-  Grid,
-  Typography,
-  MenuItem,
-  Select,
-  InputLabel,
-  FormControl,
-  CircularProgress,
-  FormHelperText,
-  Modal,
   Backdrop,
+  Box,
+  Button,
+  CircularProgress,
   Fade,
+  FormControl,
+  FormHelperText,
+  Grid,
   IconButton,
+  InputLabel,
+  MenuItem,
+  Modal,
+  Select,
+  TextField,
+  Typography,
 } from "@mui/material";
-import { useDispatch } from "react-redux";
-import { createRestaurant } from "../../redux/slices/managerSlice";
+import {useDispatch} from "react-redux";
+import {createRestaurant} from "../../redux/slices/managerSlice";
 import CloseIcon from '@mui/icons-material/Close';
 
-const CreateRestaurantModal = ({ open, handleClose }) => {
+const CreateRestaurantModal = ({open, handleClose}) => {
   const dispatch = useDispatch();
 
   const [formData, setFormData] = useState({
@@ -59,7 +59,7 @@ const CreateRestaurantModal = ({ open, handleClose }) => {
   }, []);
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
+    const {name, value} = e.target;
     setFormData({
       ...formData,
       [name]: value,
@@ -139,7 +139,7 @@ const CreateRestaurantModal = ({ open, handleClose }) => {
               color: "black",
             }}
           >
-            <CloseIcon />
+            <CloseIcon/>
           </IconButton>
 
           <Typography variant="h5" gutterBottom>
@@ -247,7 +247,6 @@ const CreateRestaurantModal = ({ open, handleClose }) => {
                   required
                 />
               </Grid>
-
 
 
               {/* Cuisines */}
@@ -360,7 +359,7 @@ const CreateRestaurantModal = ({ open, handleClose }) => {
                   variant="contained"
                   component="label"
                   fullWidth
-                  sx={{ marginBottom: 2 }}
+                  sx={{marginBottom: 2}}
                 >
                   Upload Image
                   <input
@@ -386,7 +385,7 @@ const CreateRestaurantModal = ({ open, handleClose }) => {
                   <img
                     src={formData.imageUrl}
                     alt="Uploaded Preview"
-                    style={{ width: "100%", maxHeight: "200px", objectFit: "cover" }}
+                    style={{width: "100%", maxHeight: "200px", objectFit: "cover"}}
                   />
                 )}
               </Grid>
@@ -405,14 +404,14 @@ const CreateRestaurantModal = ({ open, handleClose }) => {
                     },
                   }}
                 >
-                  {loading ? <CircularProgress size={24} /> : "Create Restaurant"}
+                  {loading ? <CircularProgress size={24}/> : "Create Restaurant"}
                 </Button>
               </Grid>
             </Grid>
           </form>
 
           {error && (
-            <Box sx={{ marginTop: 2, color: "error.main" }}>
+            <Box sx={{marginTop: 2, color: "error.main"}}>
               <Typography>{error}</Typography>
             </Box>
           )}

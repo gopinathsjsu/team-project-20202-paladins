@@ -1,10 +1,10 @@
 import React from 'react';
-import { Button } from '@mui/material';
+import {Button} from '@mui/material';
 import GoogleIcon from '@mui/icons-material/Google';
 
 const backendUrl = process.env.REACT_APP_API_BASE_URL;
 
-const GoogleLoginButton = ({ label = 'Continue with Google' }) => {
+const GoogleLoginButton = ({label = 'Continue with Google'}) => {
   const handleClick = () => {
     window.location.href = `${backendUrl}/oauth2/authorization/google`;
   };
@@ -14,7 +14,7 @@ const GoogleLoginButton = ({ label = 'Continue with Google' }) => {
       variant="outlined"
       fullWidth
       onClick={handleClick}
-      startIcon={<GoogleIcon sx={{ color: '#4285F4' }} />}
+      startIcon={<GoogleIcon sx={{color: '#4285F4'}}/>}
       sx={{
         textTransform: 'none',
         fontWeight: 500,

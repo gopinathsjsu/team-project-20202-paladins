@@ -7,7 +7,7 @@ import API from "../../api/API";
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 const AnalyticsDashboard = () => {
-  const [bookingData, setBookingData] = useState({ labels: [], values: [] });
+  const [bookingData, setBookingData] = useState({labels: [], values: []});
   const [viewMode, setViewMode] = useState('daily');
   const [startStr, setStartStr] = useState('');
   const [endStr, setEndStr] = useState('');
@@ -35,7 +35,7 @@ const AnalyticsDashboard = () => {
         }, {});
         const chartLabels = Object.keys(grouped);
         const chartValues = Object.values(grouped);
-        setBookingData({ labels: chartLabels, values: chartValues });
+        setBookingData({labels: chartLabels, values: chartValues});
       })
       .catch((err) => console.error(err));
   }, [viewMode]);

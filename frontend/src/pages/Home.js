@@ -1,28 +1,18 @@
-import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
-import { fetchRestaurants } from "../redux/slices/restaurantSlice";
-import {
-  Box,
-  Typography,
-  Container,
-  Grid,
-  Button,
-  CircularProgress,
-  Alert,
-} from "@mui/material";
+import React, {useEffect, useState} from "react";
+import {useDispatch, useSelector, useSelector as useReduxSelector} from "react-redux";
+import {Link, useNavigate} from "react-router-dom";
+import {fetchRestaurants} from "../redux/slices/restaurantSlice";
+import {Alert, Box, Button, CircularProgress, Container, Grid, Typography,} from "@mui/material";
 import RestaurantCard from "../components/RestaurantCard";
 import Search from "../components/Search";
-import { Link } from "react-router-dom";
-import { RESTAURANTS_TO_DISPLAY_HOME_PAGE } from "../constants";
-import { searchRestaurant } from "../api/restaurant";
-import { useSelector as useReduxSelector } from "react-redux";
+import {RESTAURANTS_TO_DISPLAY_HOME_PAGE} from "../constants";
+import {searchRestaurant} from "../api/restaurant";
 
 const Home = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { restaurants, loading: reduxLoading, error: reduxError } = useSelector(
-      (state) => state.restaurants
+  const {restaurants, loading: reduxLoading, error: reduxError} = useSelector(
+    (state) => state.restaurants
   );
 
   const [searchLoading, setSearchLoading] = useState(false);
@@ -45,7 +35,7 @@ const Home = () => {
     }
     try {
       const results = await searchRestaurant(params);
-      navigate("/restaurants", { state: { searchResults: results, searchParams: params } });
+      navigate("/restaurants", {state: {searchResults: results, searchParams: params}});
     } catch (err) {
       console.error("Search failed:", err);
       setSearchError("Could not load search results.");
@@ -55,91 +45,91 @@ const Home = () => {
   };
 
   return (
-      <Box sx={{ minHeight: "100vh", bgcolor: "#f8f9fa" }}>
-        <Container maxWidth="lg" sx={{ pt: 6 }}>
-          <Typography
-              variant="h4"
-              component="h2"
-              gutterBottom
-              sx={{ fontWeight: 600, color: "#2D2D2D", textAlign: "center" }}
-          >
-            Search Restaurants
-          </Typography>
+    <Box sx={{minHeight: "100vh", bgcolor: "#f8f9fa"}}>
+      <Container maxWidth="lg" sx={{pt: 6}}>
+        <Typography
+          variant="h4"
+          component="h2"
+          gutterBottom
+          sx={{fontWeight: 600, color: "#2D2D2D", textAlign: "center"}}
+        >
+          Search Restaurants
+        </Typography>
 
-          <Search onSearch={handleSearch} />
+        <Search onSearch={handleSearch}/>
 
-          {searchLoading && (
-              <Box sx={{ textAlign: "center", mt: 2 }}>
-                <CircularProgress />
-                <Typography sx={{ mt: 1 }}>Searching...</Typography>
-              </Box>
-          )}
+        {searchLoading && (
+          <Box sx={{textAlign: "center", mt: 2}}>
+            <CircularProgress/>
+            <Typography sx={{mt: 1}}>Searching...</Typography>
+          </Box>
+        )}
 
-          {searchError && (
-              <Alert severity="error" sx={{ mt: 2 }}>
-                {searchError}
-              </Alert>
-          )}
-        </Container>
+        {searchError && (
+          <Alert severity="error" sx={{mt: 2}}>
+            {searchError}
+          </Alert>
+        )}
+      </Container>
 
-        <Container maxWidth="xl" sx={{ mt: 4, mb: 8 }}>
-          <Typography
-              variant="h5"
-              component="h3"
-              gutterBottom
-              sx={{ fontWeight: 600, color: "#2D2D2D", textAlign: "center" }}
-          >
-            Available Restaurants
-          </Typography>
+      <Container maxWidth="xl" sx={{mt: 4, mb: 8}}>
+        <Typography
+          variant="h5"
+          component="h3"
+          gutterBottom
+          sx={{fontWeight: 600, color: "#2D2D2D", textAlign: "center"}}
+        >
+          Available Restaurants
+        </Typography>
 
-          {reduxLoading === "pending" ? (
-              <Box sx={{ display: "flex", justifyContent: "center", mt: 4 }}>
-                <CircularProgress />
-              </Box>
-          ) : reduxLoading === "failed" ? (
-              <Alert severity="error" sx={{ mt: 4, textAlign: "center" }}>
-                {reduxError}
-              </Alert>
-          ) : (
-              <>
-                <Grid
-                  container
-                  spacing={4}
-                  justifyContent="center"
+        {reduxLoading === "pending" ? (
+          <Box sx={{display: "flex", justifyContent: "center", mt: 4}}>
+            <CircularProgress/>
+          </Box>
+        ) : reduxLoading === "failed" ? (
+          <Alert severity="error" sx={{mt: 4, textAlign: "center"}}>
+            {reduxError}
+          </Alert>
+        ) : (
+          <>
+            <Grid
+              container
+              spacing={4}
+              justifyContent="center"
+              sx={{
+                display: "grid",
+                gridTemplateColumns: "repeat(auto-fill, minmax(250px, 1fr))",
+                gap: "16px",
+              }}
+            >
+              {restaurants
+                .slice(0, RESTAURANTS_TO_DISPLAY_HOME_PAGE)
+                .map((restaurant) => (
+                  <RestaurantCard key={restaurant.id} restaurant={restaurant}/>
+                ))}
+            </Grid>
+
+
+            <Box sx={{textAlign: "center", mt: 4}}>
+              <Link to="/restaurants">
+                <Button
+                  variant="contained"
+                  color="primary"
                   sx={{
-                    display: "grid",
-                    gridTemplateColumns: "repeat(auto-fill, minmax(250px, 1fr))",
-                    gap: "16px",
+                    borderRadius: "30px",
+                    px: 4,
+                    fontWeight: "bold",
+                    textTransform: "none",
                   }}
                 >
-                  {restaurants
-                    .slice(0, RESTAURANTS_TO_DISPLAY_HOME_PAGE)
-                    .map((restaurant) => (
-                      <RestaurantCard key={restaurant.id} restaurant={restaurant} />
-                    ))}
-                </Grid>
-
-
-                <Box sx={{ textAlign: "center", mt: 4 }}>
-                  <Link to="/restaurants">
-                    <Button
-                        variant="contained"
-                        color="primary"
-                        sx={{
-                          borderRadius: "30px",
-                          px: 4,
-                          fontWeight: "bold",
-                          textTransform: "none",
-                        }}
-                    >
-                      View All
-                    </Button>
-                  </Link>
-                </Box>
-              </>
-          )}
-        </Container>
-      </Box>
+                  View All
+                </Button>
+              </Link>
+            </Box>
+          </>
+        )}
+      </Container>
+    </Box>
   );
 };
 

@@ -8,7 +8,7 @@ export const getRestaurants = async () => {
   }
 };
 
-export const searchRestaurant = async ({ restaurant, city, state, partySize, zip, startTime }) => {
+export const searchRestaurant = async ({restaurant, city, state, partySize, zip, startTime}) => {
   const params = new URLSearchParams();
 
   if (restaurant) params.append("restaurant", restaurant);

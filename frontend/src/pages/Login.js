@@ -1,20 +1,11 @@
-import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { login } from '../redux/slices/authSlice';
+import React, {useState} from 'react';
+import {useDispatch} from 'react-redux';
+import {login} from '../redux/slices/authSlice';
 import API from '../api/API';
-import { useNavigate } from 'react-router-dom';
-import {
-  Container,
-  Typography,
-  Box,
-  TextField,
-  Button, Link,
-  Alert,
-  Divider
-} from '@mui/material';
+import {Link as RouterLink, useNavigate} from 'react-router-dom';
+import {Alert, Box, Button, Container, Divider, Link, TextField, Typography} from '@mui/material';
 
 import GoogleLoginButton from '../components/auth/GoogleLoginButton';
-import { Link as RouterLink } from 'react-router-dom';
 
 const Login = () => {
   const dispatch = useDispatch();
@@ -36,11 +27,11 @@ const Login = () => {
         password,
       });
 
-      const { token, role, email: userEmail } = response.data;
+      const {token, role, email: userEmail} = response.data;
 
 
       // Dispatch Redux login action
-      dispatch(login({ token, role, email: userEmail }));
+      dispatch(login({token, role, email: userEmail}));
 
       // Redirect based on role
       if (role === 'ADMIN') navigate('/admin/dashboard');
@@ -55,15 +46,15 @@ const Login = () => {
 
   return (
     <Container maxWidth="sm">
-      <Box sx={{ marginTop: 8, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+      <Box sx={{marginTop: 8, display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
         <Typography component="h1" variant="h5">
           Sign in
         </Typography>
 
         {/* Show error alert */}
-        {error && <Alert severity="error" sx={{ mt: 2 }}>{error}</Alert>}
+        {error && <Alert severity="error" sx={{mt: 2}}>{error}</Alert>}
 
-        <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 1 }}>
+        <Box component="form" noValidate onSubmit={handleSubmit} sx={{mt: 1}}>
           <TextField
             margin="normal"
             required
@@ -93,11 +84,11 @@ const Login = () => {
             type="submit"
             fullWidth
             variant="contained"
-            sx={{ mt: 3, mb: 2 }}
+            sx={{mt: 3, mb: 2}}
           >
             Sign In
           </Button>
-          <Box sx={{ textAlign: 'center' }}>
+          <Box sx={{textAlign: 'center'}}>
             <Typography variant="body2" color="text.secondary">
               Don't have an account?{' '}
               <Link component={RouterLink} to="/register" color="primary">
@@ -106,8 +97,8 @@ const Login = () => {
             </Typography>
           </Box>
         </Box>
-        <Divider sx={{ width: '100%', my: 2 }}>OR</Divider>
-        <GoogleLoginButton />
+        <Divider sx={{width: '100%', my: 2}}>OR</Divider>
+        <GoogleLoginButton/>
       </Box>
     </Container>
   );

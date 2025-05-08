@@ -1,8 +1,8 @@
-import React, { useEffect } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
-import { login } from '../redux/slices/authSlice';
-import { Box, CircularProgress, Typography } from '@mui/material';
+import React, {useEffect} from 'react';
+import {useLocation, useNavigate} from 'react-router-dom';
+import {useDispatch} from 'react-redux';
+import {login} from '../redux/slices/authSlice';
+import {Box, CircularProgress, Typography} from '@mui/material';
 
 
 const OAuth2Success = () => {
@@ -18,7 +18,7 @@ const OAuth2Success = () => {
 
     if (token && email && role) {
       // Save to Redux and localStorage
-      dispatch(login({ token, email, role }));
+      dispatch(login({token, email, role}));
       localStorage.setItem('token', token);
       localStorage.setItem('email', email);
       localStorage.setItem('role', role);
@@ -33,14 +33,14 @@ const OAuth2Success = () => {
   }, [dispatch, location, navigate]);
 
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mt: 10 }}>
-      <CircularProgress />
-      <Typography variant="body1" sx={{ mt: 2 }}>
+    <Box sx={{display: 'flex', flexDirection: 'column', alignItems: 'center', mt: 10}}>
+      <CircularProgress/>
+      <Typography variant="body1" sx={{mt: 2}}>
         Logging you in with Google...
       </Typography>
     </Box>
   );
-  
+
 };
 
 export default OAuth2Success;

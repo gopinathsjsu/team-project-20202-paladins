@@ -1,4 +1,4 @@
-import axios from './API'; 
+import axios from './API';
 
 export const createRestaurantApi = async (restaurantData) => {
   try {
@@ -17,9 +17,9 @@ export const getManagerRestaurants = async () => {
 };
 
 export const updateRestaurantApi = async (restaurantId, restaurantData) => {
-    try {
-      return await axios.put(`/api/restaurant/${restaurantId}`, restaurantData);
-    } catch (error) {
-      throw new Error(error.response?.data || 'Failed to update restaurant');
-    }
+  try {
+    return await axios.put(`/api/restaurant/${restaurantId}`, restaurantData);
+  } catch (error) {
+    throw new Error(error.response?.data || 'Failed to update restaurant');
+  }
 };

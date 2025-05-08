@@ -1,14 +1,6 @@
-import React, { useState } from 'react';
-import {
-  Container,
-  Typography,
-  Box,
-  TextField,
-  Button,
-  Alert,
-  Divider,
-} from '@mui/material';
-import { useNavigate } from 'react-router-dom';
+import React, {useState} from 'react';
+import {Alert, Box, Button, Container, Divider, TextField, Typography,} from '@mui/material';
+import {useNavigate} from 'react-router-dom';
 import API from '../api/API';
 import GoogleLoginButton from '../components/auth/GoogleLoginButton';
 
@@ -49,15 +41,15 @@ const Register = () => {
 
   return (
     <Container maxWidth="sm">
-      <Box sx={{ marginTop: 8, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+      <Box sx={{marginTop: 8, display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
         <Typography component="h1" variant="h5">
           Create Account
         </Typography>
 
-        {error && <Alert severity="error" sx={{ mt: 2 }}>{error}</Alert>}
-        {success && <Alert severity="success" sx={{ mt: 2 }}>{success}</Alert>}
+        {error && <Alert severity="error" sx={{mt: 2}}>{error}</Alert>}
+        {success && <Alert severity="success" sx={{mt: 2}}>{success}</Alert>}
 
-        <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 1 }}>
+        <Box component="form" noValidate onSubmit={handleSubmit} sx={{mt: 1}}>
           <TextField
             margin="normal"
             required
@@ -100,12 +92,12 @@ const Register = () => {
             onChange={(e) => setConfirmPassword(e.target.value)}
           />
 
-          <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
+          <Button type="submit" fullWidth variant="contained" sx={{mt: 3, mb: 2}}>
             Sign Up
           </Button>
         </Box>
 
-        <Divider sx={{ width: '100%', my: 2 }}>OR</Divider>
+        <Divider sx={{width: '100%', my: 2}}>OR</Divider>
         <GoogleLoginButton/>
       </Box>
     </Container>

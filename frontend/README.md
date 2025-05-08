@@ -1,6 +1,7 @@
 # 🍽️ Restaurant Table Reservation System - Frontend
 
 ## 📋 Table of Contents
+
 - [Project Overview](#project-overview)
 - [Prerequisites](#prerequisites)
 - [Getting Started](#getting-started)
@@ -10,10 +11,15 @@
 - [Deployment](#Deployment)
 
 ## 📌 Project Overview
-This is the frontend of the **Restaurant Table Reservation System**, built using **React** and styled with **Material UI**. It allows customers to search and book restaurants, restaurant managers to manage listings, and admins to oversee the platform.
+
+This is the frontend of the **Restaurant Table Reservation System**, built using **React** and styled with **Material UI
+**. It allows customers to search and book restaurants, restaurant managers to manage listings, and admins to oversee
+the platform.
 
 ## 📌 Prerequisites
+
 Before you begin, ensure you have the following installed:
+
 - **Node.js** (Latest LTS version recommended) - [Download here](https://nodejs.org/)
 - **npm** (Comes with Node.js) or **yarn** (optional)
 - **Git** - [Download here](https://git-scm.com/)
@@ -21,23 +27,28 @@ Before you begin, ensure you have the following installed:
 ## 📌 Getting Started
 
 ### 1. Clone the Repository
+
 ```bash
 git clone <repository_url>
 cd frontend
 ```
 
 ### 2. Install Dependencies
+
 ```bash
 npm install
 ```
+
 This will install all the required dependencies listed in `package.json`.
 
 ### 3. Start the Development Server
+
 ```bash
 npm start
 ```
-The application will start in development mode and open in your default browser at [http://localhost:3000](http://localhost:3000).
 
+The application will start in development mode and open in your default browser
+at [http://localhost:3000](http://localhost:3000).
 
 ## Running with Docker
 
@@ -67,6 +78,7 @@ docker-compose up --build
 - Spring Boot backend with MongoDB and visual admin UI (Mongo Express)
 
 ## 📌 Project Structure
+
 ```
 frontend/
 ├── public/             # Static files
@@ -85,13 +97,16 @@ frontend/
 ```
 
 ## 📌 Dependencies
+
 The project uses several key dependencies:
+
 - React
 - Material UI (@mui/material)
 - React Router (react-router-dom)
 - Axios for API calls
 
 ## 📌 Features
+
 - Responsive layout with Material UI
 - Restaurant listing and search
 - Detailed restaurant view
@@ -106,11 +121,14 @@ The project uses several key dependencies:
 Changes pushed to the `preview` branch are automatically deployed to S3 via GitHub Actions.
 
 To view the deployed frontend:
+
 1. Visit the S3 static website URL: http://booktable-preview-frontend-dev.s3-website-us-east-1.amazonaws.com/
 
-2. This site reflects the most recent deployment from the `preview` branch and is ideal for internal testing or pre-production reviews.
+2. This site reflects the most recent deployment from the `preview` branch and is ideal for internal testing or
+   pre-production reviews.
 
 ## 📌 Team Guidelines
+
 - Follow the established project structure
 - Use meaningful commit messages
 - Keep components modular and reusable

@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
-import { Autocomplete, TextField, InputAdornment } from '@mui/material';
+import React, {useState} from 'react';
+import {Autocomplete, InputAdornment, TextField} from '@mui/material';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 
-const LocationSearch = ({ value, onChange, featuredCities }) => {
+const LocationSearch = ({value, onChange, featuredCities}) => {
   const [locationInput, setLocationInput] = useState('');
   const [cities, setCities] = useState([]);
 
@@ -63,11 +63,11 @@ const LocationSearch = ({ value, onChange, featuredCities }) => {
           color: 'white',
           bgcolor: 'rgba(255,255,255,0.08)',
           borderRadius: '8px',
-          '& .MuiOutlinedInput-notchedOutline': { border: 'none' },
+          '& .MuiOutlinedInput-notchedOutline': {border: 'none'},
         },
-        '& .MuiAutocomplete-input': { color: 'white' },
-        '& .MuiAutocomplete-popupIndicator': { color: 'white' },
-        '& .MuiAutocomplete-clearIndicator': { color: 'white' }
+        '& .MuiAutocomplete-input': {color: 'white'},
+        '& .MuiAutocomplete-popupIndicator': {color: 'white'},
+        '& .MuiAutocomplete-clearIndicator': {color: 'white'}
       }}
       renderInput={(params) => (
         <TextField
@@ -77,7 +77,7 @@ const LocationSearch = ({ value, onChange, featuredCities }) => {
             ...params.InputProps,
             startAdornment: (
               <InputAdornment position="start">
-                <LocationOnIcon sx={{ color: 'white' }} />
+                <LocationOnIcon sx={{color: 'white'}}/>
               </InputAdornment>
             ),
           }}

@@ -1,14 +1,11 @@
-import React, { useState, useMemo } from 'react'; // Import useState
-import {
-  AppBar, Toolbar, Typography, Button, Stack, Avatar, Box,
-  Menu, MenuItem, ListItemIcon
-} from '@mui/material';
-import { Link as RouterLink, useNavigate } from 'react-router-dom';
-import { useSelector, useDispatch } from 'react-redux';
-import { logout } from '../../redux/slices/authSlice';
+import React, {useMemo, useState} from 'react'; // Import useState
+import {AppBar, Avatar, Box, Button, ListItemIcon, Menu, MenuItem, Stack, Toolbar, Typography} from '@mui/material';
+import {Link as RouterLink, useNavigate} from 'react-router-dom';
+import {useDispatch, useSelector} from 'react-redux';
+import {logout} from '../../redux/slices/authSlice';
 import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
 import LocationSearch from './LocationSearch';
-import { setLocation } from '../../redux/slices/searchSlice';
+import {setLocation} from '../../redux/slices/searchSlice';
 import StyledTooltip from '../common/StyledTooltip';
 // Import Icons for Menu Items (Optional but good UX)
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
@@ -18,17 +15,17 @@ import LogoutIcon from '@mui/icons-material/Logout';
 const Header = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { token, email, role } = useSelector((state) => state.auth);
+  const {token, email, role} = useSelector((state) => state.auth);
   const location = useSelector((state) => state.search.location);
 
   const [anchorEl, setAnchorEl] = useState(null);
   const isMenuOpen = Boolean(anchorEl);
 
   const featuredCities = useMemo(() => [
-    { name: 'New York, NY', featured: true },
-    { name: 'Los Angeles, CA', featured: true },
-    { name: 'San Francisco, CA', featured: true },
-    { name: 'Chicago, IL', featured: true },
+    {name: 'New York, NY', featured: true},
+    {name: 'Los Angeles, CA', featured: true},
+    {name: 'San Francisco, CA', featured: true},
+    {name: 'Chicago, IL', featured: true},
   ], []);
 
   const handleMenuOpen = (event) => {
@@ -52,15 +49,15 @@ const Header = () => {
 
 
   return (
-    <AppBar position="static" sx={{ bgcolor: '#0A1427' }}>
+    <AppBar position="static" sx={{bgcolor: '#0A1427'}}>
       <Toolbar
         sx={{
-          flexDirection: { xs: 'column', sm: 'row' },
+          flexDirection: {xs: 'column', sm: 'row'},
           alignItems: 'center',
           justifyContent: 'space-between',
           px: 2,
           py: 1,
-          gap: { xs: 1, sm: 0 }
+          gap: {xs: 1, sm: 0}
         }}
       >
         {/* Left: Logo */}
@@ -74,7 +71,7 @@ const Header = () => {
             fontWeight: 'bold',
             fontSize: '1.5rem',
             width: '100%',
-            textAlign: { xs: 'center', sm: 'left' }
+            textAlign: {xs: 'center', sm: 'left'}
           }}
         >
           BookTable
@@ -82,13 +79,13 @@ const Header = () => {
 
         {/* Right: Location + Auth */}
         <Stack
-          direction={{ xs: 'column', sm: 'row' }}
+          direction={{xs: 'column', sm: 'row'}}
           spacing={1}
           alignItems="center"
-          sx={{ width: '100%', justifyContent: { sm: 'flex-end' } }}
+          sx={{width: '100%', justifyContent: {sm: 'flex-end'}}}
         >
           <Box
-            sx={{ width: { xs: '100%', sm: 'auto' } }}>
+            sx={{width: {xs: '100%', sm: 'auto'}}}>
             <LocationSearch
               value={location}
               onChange={(value) => dispatch(setLocation(value))}
@@ -111,10 +108,10 @@ const Header = () => {
                   color: '#fff',
                   borderColor: '#14B8A6'
                 },
-                width: { xs: '100%', sm: 'auto' }
+                width: {xs: '100%', sm: 'auto'}
               }}
             >
-              <PersonOutlineIcon sx={{ mr: 1 }} />
+              <PersonOutlineIcon sx={{mr: 1}}/>
               Sign In
             </Button>
           ) : (
@@ -128,8 +125,8 @@ const Header = () => {
                   sx={{
                     color: '#2DD4BF',
                     textTransform: 'none',
-                    width: { xs: '100%', sm: 'auto' },
-                    order: { xs: 1, sm: 0 } // Adjust order if needed
+                    width: {xs: '100%', sm: 'auto'},
+                    order: {xs: 1, sm: 0} // Adjust order if needed
                   }}
                 >
                   Dashboard
@@ -141,7 +138,7 @@ const Header = () => {
                 {/* Add id for accessibility */}
                 <Avatar
                   id="user-avatar-button"
-                  sx={{ bgcolor: '#2DD4BF', cursor: 'pointer', order: { xs: 0, sm: 1 } }}
+                  sx={{bgcolor: '#2DD4BF', cursor: 'pointer', order: {xs: 0, sm: 1}}}
                   onClick={handleMenuOpen}
                   aria-controls={isMenuOpen ? 'user-menu' : undefined}
                   aria-haspopup="true"
@@ -172,19 +169,19 @@ const Header = () => {
               >
                 <MenuItem onClick={() => handleNavigate('/profile')}>
                   <ListItemIcon>
-                    <AccountCircleIcon fontSize="small" />
+                    <AccountCircleIcon fontSize="small"/>
                   </ListItemIcon>
                   Profile
                 </MenuItem>
                 <MenuItem onClick={() => handleNavigate('/bookings')}>
                   <ListItemIcon>
-                    <EventNoteIcon fontSize="small" />
+                    <EventNoteIcon fontSize="small"/>
                   </ListItemIcon>
                   My Bookings
                 </MenuItem>
                 <MenuItem onClick={handleLogoutAndClose}>
                   <ListItemIcon>
-                    <LogoutIcon fontSize="small" />
+                    <LogoutIcon fontSize="small"/>
                   </ListItemIcon>
                   Logout
                 </MenuItem>

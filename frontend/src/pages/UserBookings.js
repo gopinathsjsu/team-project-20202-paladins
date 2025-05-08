@@ -1,11 +1,26 @@
-import React, { useState, useEffect } from 'react';
+import React, {useEffect, useState} from 'react';
 import {
-  Container, Typography, Box, CircularProgress, Alert as MuiAlert,
-  List, ListItem, ListItemText, Divider, Paper,
-  Tabs, Tab, Stack,
-  Button, IconButton,
-  Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle,
-  Snackbar
+  Alert as MuiAlert,
+  Box,
+  Button,
+  CircularProgress,
+  Container,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Divider,
+  IconButton,
+  List,
+  ListItem,
+  ListItemText,
+  Paper,
+  Snackbar,
+  Stack,
+  Tab,
+  Tabs,
+  Typography
 } from '@mui/material';
 import EventIcon from '@mui/icons-material/Event';
 import ChairIcon from '@mui/icons-material/Chair';
@@ -15,10 +30,10 @@ import HistoryIcon from '@mui/icons-material/History';
 import EventAvailableIcon from '@mui/icons-material/EventAvailable';
 import CancelPresentationIcon from '@mui/icons-material/CancelPresentation';
 
-import { getMyBookings, cancelBooking } from '../api/booking';
+import {cancelBooking, getMyBookings} from '../api/booking';
 
 function TabPanel(props) {
-  const { children, value, index, ...other } = props;
+  const {children, value, index, ...other} = props;
   return (
     <div
       role="tabpanel"
@@ -28,7 +43,7 @@ function TabPanel(props) {
       {...other}
     >
       {value === index && (
-        <Box sx={{ pt: 2, pb: 2 }}>
+        <Box sx={{pt: 2, pb: 2}}>
           {children}
         </Box>
       )}
@@ -92,9 +107,11 @@ const UserBookings = () => {
       const timeParts = (timeStr || '00:00:00').split(':');
       const formattedTimeStr = `${timeParts[0]}:${timeParts[1]}:${timeParts[2] || '00'}`;
       const date = new Date(`${dateStr}T${formattedTimeStr}`);
-      if (isNaN(date)) { throw new Error("Invalid date/time format"); }
-      const formattedDate = date.toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' });
-      const formattedTime = date.toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit', hour12: true });
+      if (isNaN(date)) {
+        throw new Error("Invalid date/time format");
+      }
+      const formattedDate = date.toLocaleDateString(undefined, {year: 'numeric', month: 'long', day: 'numeric'});
+      const formattedTime = date.toLocaleTimeString(undefined, {hour: 'numeric', minute: '2-digit', hour12: true});
       return `${formattedDate} at ${formattedTime}`;
     } catch (e) {
       console.warn("Date formatting error:", e);
@@ -144,7 +161,7 @@ const UserBookings = () => {
       setBookings(prevBookings =>
         prevBookings.map(booking =>
           booking.reservationId === bookingToCancelId
-            ? { ...booking, status: "CANCELLED" }
+            ? {...booking, status: "CANCELLED"}
             : booking
         )
       );
@@ -182,7 +199,7 @@ const UserBookings = () => {
   const renderBookingList = (list, type) => {
     if (list.length === 0) {
       return (
-        <Typography variant="body1" color="text.secondary" align="center" sx={{ p: 4 }}>
+        <Typography variant="body1" color="text.secondary" align="center" sx={{p: 4}}>
           You have no {type} bookings.
         </Typography>
       );
@@ -196,7 +213,7 @@ const UserBookings = () => {
               sx={{
                 pt: 1.5,
                 pb: 1.5,
-                ...(type === 'past' ? { opacity: 0.7, backgroundColor: 'action.hover' } : {})
+                ...(type === 'past' ? {opacity: 0.7, backgroundColor: 'action.hover'} : {})
               }}
               secondaryAction={
                 type === 'upcoming' && booking.reservationId ? (
@@ -206,9 +223,9 @@ const UserBookings = () => {
                     onClick={() => handleCancelClick(booking.reservationId)}
                     color="error"
                     size="small"
-                    sx={{ mr: 1 }}
+                    sx={{mr: 1}}
                   >
-                    <CancelIcon />
+                    <CancelIcon/>
                   </IconButton>
                 ) : null
               }
@@ -221,7 +238,7 @@ const UserBookings = () => {
                     color={type === 'upcoming' ? 'primary.dark' : type === 'cancelled' ? 'text.disabled' : 'text.primary'}
                     sx={{
                       fontWeight: 500, mb: 1,
-                      ...(type === 'cancelled' && { textDecoration: 'line-through' })
+                      ...(type === 'cancelled' && {textDecoration: 'line-through'})
                     }}
                   >
                     {booking.restaurantName || 'Restaurant Name Missing'}
@@ -230,28 +247,28 @@ const UserBookings = () => {
                 secondary={
 
                   <Stack spacing={0.8}> {/* Adjust spacing */}
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                      <EventIcon fontSize="small" color="action" />
+                    <Box sx={{display: 'flex', alignItems: 'center', gap: 1}}>
+                      <EventIcon fontSize="small" color="action"/>
                       <Typography variant="body2" color="text.secondary">
                         {formatBookingDateTime(booking.date, booking.startSlotTime)}
                       </Typography>
                     </Box>
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                      <ChairIcon fontSize="small" color="action" />
+                    <Box sx={{display: 'flex', alignItems: 'center', gap: 1}}>
+                      <ChairIcon fontSize="small" color="action"/>
                       <Typography variant="body2" color="text.secondary">
                         Table: {booking.tableNumber || 'N/A'}
                       </Typography>
                     </Box>
                     {booking.reservationId && (
-                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                        <ConfirmationNumberIcon fontSize="small" color="action" />
-                        <Typography variant="caption" color="text.secondary" sx={{ fontFamily: 'monospace' }}>
+                      <Box sx={{display: 'flex', alignItems: 'center', gap: 1}}>
+                        <ConfirmationNumberIcon fontSize="small" color="action"/>
+                        <Typography variant="caption" color="text.secondary" sx={{fontFamily: 'monospace'}}>
                           ID: ...{booking.reservationId.slice(-8)}
                         </Typography>
                       </Box>
                     )}
                     {type === 'cancelled' && (
-                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mt: 0.5 }}>
+                      <Box sx={{display: 'flex', alignItems: 'center', gap: 1, mt: 0.5}}>
                         <CancelPresentationIcon fontSize="small" color="error"/>
                         <Typography variant="body2" color="error" sx={{fontWeight: 'bold'}}>
                           Cancelled
@@ -264,7 +281,7 @@ const UserBookings = () => {
               {/* <ListItemSecondaryAction> ... </ListItemSecondaryAction> */}
             </ListItem>
             {/* Use variant="middle" for inset divider, ensure it's not the last item */}
-            {index < list.length - 1 && <Divider variant="middle" component="li" />}
+            {index < list.length - 1 && <Divider variant="middle" component="li"/>}
           </React.Fragment>
         ))}
       </List>
@@ -273,22 +290,25 @@ const UserBookings = () => {
 
   const renderContent = () => {
     if (loading) {
-      return <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', py: 5 }}><CircularProgress /><Typography sx={{ ml: 2 }}>Loading...</Typography></Box>;
+      return <Box
+        sx={{display: 'flex', justifyContent: 'center', alignItems: 'center', py: 5}}><CircularProgress/><Typography
+        sx={{ml: 2}}>Loading...</Typography></Box>;
     }
     if (error) {
       const errorMessage = error.includes("Authentication failed") || error.includes("401")
         ? `Authentication failed. You might need to log out and log back in.`
         : error;
-      return <Alert severity="error" sx={{ m: 2 }}>{errorMessage}</Alert>;
+      return <Alert severity="error" sx={{m: 2}}>{errorMessage}</Alert>;
     }
 
     if (bookings.length === 0 && !loading) {
-      return <Typography variant="body1" color="text.secondary" align="center" sx={{ p: 4 }}>You haven't made any bookings yet.</Typography>;
+      return <Typography variant="body1" color="text.secondary" align="center" sx={{p: 4}}>You haven't made any bookings
+        yet.</Typography>;
     }
 
     return (
-      <Box sx={{ width: '100%' }}>
-        <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+      <Box sx={{width: '100%'}}>
+        <Box sx={{borderBottom: 1, borderColor: 'divider'}}>
           <Tabs
             value={selectedTab}
             onChange={handleTabChange}
@@ -297,9 +317,11 @@ const UserBookings = () => {
             indicatorColor="primary"
             textColor="primary"
           >
-            <Tab icon={<EventAvailableIcon />} iconPosition="start" label={`Upcoming (${upcomingBookings.length})`} {...a11yProps(0)} />
-            <Tab icon={<HistoryIcon />} iconPosition="start" label={`Past (${pastBookings.length})`} {...a11yProps(1)} />
-            <Tab icon={<CancelPresentationIcon />} iconPosition="start" label={`Cancelled (${cancelledBookings.length})`} {...a11yProps(2)} />
+            <Tab icon={<EventAvailableIcon/>} iconPosition="start"
+                 label={`Upcoming (${upcomingBookings.length})`} {...a11yProps(0)} />
+            <Tab icon={<HistoryIcon/>} iconPosition="start" label={`Past (${pastBookings.length})`} {...a11yProps(1)} />
+            <Tab icon={<CancelPresentationIcon/>} iconPosition="start"
+                 label={`Cancelled (${cancelledBookings.length})`} {...a11yProps(2)} />
           </Tabs>
         </Box>
         <TabPanel value={selectedTab} index={0}>
@@ -316,12 +338,12 @@ const UserBookings = () => {
   };
 
   return (
-    <Container maxWidth="md" sx={{ mt: 4, mb: 4 }}>
-      <Typography variant="h4" component="h1" gutterBottom align="center" sx={{ mb: 3, fontWeight: 600 }}>
+    <Container maxWidth="md" sx={{mt: 4, mb: 4}}>
+      <Typography variant="h4" component="h1" gutterBottom align="center" sx={{mb: 3, fontWeight: 600}}>
         My Bookings
       </Typography>
       {/* Render content inside the Paper */}
-      <Paper elevation={3} sx={{ overflow: 'hidden' }}>
+      <Paper elevation={3} sx={{overflow: 'hidden'}}>
         {renderContent()}
       </Paper>
 
@@ -339,7 +361,7 @@ const UserBookings = () => {
             Are you sure you want to cancel this booking? This action cannot be undone.
           </DialogContentText>
         </DialogContent>
-        <DialogActions sx={{ p: 2 }}> {/* Add padding to actions */}
+        <DialogActions sx={{p: 2}}> {/* Add padding to actions */}
           <Button onClick={handleCloseConfirm} color="inherit" disabled={cancelLoading}>
             Keep Booking
           </Button>
@@ -349,7 +371,7 @@ const UserBookings = () => {
             variant="contained"
             autoFocus
             disabled={cancelLoading}
-            startIcon={cancelLoading ? <CircularProgress size={18} color="inherit" /> : null}
+            startIcon={cancelLoading ? <CircularProgress size={18} color="inherit"/> : null}
           >
             Cancel Booking
           </Button>
@@ -360,9 +382,9 @@ const UserBookings = () => {
         open={snackbarOpen}
         autoHideDuration={5000}
         onClose={handleCloseSnackbar}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+        anchorOrigin={{vertical: 'bottom', horizontal: 'center'}}
       >
-        <Alert onClose={handleCloseSnackbar} severity={snackbarSeverity} sx={{ width: '100%' }}>
+        <Alert onClose={handleCloseSnackbar} severity={snackbarSeverity} sx={{width: '100%'}}>
           {snackbarMessage}
         </Alert>
       </Snackbar>

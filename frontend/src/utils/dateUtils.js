@@ -24,7 +24,7 @@ export const getAvailableTimeSlots = (openingTime, closingTime, interval = 30) =
   while (
     currentHour < closingHour ||
     (currentHour === closingHour && currentMinute <= closingMinute)
-  ) {
+    ) {
     slots.push(
       `${currentHour.toString().padStart(2, '0')}:${currentMinute
         .toString()

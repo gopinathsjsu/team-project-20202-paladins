@@ -1,4 +1,4 @@
-import { configureStore } from '@reduxjs/toolkit';
+import {configureStore} from '@reduxjs/toolkit';
 import authReducer from './slices/authSlice';
 import adminReducer from './slices/adminSlice';
 import managerReducer from './slices/managerSlice';
@@ -13,7 +13,7 @@ const store = configureStore({
   reducer: {
     auth: authReducer,
     admin: adminReducer,
-    manager: managerReducer,  
+    manager: managerReducer,
     booking: bookingReducer,
     restaurants: restaurantReducer,
     search: searchReducer,

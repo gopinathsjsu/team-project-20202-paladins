@@ -1,9 +1,9 @@
-import { Tooltip, tooltipClasses } from '@mui/material';
-import { styled } from '@mui/material/styles';
+import {Tooltip, tooltipClasses} from '@mui/material';
+import {styled} from '@mui/material/styles';
 
-const StyledTooltip = styled(({ className, ...props }) => (
-  <Tooltip arrow placement="bottom" {...props} classes={{ popper: className }} />
-))(({ theme }) => ({
+const StyledTooltip = styled(({className, ...props}) => (
+  <Tooltip arrow placement="bottom" {...props} classes={{popper: className}}/>
+))(({theme}) => ({
   [`& .${tooltipClasses.tooltip}`]: {
     backgroundColor: theme.palette.background.paper, // softer bg
     color: theme.palette.text.primary,

@@ -1,26 +1,26 @@
-import React, { useState, useEffect } from "react";
+import React, {useEffect, useState} from "react";
 import {
-  Box,
-  TextField,
-  Button,
-  Grid,
-  Typography,
-  MenuItem,
-  Select,
-  InputLabel,
-  FormControl,
-  CircularProgress,
-  Modal,
   Backdrop,
+  Box,
+  Button,
+  CircularProgress,
   Fade,
-  IconButton,
+  FormControl,
   FormHelperText,
+  Grid,
+  IconButton,
+  InputLabel,
+  MenuItem,
+  Modal,
+  Select,
+  TextField,
+  Typography,
 } from "@mui/material";
-import { useDispatch } from "react-redux";
-import { updateRestaurant } from "../../redux/slices/managerSlice";
+import {useDispatch} from "react-redux";
+import {updateRestaurant} from "../../redux/slices/managerSlice";
 import CloseIcon from "@mui/icons-material/Close";
 
-const EditRestaurantModal = ({ open, handleClose, restaurantData }) => {
+const EditRestaurantModal = ({open, handleClose, restaurantData}) => {
   const dispatch = useDispatch();
 
   const [formData, setFormData] = useState({
@@ -56,7 +56,7 @@ const EditRestaurantModal = ({ open, handleClose, restaurantData }) => {
   }, [restaurantData]);
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
+    const {name, value} = e.target;
     setFormData({
       ...formData,
       [name]: value,
@@ -70,31 +70,31 @@ const EditRestaurantModal = ({ open, handleClose, restaurantData }) => {
     });
   };
 
-    const handleSubmit = async (e) => {
-      e.preventDefault();
-      setLoading(true);
-      setError("");
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError("");
 
-      const updatedRestaurantData = {
-        restaurantInput: {
-          ...formData
-        },
-        table: {
-          capacity: formData.tableCapacity,
-          count: formData.tableCount,
-        },
-      };
-
-
-      try {
-        await dispatch(updateRestaurant(updatedRestaurantData));
-        setLoading(false);
-        handleClose();
-      } catch (err) {
-        setLoading(false);
-        setError("Failed to update restaurant. Please try again.");
-      }
+    const updatedRestaurantData = {
+      restaurantInput: {
+        ...formData
+      },
+      table: {
+        capacity: formData.tableCapacity,
+        count: formData.tableCount,
+      },
     };
+
+
+    try {
+      await dispatch(updateRestaurant(updatedRestaurantData));
+      setLoading(false);
+      handleClose();
+    } catch (err) {
+      setLoading(false);
+      setError("Failed to update restaurant. Please try again.");
+    }
+  };
 
   return (
     <Modal
@@ -136,7 +136,7 @@ const EditRestaurantModal = ({ open, handleClose, restaurantData }) => {
               color: "black",
             }}
           >
-            <CloseIcon />
+            <CloseIcon/>
           </IconButton>
 
           <Typography variant="h5" gutterBottom>
@@ -244,7 +244,6 @@ const EditRestaurantModal = ({ open, handleClose, restaurantData }) => {
                   required
                 />
               </Grid>
-
 
 
               {/* Cuisines */}
@@ -357,7 +356,7 @@ const EditRestaurantModal = ({ open, handleClose, restaurantData }) => {
                   variant="contained"
                   component="label"
                   fullWidth
-                  sx={{ marginBottom: 2 }}
+                  sx={{marginBottom: 2}}
                 >
                   Upload Image
                   <input
@@ -383,7 +382,7 @@ const EditRestaurantModal = ({ open, handleClose, restaurantData }) => {
                   <img
                     src={formData.imageUrl}
                     alt="Uploaded Preview"
-                    style={{ width: "100%", maxHeight: "200px", objectFit: "cover" }}
+                    style={{width: "100%", maxHeight: "200px", objectFit: "cover"}}
                   />
                 )}
               </Grid>
@@ -402,14 +401,14 @@ const EditRestaurantModal = ({ open, handleClose, restaurantData }) => {
                     },
                   }}
                 >
-                  {loading ? <CircularProgress size={24} /> : "Update Restaurant"}
+                  {loading ? <CircularProgress size={24}/> : "Update Restaurant"}
                 </Button>
               </Grid>
             </Grid>
           </form>
 
           {error && (
-            <Box sx={{ marginTop: 2, color: "error.main" }}>
+            <Box sx={{marginTop: 2, color: "error.main"}}>
               <Typography>{error}</Typography>
             </Box>
           )}

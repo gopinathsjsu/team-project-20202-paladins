@@ -1,8 +1,18 @@
 import React from "react";
-import { Card, CardContent, Typography, Button, Box, Rating, Stack } from "@mui/material";
-import { Link } from "react-router-dom";
+import {Box, Button, Card, CardContent, Rating, Stack, Typography} from "@mui/material";
+import {Link} from "react-router-dom";
 
-const RestaurantCard = ({ restaurant, userRole, approveRestaurant, deleteRestaurant, onEdit, tableSlots,noOfTimesBookedToday, date,partySize }) => {
+const RestaurantCard = ({
+                          restaurant,
+                          userRole,
+                          approveRestaurant,
+                          deleteRestaurant,
+                          onEdit,
+                          tableSlots,
+                          noOfTimesBookedToday,
+                          date,
+                          partySize
+                        }) => {
 
   const getEndTime = (startTime) => {
     const [hours, minutes, seconds] = startTime.split(":").map(Number);
@@ -55,19 +65,19 @@ const RestaurantCard = ({ restaurant, userRole, approveRestaurant, deleteRestaur
       </Box>
 
       {/* Content Section */}
-      <CardContent sx={{ padding: 2, flexGrow: 1 }}>
-        <Typography variant="h6" component="div" sx={{ fontWeight: 600, mb: 1 }}>
+      <CardContent sx={{padding: 2, flexGrow: 1}}>
+        <Typography variant="h6" component="div" sx={{fontWeight: 600, mb: 1}}>
           {restaurant.name}
         </Typography>
 
         {/* Ratings and Review Count */}
         <Stack direction="row" spacing={1} alignItems="center" mb={2}>
-          <Rating value={restaurant.averageRating} precision={0.1} readOnly size="small" />
+          <Rating value={restaurant.averageRating} precision={0.1} readOnly size="small"/>
           <Typography variant="body2" color="text.secondary">
             ({restaurant.reviewCount} reviews)
           </Typography>
         </Stack>
-        <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+        <Typography variant="body2" color="text.secondary" sx={{mt: 1}}>
           Cost: {restaurant.cost || "$$"}
         </Typography>
         <Typography variant="body2" color="text.secondary">
@@ -76,7 +86,7 @@ const RestaurantCard = ({ restaurant, userRole, approveRestaurant, deleteRestaur
       </CardContent>
 
       {/* Dynamic Button Section */}
-      <Box sx={{ padding: "16px", display: "flex", justifyContent: "center", gap: 1 }}>
+      <Box sx={{padding: "16px", display: "flex", justifyContent: "center", gap: 1}}>
         {userRole === "ADMIN" && !restaurant.approved ? (
           <>
             <Button
@@ -113,26 +123,26 @@ const RestaurantCard = ({ restaurant, userRole, approveRestaurant, deleteRestaur
             </Button>
           </>
         ) : userRole === "RESTAURANT_MANAGER" ? (
-            <Button
-              variant="outlined"
-              color="primary"
-              onClick={() => onEdit(restaurant)}
-              sx={{ width: "100%" }}
-            >
-              Edit Restaurant
-            </Button>
-          ) : tableSlots && tableSlots.length <= 0 ? (
-            <Button
-              variant="outlined"
-              fullWidth
-              disabled // Disable the button
-              sx={{ borderRadius: "30px" }}
-            >
-              No tables available
-            </Button>
-          ) : tableSlots && tableSlots.length > 0 ? (
+          <Button
+            variant="outlined"
+            color="primary"
+            onClick={() => onEdit(restaurant)}
+            sx={{width: "100%"}}
+          >
+            Edit Restaurant
+          </Button>
+        ) : tableSlots && tableSlots.length <= 0 ? (
+          <Button
+            variant="outlined"
+            fullWidth
+            disabled // Disable the button
+            sx={{borderRadius: "30px"}}
+          >
+            No tables available
+          </Button>
+        ) : tableSlots && tableSlots.length > 0 ? (
           <Box>
-            <Typography variant="subtitle2" sx={{ mb: 1 }}>
+            <Typography variant="subtitle2" sx={{mb: 1}}>
               Available Time Slots:
             </Typography>
             <Box
@@ -169,9 +179,9 @@ const RestaurantCard = ({ restaurant, userRole, approveRestaurant, deleteRestaur
                           addressStreet: restaurant.addressStreet,
                           addressCity: restaurant.addressCity,
                         },
-                          partySize: partySize
+                        partySize: partySize
                       }}
-                      style={{ textDecoration: "none" }}
+                      style={{textDecoration: "none"}}
                     >
                       <Button
                         size="small"
@@ -191,8 +201,8 @@ const RestaurantCard = ({ restaurant, userRole, approveRestaurant, deleteRestaur
             </Box>
           </Box>
         ) : (
-          <Link to={`/booking/${restaurant.id}`} style={{ width: "100%" }}>
-            <Button variant="contained" fullWidth color="primary" sx={{ borderRadius: "30px" }}>
+          <Link to={`/booking/${restaurant.id}`} style={{width: "100%"}}>
+            <Button variant="contained" fullWidth color="primary" sx={{borderRadius: "30px"}}>
               Book a Table
             </Button>
           </Link>

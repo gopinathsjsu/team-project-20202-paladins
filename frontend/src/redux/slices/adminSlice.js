@@ -1,10 +1,10 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { getPendingRestaurants, approveRestaurant, deleteRestaurant } from '../../api/admin';
+import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
+import {approveRestaurant, deleteRestaurant, getPendingRestaurants} from '../../api/admin';
 
 // Thunks
 export const fetchPendingRestaurants = createAsyncThunk(
   'admin/fetchPendingRestaurants',
-  async (_, { rejectWithValue }) => {
+  async (_, {rejectWithValue}) => {
     try {
       return await getPendingRestaurants();
     } catch (err) {
@@ -15,7 +15,7 @@ export const fetchPendingRestaurants = createAsyncThunk(
 
 export const approveRestaurantThunk = createAsyncThunk(
   'admin/approveRestaurant',
-  async (id, { rejectWithValue }) => {
+  async (id, {rejectWithValue}) => {
     try {
       await approveRestaurant(id);
       return id;
@@ -27,7 +27,7 @@ export const approveRestaurantThunk = createAsyncThunk(
 
 export const deleteRestaurantThunk = createAsyncThunk(
   'admin/deleteRestaurant',
-  async (id, { rejectWithValue }) => {
+  async (id, {rejectWithValue}) => {
     try {
       await deleteRestaurant(id);
       return id;

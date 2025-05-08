@@ -1,13 +1,13 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { getManagerRestaurants, createRestaurantApi, updateRestaurantApi } from '../../api/manager';
+import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
+import {createRestaurantApi, getManagerRestaurants, updateRestaurantApi} from '../../api/manager';
 
 // Thunk to fetch manager's restaurants
 export const fetchManagerRestaurants = createAsyncThunk(
   'manager/fetchManagerRestaurants',
-  async (_, { rejectWithValue }) => {
+  async (_, {rejectWithValue}) => {
     try {
-        const response = await getManagerRestaurants();
-        return response.data;
+      const response = await getManagerRestaurants();
+      return response.data;
     } catch (err) {
       return rejectWithValue(err.response?.data || 'Failed to fetch');
     }
@@ -17,7 +17,7 @@ export const fetchManagerRestaurants = createAsyncThunk(
 // Thunk to create a new restaurant
 export const createRestaurant = createAsyncThunk(
   'manager/createRestaurant',
-  async (restaurantData, { rejectWithValue }) => {
+  async (restaurantData, {rejectWithValue}) => {
     try {
       const response = await createRestaurantApi(restaurantData);
       return response.data;
@@ -29,7 +29,7 @@ export const createRestaurant = createAsyncThunk(
 
 export const updateRestaurant = createAsyncThunk(
   'manager/updateRestaurant',
-  async (restaurantData, { rejectWithValue }) => {
+  async (restaurantData, {rejectWithValue}) => {
     try {
       const response = await updateRestaurantApi(restaurantData.restaurantInput.id, restaurantData);
       return response.data;

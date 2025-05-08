@@ -1,9 +1,9 @@
 import React from 'react';
-import { Container, Typography } from '@mui/material';
-import { useParams } from 'react-router-dom';
+import {Container, Typography} from '@mui/material';
+import {useParams} from 'react-router-dom';
 
 const RestaurantDetail = () => {
-  const { id } = useParams();
+  const {id} = useParams();
 
   return (
     <Container maxWidth="lg">
