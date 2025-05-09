@@ -368,10 +368,10 @@ const CreateRestaurantModal = ({ open, handleClose }) => {
                     label="Cost"
                   >
                     <MenuItem value=""><em>None</em></MenuItem>
-                    <MenuItem value="1">$</MenuItem>
-                    <MenuItem value="2">$$</MenuItem>
-                    <MenuItem value="3">$$$</MenuItem>
-                    <MenuItem value="4">$$$$</MenuItem>
+                    <MenuItem value=$>$</MenuItem>
+                    <MenuItem value="$$">$$</MenuItem>
+                    <MenuItem value="$$$">$$$</MenuItem>
+                    <MenuItem value="$$$$">$$$$</MenuItem>
                   </Select>
                   <FormHelperText>Select the cost level</FormHelperText>
                 </FormControl>
