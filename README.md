@@ -20,6 +20,7 @@ Team: The Paladins
 - [🍽️ BookTable - Restaurant Table Reservation System](#️-booktable---restaurant-table-reservation-system)
   - [📋 Table of Contents](#-table-of-contents)
   - [📌 Project Overview](#-project-overview)
+  - [📌 BookTable - Feature Set](#-booktable-feature-set)
   - [🚀 Tech Stack](#-tech-stack)
   - [🗂️ Monorepo Structure](#️-monorepo-structure)
   - [🧰 Getting Started](#-getting-started)
@@ -51,25 +52,78 @@ The application includes:
 
 ---
 
-## 🚀 Tech Stack
+## 📌 BookTable - Feature Set
 
-- **Frontend**: React, Material UI, React Router, Axios
-- **Backend**: Java 21, Spring Boot, Spring Security, MongoDB
-- **Database**: MongoDB
-- **DevOps**: Docker, Docker Compose, GitHub Actions, AWS EC2 (Production)
+### 🔐 Authentication & Authorization
 
----
+* **JWT-based Login/Signup** for Customers and Restaurant Managers
+* **Google OAuth2 login** integration for seamless access
+* **Role-Based Access Control** to authorize access for Customers, Managers, and Admins
+* Conditional UI rendering based on user roles
 
-## 🗂️ Monorepo Structure
+### 🍽️ Customer-Facing Features
 
-```
-team-project-20202-paladins/
-├── booktable-backend/       # Spring Boot backend
-├── frontend/                # React frontend
-├── deployment/              # Docker Compose and deployment config
-├── .github/workflows/       # GitHub Actions pipelines
-└── README.md                # Project documentation
-```
+* **Search Restaurants** by date, time, number of people, and optionally location (City/State/Zip)
+* **View Restaurant Cards** with:
+
+  * Name, Cuisine, Cost rating, Review count, Ratings, and Availability
+  * Dynamic booking slots (±30 minutes)
+* **Restaurant Detail View** with:
+
+  * Descriptions, photos, reviews, and Google Maps location
+* **Book a Table** with real-time availability and receive email/SMS confirmation
+* **View & Cancel Bookings** via the dashboard
+
+### 🧑‍🍳 Restaurant Manager Features
+
+* **Add New Restaurant Listings** with detailed metadata:
+
+  * Address, contact info, hours, table sizes, and booking availability
+* **Upload and Edit Restaurant Details,** including descriptions and images
+* **Dashboard View** of all managed restaurants with reservation stats and status
+* **Edit/Delete Restaurant Listings** directly from the dashboard
+
+### 👨‍💼 Admin Features
+
+* **Restaurant Approval Panel**
+
+  * View pending restaurant listings with manager contact info
+  * Approve or reject new submissions
+* **Restaurant Moderation**
+
+  * Remove non-compliant listings
+* **Analytics Dashboard** showing:
+
+  * Total monthly reservations based on time periods
+  * Reservations based on restaurants
+
+### 📅 Reservation Management
+
+* **Create Reservation** API and UI
+* **Cancel Reservation** with confirmation and backend updates
+* **SMS/Email Notification Integration** for confirmed reservations
+* **Booking validation** to prevent double booking and invalid times
+
+### 🌐 Deployment & Infrastructure
+
+* **Dockerized Frontend and Backend** for platform independence
+* **CI/CD Pipeline** using GitHub Actions
+
+  * Auto-build Docker images
+  * Push to Docker Hub
+  * Deploy to AWS EC2 using Docker Compose
+* **Dynamic Secret Injection** using GitHub Secrets
+* **Terraform Infrastructure Provisioning** for deployment and future scalability
+* AWS AutoScaling Group with Load Balancer
+
+### 🛠️ Technology Stack
+
+* **Frontend:** React, Redux Toolkit, Material UI, Axios
+* **Backend:** Spring Boot, Spring Security, OAuth2, JWT
+* **Database:** MongoDB Atlas
+* **DevOps:** Docker, GitHub Actions, AWS EC2, Terraform, Nginx, DockerHub
+* **APIs:** RESTful, JSON-based with input validation and error handling
+
 
 ---
 
