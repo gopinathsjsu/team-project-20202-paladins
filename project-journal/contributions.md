@@ -68,17 +68,24 @@ Vatsal focused on the critical aspects of the booking system, user reviews, and 
 
 ### 🚀 Key Contributions
 
+- **Frontend Development & UI Initialization**
+  - Initialized the frontend/UI project setup from scratch.
+  - Built the **restaurant details page**, integrating restaurant data, **embedded reviews**, and **Google Maps** for location display.
+  - Implemented the complete **booking flow in the UI**, including booking creation, **viewing bookings**, and cancellation interface.
+  - Developed the **search UI component** for restaurant discovery and filtering.
+
 - **Booking System Logic**
-  - Integrated booking logic in Frontend
-  - Implemented features to manage booking modifications and cancellations.
+  - Developed the **cancel component** in the booking API to support flexible cancellations.
+  - Implemented UI and logic allowing users to **view their upcoming, past, and cancelled bookings**, with the ability to **cancel active bookings**.
+  - Ensured seamless interaction between frontend and backend during the booking lifecycle.
 
 - **User Reviews & Ratings System**
-  - Designed and implemented the **reviews module**, allowing users to submit, view, and rate restaurants.
-  - Developed backend support for review moderation and display logic.
+  - Created full **CRUD operations for user reviews**, enabling submission, editing, deletion, and viewing.
+  - Integrated the reviews module into the restaurant details page for better user experience.
 
-- **Database Design & Schema Management**
-  - Led the design and implementation of the **database schema** (e.g., using SQL or NoSQL databases).
-  - Ensured data integrity, relationships, and optimized queries for performance.
+- **Database Design & Schema Implementation**
+  - Created and structured the core **databases**, ensuring appropriate schema relationships and data integrity.
+  - Contributed to database optimization for performance and scalability.
 
 ---
 
